@@ -1,0 +1,19 @@
+# ========== bower packages ==========
+bower_components/
+
+# ========== node packages ==========
+node_modules/
+
+# ========== compiled css and js ==========
+dist/
+
+# ========== log files ==========
+*.log
+
+# ========== ide files ==========
+.idea/
+
+# ========== random files ==========
+.DS_Store
+app/.DS_Store
+**/.DS_Store

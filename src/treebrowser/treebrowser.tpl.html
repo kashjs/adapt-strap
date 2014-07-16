@@ -1,0 +1,55 @@
+<!--
+    This is the base template for treeBrowser directive.
+    All the hooke that look like %=xxxxx% are replaced with the directive attribute values in treeBrowser.js.
+-->
+
+<div class="tree-browser-container">
+    <div id="segment-tree" data-level="0" class="tree-view">
+        <div class="tree">
+            <script type="text/ng-template" id="%=treeName%-tree-renderer.html">
+                <div class="content" ng-style="{'padding-left': level * %=childrenPadding% + 'px'}"
+                     ng-class="%=rowNgClass%">
+                    <div class="content-holder">
+                        <div class="toggle">
+                            <!--todo: create a callback api to handle the expand and collapse functions-->
+                            <i ng-show="!item._expanded && %=treeName%TreeBrowser.hasChildren(item) && !item._loading"
+                               class="glyphicon glyphicon-plus-sign" ng-click="%=treeName%TreeBrowser.toggle($event,item)"></i>
+                            <i ng-show="item._expanded && !item._loading"
+                               class="glyphicon glyphicon-minus-sign" ng-click="%=treeName%TreeBrowser.toggle($event,item)"></i>
+                            <span ng-show="item._loading">
+                                <i class="fa fa-circle-o-notch fa-spin"></i>
+                            </span>
+                        </div>
+                        <div class="node-content">
+                            <!--this is the template supplied as an attribute.-->
+                            %=nodeTemplate%
+                        </div>
+                    </div>
+                </div>
+                <div ng-show="item._expanded">
+                    <div ng-repeat="item in item.%=childNodeName%" class="tree-level tree-sub-level"
+                         ng-include="'%=treeName%-tree-renderer.html'" onLoad="level=level+1">
+                    </div>
+                </div>
+            </script>
+            <div>
+                <div class="tree-level tree-header-level"
+                     ng-show="%=treeName%TreeBrowser.showHeader">
+                    <div class="content" ng-style="{'padding-left': %=childrenPadding% + 'px'}">
+                        <div class="content-holder">
+                            <div class="toggle">
+                            </div>
+                            <div class="node-content">
+                                <!--this is the template supplied as an attribute.-->
+                                %=nodeHeaderTemplate%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tree-level tree-top-level" ng-repeat="item in %=treeRootName%.%=childNodeName%"
+                     ng-include="'%=treeName%-tree-renderer.html'" onload="level = 1">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -7,8 +7,8 @@
   ],
   "description": "Project for simple UI components and utilities",
   "main": [
-      "dist/adapt-strap.min.js",
-      "dist/adapt-strap.tpl.min.js"
+    "dist/adapt-strap.min.js",
+    "dist/adapt-strap.tpl.min.js"
   ],
   "moduleType": [
     "amd"
@@ -27,5 +27,8 @@
   "dependencies": {
     "angular": "~1.2.16",
     "bootstrap": "~3.1.1"
+  },
+  "devDependencies": {
+    "angular-route": "~1.2.16"
   }
 }

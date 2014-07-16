@@ -1,0 +1,64 @@
+/* Class styling
+------------------------------------------------- */
+.tree-browser-container {
+    width: 100%;
+    margin-left: 0;
+    overflow: hidden;
+    .tree-view {
+        width: 100%;
+        height: auto;
+        .tree {
+            display: inline-block;
+            vertical-align: middle;
+            min-width: 100%;
+            min-height: 100%;
+            .tree-level {
+                margin: 0;
+                padding: 0;
+//                border-top: @dmp-border-default;
+                min-width: 100%;
+            }
+            .tree-top-level {
+                border-top: none;
+            }
+            .tree-top-level ~ .tree-top-level {
+//                border-top: @dmp-border-default;
+            }
+            .tree-header-level:first-child {
+                border-top: none;
+//                border-bottom: @dmp-border-default;
+                text-align: center;
+                background: #efefef;
+            }
+            .content {
+                padding-top: 5px;
+                padding-bottom: 5px;
+                cursor: pointer;
+                .content-holder {
+                    display: table;
+                    min-width: 100%;
+                }
+                .toggle {
+                    cursor: pointer;
+                    height: 15px;
+                    width: 15px;
+                    display: table-cell;
+                    vertical-align: middle;
+                    i {
+                        min-width: 10px;
+                    }
+                }
+                .node-content {
+                    display: table-cell;
+                    vertical-align: middle;
+                }
+            }
+            .content:hover {
+                background: #efefef;
+            }
+            .tree-sub-level:last-child {
+                border-bottom: none;
+            }
+        }
+    }
+}

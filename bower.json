@@ -1,6 +1,6 @@
 {
   "name": "adapt-strap",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "homepage": "https://github.com/Adaptv/adapt-strap",
   "authors": [
     "Kashyap Patel <kashyap@adap.tv>"
@@ -19,6 +19,7 @@
   "license": "MIT",
   "ignore": [
     "docs",
+    "index.html",
     "node_modules",
     "bower_components",
     "test",

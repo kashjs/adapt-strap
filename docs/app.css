@@ -6,7 +6,7 @@ body {
 
 .welcome-header {
     padding: 30px;
-    background: #563d7c;
+    background: #2C3E50;
     color: white;
 }
 
@@ -25,12 +25,12 @@ body {
 .btn-outline-inverse {
     color: #fff;
     background-color: transparent;
-    border-color: #cdbfe3;
+    border-color: #6C7A89;
     margin: 10px;
 }
 
 .btn-outline-inverse:hover, .btn-outline-inverse:focus, .btn-outline-inverse:active {
-    color: #563d7c;
+    color: #2C3E50;
     text-shadow: none;
     background-color: #fff;
     border-color: #fff;

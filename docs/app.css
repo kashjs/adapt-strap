@@ -52,3 +52,8 @@ body {
 .module-section {
     padding-top: 40px;
 }
+
+
+.component-options th {
+    min-width: 130px;
+}

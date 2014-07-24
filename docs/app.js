@@ -7,6 +7,16 @@ window.adaptStrapModules = [{
         'treebrowser.ctrl.js',
         'treeNode.html',
         'treeHeader.html'
+    ],
+    attributeOptions: [
+        {
+            name: 'tree-name',
+            required: true,
+            type: 'String',
+            description: 'Name of the tree. Name has to be so that it' +
+                ' can be a valid javascript variable name. Make sure that your scope doesn not have' +
+                'a property with the same name as the tree-name'
+        }
     ]
 }];
 
@@ -70,4 +80,16 @@ angular.module('adaptv.adaptStrapDocs')
             },
             templateUrl: 'docs/codeNavigator.html'
         }
-    }]);
+    }])
+    .directive('componentOptions', [function () {
+        return {
+            link: function (scope) {
+
+            },
+            restrict: 'E',
+            scope: {
+                module: '='
+            },
+            templateUrl: 'docs/componentOptions.html'
+        }
+    }])

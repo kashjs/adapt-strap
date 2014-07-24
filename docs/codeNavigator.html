@@ -1,0 +1,8 @@
+<div>
+    <div>
+        <a ng-repeat="file in files" ng-click="setCurrentFile(file)">{{ file }} | </a>
+    </div>
+    <div>
+        <markdown src="{{ basePath + currentFile }}"></markdown>
+    </div>
+</div>

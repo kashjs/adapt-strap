@@ -1,12 +1,39 @@
-<p>
-    {{title}}
-    <div ad-tree-browser
-         data-tree-name="segments"
-         data-row-ng-class="{added:true}"
-         data-tree-root="data.root"
-         data-child-node="children"
-         data-children-padding="15"
-         data-toggle-callback="segmentToggle"
-         data-node-template-url="src/treebrowser/docs/atomicTreeNode.html">
+<div>
+    <h3>Tree Browser</h3>
+    <div class="row">
+        <div class="col-md-6 col-sm-6">
+            <h4>Code</h4>
+            <code-navigator files="['treebrowserDocCtrl.js', 'treeBrowserDoc.html', 'treeNode.html', 'treeHeader.html']"
+                            base-path="src/treebrowser/docs/"></code-navigator>
+        </div>
+        <div class="col-md-6 col-sm-6">
+            <h4>Demo</h4>
+            <!-- ===== Usage ===== -->
+            <div class="ad-border-default"
+                 ad-tree-browser
+                 data-tree-name="segments"
+                 data-row-ng-class="{added:true}"
+                 data-tree-root="root"
+                 data-child-node="children"
+                 data-children-padding="15"
+                 data-toggle-callback="segmentToggle"
+                 data-node-template-url="src/treebrowser/docs/treeNode.html">
+            </div>
+            <hr>
+            <!-- ===== Usage with border & header ===== -->
+            <p>With Border & header</p>
+            <div class="ad-border-default"
+                 ad-tree-browser
+                 data-tree-name="segments"
+                 data-row-ng-class="{added:true}"
+                 data-tree-root="root"
+                 data-child-node="children"
+                 data-children-padding="15"
+                 data-toggle-callback="segmentToggle"
+                 data-bordered="true"
+                 data-node-header-url="src/treebrowser/docs/treeHeader.html"
+                 data-node-template-url="src/treebrowser/docs/treeNode.html">
+            </div>
+        </div>
     </div>
-</p>
+</div>

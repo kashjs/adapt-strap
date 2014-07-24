@@ -3,7 +3,7 @@
     All the hooke that look like %=xxxxx% are replaced with the directive attribute values in treeBrowser.js.
 -->
 
-<div class="tree-browser-container">
+<div class="ad-tree-browser-container" ng-class="{'tree-bordered': %=bordered%}">
     <div id="segment-tree" data-level="0" class="tree-view">
         <div class="tree">
             <script type="text/ng-template" id="%=treeName%-tree-renderer.html">
@@ -13,11 +13,11 @@
                         <div class="toggle">
                             <!--todo: create a callback api to handle the expand and collapse functions-->
                             <i ng-show="!item._expanded && %=treeName%TreeBrowser.hasChildren(item) && !item._loading"
-                               class="glyphicon glyphicon-plus-sign" ng-click="%=treeName%TreeBrowser.toggle($event,item)"></i>
+                               class="%=expandIconClass%" ng-click="%=treeName%TreeBrowser.toggle($event,item)"></i>
                             <i ng-show="item._expanded && !item._loading"
-                               class="glyphicon glyphicon-minus-sign" ng-click="%=treeName%TreeBrowser.toggle($event,item)"></i>
+                               class="%=collapseIconClass%" ng-click="%=treeName%TreeBrowser.toggle($event,item)"></i>
                             <span ng-show="item._loading">
-                                <i class="fa fa-circle-o-notch fa-spin"></i>
+                                <i class="%=loadingIconClass%"></i>
                             </span>
                         </div>
                         <div class="node-content">
@@ -33,7 +33,7 @@
                 </div>
             </script>
             <div>
-                <div class="tree-level tree-header-level"
+                <div class="tree-level tree-header-level border"
                      ng-show="%=treeName%TreeBrowser.showHeader">
                     <div class="content" ng-style="{'padding-left': %=childrenPadding% + 'px'}">
                         <div class="content-holder">
@@ -46,7 +46,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="tree-level tree-top-level" ng-repeat="item in %=treeRootName%.%=childNodeName%"
+                <div class="tree-level tree-top-level border" ng-repeat="item in %=treeRootName%.%=childNodeName%"
                      ng-include="'%=treeName%-tree-renderer.html'" onload="level = 1">
                 </div>
             </div>

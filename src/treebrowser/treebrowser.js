@@ -4,9 +4,9 @@ angular.module('adaptv.adaptStrap.treebrowser',[])
 
     .provider('$treebrowser', function() {
         var defaults = this.defaults = {
-            expandIcon: '',
-            collapseIcon: '',
-            loadingIcon: ''
+            expandIconClass: 'glyphicon glyphicon-plus-sign',
+            collapseIconClass: 'glyphicon glyphicon-minus-sign',
+            loadingIconClass: 'glyphicon glyphicon-refresh ad-spin'
         };
         this.$get = function() {
             return {
@@ -53,6 +53,10 @@ angular.module('adaptv.adaptStrap.treebrowser',[])
                         var data = $templateCache.get('treebrowser/treebrowser.tpl.html')
                         template = data.replace(/%=treeName%/g, treeName).
                             replace(/%=treeRootName%/g, attrs.treeRoot).
+                            replace(/%=bordered%/g, attrs.bordered).
+                            replace(/%=expandIconClass%/g, $treebrowser.settings.expandIconClass).
+                            replace(/%=collapseIconClass%/g, $treebrowser.settings.collapseIconClass).
+                            replace(/%=loadingIconClass%/g, $treebrowser.settings.loadingIconClass).
                             replace(/%=childNodeName%/g, attrs.childNode).
                             replace(/%=childrenPadding%/g, childrenPadding).
                             replace(/%=rowNgClass%/g, attrs.rowNgClass || '').

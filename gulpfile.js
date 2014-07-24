@@ -28,7 +28,7 @@ var gulp = require('gulp'),
         cwd: 'src',
         dist: 'dist',
         scripts: '*/*.js',
-        less: '*/*.less',
+        less: ['modules.less'],
         index: 'module.js',
         templates: '*/*.tpl.html'
     },
@@ -161,33 +161,17 @@ gulp.task('less', function () {
 });
 
 gulp.task('style:dist', function() {
-
-    var combined = combine(
-
-        // Build unified package
-        gulp.src(src.less, {cwd: src.cwd})
-            .pipe(less())
-            .pipe(concat(pkg.name + '.css', {process: function(src) { return '/* Style: ' + path.basename(this.path) + '*/\n' + (src.trim() + '\n').replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1'); }}))
-            .pipe(concat.header(banner))
-            .pipe(gulp.dest(src.dist)),
-
-        // Build individual modules
-        gulp.src(src.less, {cwd: src.cwd})
-            .pipe(less())
-            .pipe(rename(function(path){ path.dirname = ''; })) // flatten
-            .pipe(concat.header(banner))
-            .pipe(gulp.dest(path.join(src.dist, 'modules')))
-        );
-
-    combined.on('error', function(err) {
-        gutil.log(chalk.red(util.format('Plugin error: %s', err.message)));
-    });
-
-    return combined;
-
+    return gulp.src(src.less, {cwd: src.cwd})
+     .pipe(less())
+     .pipe(concat(pkg.name + '.css', {process: function(src) { return '/* Style: ' + path.basename(this.path) + '*/\n' + (src.trim() + '\n').replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1'); }}))
+     .pipe(concat.header(banner))
+     .pipe(gulp.dest(src.dist))
+     .on('error', function(err) {
+         gutil.log(chalk.red(util.format('Plugin error: %s', err.message)));
+     });
 });
 
 // ========== DEFAULT TASKS ========== //
 gulp.task('dist', function() {
-    runSequence('clean:dist', ['templates:dist', 'scripts:dist']);
+    runSequence('clean:dist', ['templates:dist', 'scripts:dist', 'style:dist']);
 });

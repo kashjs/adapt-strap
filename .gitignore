@@ -4,9 +4,6 @@ bower_components/
 # ========== node packages ==========
 node_modules/
 
-# ========== compiled css and js ==========
-dist/
-
 # ========== log files ==========
 *.log
 

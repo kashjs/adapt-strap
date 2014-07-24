@@ -69,7 +69,7 @@
     </header>
 
     <div class="container-fluid">
-        <div ng-repeat="module in modules" id="{{ module.moduleName }}">
+        <div class="module-section" ng-repeat="module in modules" id="{{ module.moduleName }}">
             <h3>{{ module.displayName }}</h3>
 
             <div ng-controller="treebrowserCtrl">

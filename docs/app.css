@@ -48,3 +48,7 @@ body {
 .cursor-pointer {
     cursor: pointer;
 }
+
+.module-section {
+    padding-top: 40px;
+}

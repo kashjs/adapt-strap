@@ -3,8 +3,8 @@ window.adaptStrapModules = [{
     displayName: 'Tree Browser',
     controllerName: 'treebrowserCtrl',
     docFiles: [
-        'treebrowser.ctrl.js',
         'treeBrowser.view.html',
+        'treebrowser.ctrl.js',
         'treeNode.html',
         'treeHeader.html'
     ]

@@ -34,3 +34,16 @@ body {
     background-color: #fff;
     border-color: #fff;
 }
+
+.code-navigator pre {
+    border-right: 0;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border: 1px solid #ddd;
+    border-top: none;
+    background: white;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}

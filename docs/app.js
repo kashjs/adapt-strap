@@ -26,9 +26,15 @@ angular.module('adaptv.adaptStrapDocs').directive("markdown", function ($compile
                             data.data = '```\n' + data.data + '\n```';
                         }
                         element.html(converter.makeHtml(data.data));
+                        element.find('pre code').each(function(i, block) {
+                            hljs.highlightBlock(block);
+                        });
                     });
                 } else {
                     element.html(converter.makeHtml(element.html()));
+                    element.find('pre code').each(function(i, block) {
+                        hljs.highlightBlock(block);
+                    });
                 }
             }
             attrs.$observe('src', function () {

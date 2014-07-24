@@ -75,14 +75,24 @@
             <div ng-controller="treebrowserCtrl">
                 <div class="row">
                     <div class="col-md-6 col-sm-6">
-                        <h4>Code</h4>
+                        <h4 class="text-muted">Code</h4>
                         <code-navigator files="module.docFiles"
                                         base-path="src/{{module.moduleName}}/docs/"></code-navigator>
                     </div>
                     <div class="col-md-6 col-sm-6">
-                        <h4>Demo</h4>
+                        <h4 class="text-muted">Demo</h4>
                         <ng-include src="'src/' + module.moduleName + '/docs/' + module.moduleName + '.view.html'"></ng-include>
                     </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4 class="text-muted">Options</h4>
+                        <component-options module="module"></component-options>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-muted">More Info</h4>
+                    <ng-include src="'src/' + module.moduleName + '/docs/' + module.moduleName + '.info.html'"></ng-include>
                 </div>
             </div>
         </div>

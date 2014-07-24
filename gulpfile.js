@@ -24,13 +24,15 @@ var gulp = require('gulp'),
     uglify = require('gulp-uglify'),
     ngmin = require('gulp-ngmin'),
     clean = require('gulp-clean'),
+    cheerio = require('gulp-cheerio'),
     src = {
         cwd: 'src',
         dist: 'dist',
         scripts: '*/*.js',
         less: ['modules.less'],
         index: 'module.js',
-        templates: '*/*.tpl.html'
+        templates: '*/*.tpl.html',
+        docView: '*/docs/*.view.html'
     },
     docs = {
         cwd: 'docs',
@@ -148,6 +150,20 @@ gulp.task('templates:dist', function() {
     return combined;
 
 });
+
+gulp.task('doc:view', function () {
+    return gulp.src(src.docView, {cwd: src.cwd})
+        .pipe(cheerio(function ($) {
+            var publicTags = $('public').html();
+            $(':first-child').empty();
+            $(':first-child').append(publicTags)
+        }))
+        .pipe(rename(function (path) {
+            path.basename += ".public";
+            path.extname = ".html"
+        }))
+        .pipe(gulp.dest(src.cwd));
+})
 
 // ========== STYLE ========== //
 gulp.task('less', function () {

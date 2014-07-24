@@ -1,0 +1,28 @@
+<div ng-controller="treebrowserCtrl">
+    <!-- ===== Usage ===== -->
+    <div class="ad-border-default"
+         ad-tree-browser
+         data-tree-name="segments"
+         data-row-ng-class="{added:true}"
+         data-tree-root="root"
+         data-child-node="children"
+         data-children-padding="15"
+         data-toggle-callback="segmentToggle"
+         data-node-template-url="src/treebrowser/docs/treeNode.html">
+    </div>
+    <hr>
+    <!-- ===== Usage with border & header ===== -->
+    <p>With Border & header</p>
+    <div class="ad-border-default"
+         ad-tree-browser
+         data-tree-name="segments"
+         data-row-ng-class="{added:true}"
+         data-tree-root="root"
+         data-child-node="children"
+         data-children-padding="15"
+         data-toggle-callback="segmentToggle"
+         data-bordered="true"
+         data-node-header-url="src/treebrowser/docs/treeHeader.html"
+         data-node-template-url="src/treebrowser/docs/treeNode.html">
+    </div>
+</div>

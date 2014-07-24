@@ -1,5 +1,5 @@
 angular.module('adaptv.adaptStrapDocs')
-    .controller('treebrowserDocCtrl', ['$scope', function ($scope) {
+    .controller('treebrowserCtrl', ['$scope', function ($scope) {
         $scope.root = {
             children: [
                 {

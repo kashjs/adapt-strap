@@ -1,18 +1,30 @@
+window.adaptStrapModules = [{
+    moduleName: 'treebrowser',
+    displayName: 'Tree Browser',
+    controllerName: 'treebrowserCtrl',
+    docFiles: [
+        'treebrowser.ctrl.js',
+        'treeBrowser.view.html',
+        'treeNode.html',
+        'treeHeader.html'
+    ]
+}];
+
 angular.module('adaptv.adaptStrapDocs', [
-    'ngRoute',
     'adaptv.adaptStrap'
 ])
-
-    .config(['$routeProvider', function ($routeProvider) {
-        'use strict';
-        $routeProvider.when('/treebrowser', {
-            templateUrl: 'src/treebrowser/docs/treebrowserDoc.html',
-            controller: 'treebrowserDocCtrl'
-        }).otherwise({redirectTo: '/treebrowser'});
-    }]);
-
 // Render markdown in the HTML page
-angular.module('adaptv.adaptStrapDocs').directive("markdown", function ($compile, $http) {
+angular.module('adaptv.adaptStrapDocs')
+    .constant('adaptStrapModules', adaptStrapModules)
+    .controller('layoutCtrl', ['$scope', '$anchorScroll', '$location', 'adaptStrapModules', function ($scope, $anchorScroll, $location, adaptStrapModules) {
+        $scope.modules = adaptStrapModules;
+        $scope.scrollTo = function(id, $event) {
+            $event.preventDefault();
+            $location.hash(id);
+            $anchorScroll();
+        }
+    }])
+.directive("markdown", function ($compile, $http) {
     var converter = new Showdown.converter();
     return {
         restrict: 'E',

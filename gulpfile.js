@@ -173,6 +173,7 @@ gulp.task('style:dist', function() {
      .pipe(concat.header(banner))
      .pipe(gulp.dest(src.dist))
      .pipe(cssmin())
+     .pipe(concat.header(banner))
      .pipe(rename({suffix: '.min'}))
      .pipe(gulp.dest(src.dist))
      .on('error', function(err) {

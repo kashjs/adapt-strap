@@ -172,8 +172,11 @@ gulp.task('style:dist', function() {
      .pipe(concat(pkg.name + '.css', {process: function(src) { return '/* Style: ' + path.basename(this.path) + '*/\n' + (src.trim() + '\n').replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1'); }}))
      .pipe(concat.header(banner))
      .pipe(gulp.dest(src.dist))
+     .pipe(cssmin())
+     .pipe(rename({suffix: '.min'}))
+     .pipe(gulp.dest(src.dist))
      .on('error', function(err) {
-         util.log(chalk.red(nutil.format('Plugin error: %s', err.message)));
+        util.log(chalk.red(nutil.format('Plugin error: %s', err.message)));
      });
 });
 

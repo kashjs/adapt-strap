@@ -122,7 +122,6 @@ window.adaptStrapModules = [
   }
 ];
 
-
 // ========== initialize documentation app module ========== //
 angular.module('adaptv.adaptStrapDocs', [
   'ngSanitize',

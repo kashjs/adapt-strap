@@ -57,3 +57,8 @@ body {
 .component-options th {
     min-width: 130px;
 }
+
+pre {
+    border: none;
+    background: white;
+}

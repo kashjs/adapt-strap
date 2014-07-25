@@ -3,6 +3,7 @@
         <th>Name</th>
         <th>Type</th>
         <th>Required</th>
+        <th>Globally Configurable</th>
         <th>Default</th>
         <th>Description</th>
     </tr>
@@ -10,7 +11,10 @@
         <td>{{ option.name}}</td>
         <td>{{ option.type}}</td>
         <td>{{ option.required ? 'Required' : 'Optional' }}</td>
-        <td>{{ option.default || 'NA' }}</td>
-        <td>{{ option.description }}</td>
+        <td>{{ option.globalConfig ? 'Yes' : 'No' }}</td>
+        <td>{{ option.default }}</td>
+        <td>
+            <p ng-bind-html="option.description"></p>
+        </td>
     </tr>
 </table>

@@ -16,33 +16,12 @@ angular.module('adaptv.adaptStrap.treebrowser',[])
     })
 
 /**
- * treeBrowser directive populates a tree dataStructure
- * In your tree-browser tag you need to provide following attributes
- * tree-name - a string name of the tree. To support multiple trees
- * tree-root - root path to the tree data structure example: audienceTargeting.segmentTree
- * child-node - name of the object that contains children nodes example child-node="children"
- * node-template-url - template to render the node properties
- *                     take a look at for usage "views/templates/directives/treeBrowser/segment.html"
- * node-header-url - template similar to node template, but it has the header tags. (EX: id, name, status)
- * children-padding - padding from parent. Default is 15px.
- * has-children - function that checks the availability of the children.
- *                this is only needed if you are doing lazy loading. if false (row is a leaf),
- *                the toggle arrow will not be shown.
- * row-ng-class - ng-class expression that will be applied to each row.
- * toggle-callback - This function is to lazy load the tree levels.
- *                   Provide the path to toggle function. If you do provide this, the tree item will be passed to this
- *                   function every time some one toggles a tree level. In this case, you need to set the _expanded
- *                   property to true or false. You can also set loading property to true or false on the item.
- *                   If you set _loading to true, the ui will show the _loading icon on that tree level.
- *
- * treeBrowser will adapt the parent element's height and width.
- *
- * For example usage take a look at segments-browse-all.html file.
+ * adTreeBrowser directive populates a tree dataStructure
  */
-
     .directive('adTreeBrowser', ['$compile', '$http', '$treebrowser', '$templateCache', function ($compile, $http, $treebrowser, $templateCache) {
         'use strict';
         return {
+            restrict: 'E',
             link: function (scope, element, attrs) {
                 var treeName = attrs.treeName || '',
                     nodeTemplateUrl = attrs.nodeTemplateUrl || '',
@@ -54,9 +33,9 @@ angular.module('adaptv.adaptStrap.treebrowser',[])
                         template = data.replace(/%=treeName%/g, treeName).
                             replace(/%=treeRootName%/g, attrs.treeRoot).
                             replace(/%=bordered%/g, attrs.bordered).
-                            replace(/%=expandIconClass%/g, $treebrowser.settings.expandIconClass).
-                            replace(/%=collapseIconClass%/g, $treebrowser.settings.collapseIconClass).
-                            replace(/%=loadingIconClass%/g, $treebrowser.settings.loadingIconClass).
+                            replace(/%=expandIconClass%/g, attrs.expandIconClass || $treebrowser.settings.expandIconClass).
+                            replace(/%=collapseIconClass%/g, attrs.collapseIconClass || $treebrowser.settings.collapseIconClass).
+                            replace(/%=loadingIconClass%/g, attrs.loadingIconClass || $treebrowser.settings.loadingIconClass).
                             replace(/%=childNodeName%/g, attrs.childNode).
                             replace(/%=childrenPadding%/g, childrenPadding).
                             replace(/%=rowNgClass%/g, attrs.rowNgClass || '').

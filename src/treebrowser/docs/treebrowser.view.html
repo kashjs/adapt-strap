@@ -1,28 +1,26 @@
 <div ng-controller="treebrowserCtrl">
     <!-- ===== Usage ===== -->
-    <div class="ad-border-default"
-         ad-tree-browser
-         data-tree-name="treeDemo"
-         data-row-ng-class="{added:true}"
-         data-tree-root="root"
-         data-child-node="children"
-         data-children-padding="15"
-         data-toggle-callback="segmentToggle"
-         data-node-template-url="src/treebrowser/docs/treeNode.html">
-    </div>
+    <ad-tree-browser class="ad-border-default"
+         tree-name="treeDemo"
+         row-ng-class="{added:true}"
+         tree-root="root"
+         child-node="children"
+         children-padding="15"
+         toggle-callback="segmentToggle"
+         node-template-url="src/treebrowser/docs/treeNode.html">
+    </ad-tree-browser>
     <hr>
     <!-- ===== Usage with border & header ===== -->
     <p>With Border & header</p>
-    <div class="ad-border-default"
-         ad-tree-browser
-         data-tree-name="treeDemoBordered"
-         data-row-ng-class="{added:true}"
-         data-tree-root="root"
-         data-child-node="children"
-         data-children-padding="15"
-         data-toggle-callback="segmentToggle"
-         data-bordered="true"
-         data-node-header-url="src/treebrowser/docs/treeHeader.html"
-         data-node-template-url="src/treebrowser/docs/treeNode.html">
-    </div>
+    <ad-tree-browser class="ad-border-default"
+         tree-name="treeDemoBordered"
+         row-ng-class="{added:true}"
+         tree-root="root"
+         child-node="children"
+         children-padding="15"
+         toggle-callback="segmentToggle"
+         bordered="true"
+         node-header-url="src/treebrowser/docs/treeHeader.html"
+         node-template-url="src/treebrowser/docs/treeNode.html">
+    </ad-tree-browser>
 </div>

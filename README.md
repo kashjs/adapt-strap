@@ -1,10 +1,16 @@
 ###Usage
 * Install the library using `bower install adapt-strap --save`
 * Include the library files in your index.html file:
-```javascript
+```
 <script src="bower_components/adapt-strap/dist/adapt-strap.min.js"></script>
 <script src="bower_components/adapt-strap/dist/adapt-strap.tpl.min.js"></script>
 <link rel="stylesheet" href="bower_components/adapt-strap/dist/adapt-strap.min.css"/>
+```
+* Add adaptv.adaptStrap module as a dependency to you main app module:
+```
+angular.module('myApp', [
+    'adaptv.adaptStrap'
+]);
 ```
 * Read the [documentation](http://adaptv.github.io/adapt-strap/) to see the demo and usage of components
 

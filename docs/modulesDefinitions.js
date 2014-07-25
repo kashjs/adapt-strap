@@ -26,7 +26,7 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
         type: 'String',
         default: 'NA',
         description: 'root path to the tree data structure ' +
-          'example: <markdown>tree-root="data.root"</markdown>'
+          'example: <code>tree-root="data.root"</code>'
       },
       {
         name: 'child-node',
@@ -34,7 +34,7 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
         type: 'String',
         default: 'NA',
         description: 'name of the object that contains children ' +
-          'nodes example: <markdown>child-node="children"</markdown>'
+          'nodes example: <code>child-node="children"</code>'
       },
       {
         name: 'node-template-url',
@@ -73,7 +73,8 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
         required: false,
         default: 'NA',
         type: 'String',
-        description: 'ng-class expression that will be applied to each row. ex: {active: item._selected}'
+        description: 'ng-class expression that will be applied to each row. ' +
+          'ex: <code>row-ng-class={active: item._selected}</code>'
       },
       {
         name: 'toggle-callback',
@@ -81,7 +82,8 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
         default: 'NA',
         type: 'String',
         description: 'This function is to lazy load the tree levels.' +
-          'Provide the path to toggle function (ex: "methods.loadChildren"). If you do provide this, ' +
+          'Provide the path to toggle function ' +
+          '(ex: <code>toggle-callback="methods.loadChildren"</code>). If you do provide this, ' +
           'the tree item will be passed to this function every time some one toggles a tree level. ' +
           'In this case, you need to set the _expanded' +
           'property to true or false. You can also set loading property to true or false on the item.' +
@@ -98,7 +100,7 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
         name: 'expand-icon-class',
         required: false,
         globalConfig: true,
-        default: 'glyphicon glyphicon-plus-sign',
+        default: '"glyphicon glyphicon-plus-sign"',
         type: 'String',
         description: 'class of te expand icon'
       },
@@ -106,7 +108,7 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
         name: 'collapse-icon-class',
         required: false,
         globalConfig: true,
-        default: 'glyphicon glyphicon-minus-sign',
+        default: '"glyphicon glyphicon-minus-sign"',
         type: 'String',
         description: 'class of te collapse icon'
       },
@@ -114,7 +116,7 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
         name: 'loading-icon-class',
         required: false,
         globalConfig: true,
-        default: 'glyphicon glyphicon-refresh ad-spin',
+        default: '"glyphicon glyphicon-refresh ad-spin"',
         type: 'String',
         description: 'class of te loading icon'
       }

@@ -5,7 +5,7 @@
 <script src="bower_components/adapt-strap/dist/adapt-strap.js"></script>
 <script src="bower_components/adapt-strap/dist/adapt-strap.tpl.js"></script>
 ```
-* Read the [documentation](https://adaptv.github.io/Adapt-Strap/) to see the demo and usage of components
+* Read the [documentation](http://adaptv.github.io/adapt-strap/) to see the demo and usage of components
 
 ###Developers one time seup:
 * Fork the repo under your github account and clone it locally

@@ -67,7 +67,9 @@ angular.module('adaptv.adaptStrapDocs', [
 .directive('componentOptions', [function () {
   return {
     link: function (scope) {
-
+      scope.myHTML =
+        'I am an <code>HTML</code>string with ' +
+        '<a href="#">links!</a> and other <em>stuff</em>';
     },
     restrict: 'E',
     scope: {

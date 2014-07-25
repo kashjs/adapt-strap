@@ -53,6 +53,9 @@ body {
     padding-top: 40px;
 }
 
+.component-options {
+    font-size: 12px;
+}
 
 .component-options th {
     min-width: 130px;

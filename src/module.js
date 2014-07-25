@@ -1,3 +1,3 @@
 angular.module('adaptv.adaptStrap', [
-    'adaptv.adaptStrap.treebrowser'
+  'adaptv.adaptStrap.treebrowser'
 ]);

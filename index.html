@@ -5,107 +5,37 @@
     <title>Adapt-Strap - AngularJS 1.2+ ui components/utilities</title>
     <meta name="description" content="Adapt-Strap - AngularJS 1.2+ ui components/utilities">
 
-    <!-- Properties for Google+ snippets -->
+    <!-- ===== Properties for Google+ snippets ===== -->
     <meta property="og:title" content="Adapt-Strap">
     <meta property="og:description" content="Adapt-Strap - AngularJS 1.2+ ui components/utilities">
     <meta property="og:image" content="">
 
+    <!-- ===== Vendor Style Scripts ===== -->
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/styles/default.min.css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
-    <link rel="stylesheet" href="docs/app.css">
     <link rel="stylesheet" href="dist/adapt-strap.css"/>
+    <!-- ===== Local Style Scripts ===== -->
+    <link rel="stylesheet" href="docs/app.css">
 </head>
 <body ng-controller="layoutCtrl" data-spy="scroll" data-target="#mainNavbar">
-    <div id="mainNavbar" class="navbar navbar-default navbar-fixed-top" role="navigation">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-example-js-navbar-scrollspy">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="#">Adapt Strap</a>
-            </div>
-            <div class="collapse navbar-collapse bs-example-js-navbar-scrollspy">
-                <ul class="nav navbar-nav">
-                    <li ng-repeat="module in modules" class="">
-                        <a href="#{{ module.moduleName }}"
-                           ng-click="scrollTo(module.moduleName, $event)">
-                            {{ module.displayName }}
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <header class="welcome-header">
-        <div class="row">
-            <div class="col-md-6">
-                <h1>Adapt-Strap</h1>
-                <p class="lead">
-                    AngularJS 1.2+ ui components/utilities based on bootstrap 3
-                </p>
-                <p>
-                    <iframe src="http://ghbtns.com/github-btn.html?user=Adaptv&repo=adapt-strap&type=fork"
-                            allowtransparency="true" frameborder="0" scrolling="0" width="53" height="20"></iframe>
-                    <iframe src="http://ghbtns.com/github-btn.html?user=Adaptv&repo=adapt-strap&type=watch"
-                            allowtransparency="true" frameborder="0" scrolling="0" width="53" height="20"></iframe>
-                </p>
-            </div>
-            <div class="col-md-6">
-                <a href="https://github.com/Adaptv/adapt-strap/archive/master.zip"
-                   class="btn btn-lg btn-outline-inverse">
-                    <i class="glyphicon glyphicon-download-alt"></i>
-                    Download
-                </a>
-                <a href="https://github.com/Adaptv/adapt-strap"
-                   class="btn btn-lg btn-outline-inverse">
-                    Code on Github
-                </a>
-            </div>
-        </div>
-    </header>
+    <!-- ===== Layout ===== -->
+    <ng-include src="'docs/layout/navbar.html'"></ng-include>
+    <ng-include src="'docs/layout/header.html'"></ng-include>
+    <ng-include src="'docs/layout/gettingStarted.html'"></ng-include>
+    <ng-include src="'docs/layout/modules.html'"></ng-include>
 
-    <div class="container-fluid">
-        <div class="module-section" ng-repeat="module in modules" id="{{ module.moduleName }}">
-            <h3>{{ module.displayName }}</h3>
-
-            <div ng-controller="treebrowserCtrl">
-                <div class="row">
-                    <div class="col-md-6 col-sm-6">
-                        <h4 class="text-muted">Code</h4>
-                        <code-navigator files="module.docFiles"
-                                        base-path="src/{{module.moduleName}}/docs/"></code-navigator>
-                    </div>
-                    <div class="col-md-6 col-sm-6">
-                        <h4 class="text-muted">Demo</h4>
-                        <ng-include src="'src/' + module.moduleName + '/docs/' + module.moduleName + '.view.html'"></ng-include>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <h4 class="text-muted">Options</h4>
-                        <component-options module="module"></component-options>
-                    </div>
-                </div>
-                <div>
-                    <h4 class="text-muted">More Info</h4>
-                    <ng-include src="'src/' + module.moduleName + '/docs/' + module.moduleName + '.info.html'"></ng-include>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    <!-- ===== Vendor Scripts ===== -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.19/angular-sanitize.js"></script>
-    <script src="dist/adapt-strap.js"></script>
-    <script src="dist/adapt-strap.tpl.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/showdown/0.3.1/showdown.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/highlight.min.js"></script>
+    <script src="dist/adapt-strap.js"></script>
+    <script src="dist/adapt-strap.tpl.js"></script>
+
+    <!-- ===== Local Scripts ===== -->
     <script src="docs/app.js"></script>
     <script src="src/treebrowser/docs/treebrowser.ctrl.js"></script>
 </body>

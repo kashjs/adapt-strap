@@ -2,29 +2,13 @@
 
 var gulp = require('gulp'),
     path = require('path'),
-    util = require('util'),
-    gutil = require('gulp-util'),
+    nutil = require('util'),
     combine = require('stream-combiner'),
-    changed = require('gulp-changed'),
-    rename = require('gulp-rename'),
     pkg = require('./package.json'),
     chalk = require('chalk'),
     fs = require('fs'),
-    less = require('gulp-less'),
-    uglify = require('gulp-uglify'),
-    ngmin = require('gulp-ngmin'),
     concat = require('gulp-concat-util'),
-    sourcemaps = require('gulp-sourcemaps'),
-    htmlmin = require('gulp-htmlmin'),
-    usemin = require('gulp-usemin'),
-    nginclude = require('gulp-nginclude'),
-    cleancss = require('gulp-cleancss'),
     runSequence = require('run-sequence'),
-    ngtemplate = require('gulp-ngtemplate'),
-    uglify = require('gulp-uglify'),
-    ngmin = require('gulp-ngmin'),
-    clean = require('gulp-clean'),
-    cheerio = require('gulp-cheerio'),
     src = {
         cwd: 'src',
         dist: 'dist',
@@ -32,7 +16,9 @@ var gulp = require('gulp'),
         less: ['modules.less'],
         index: 'module.js',
         templates: '*/*.tpl.html',
-        docView: '*/docs/*.view.html'
+        docView: '*/docs/*.view.html',
+        html: '*/**/*.html',
+        js: '*/**/*.js'
     },
     docs = {
         cwd: 'docs',
@@ -44,18 +30,22 @@ var gulp = require('gulp'),
         images: 'images/{,*/}*.{jpg,png,svg}',
         styles: 'styles/*.less'
     },
-    ports = {
-        docs: 9090,
-        pages: 9090
-    },
-    banner = gutil.template('/**\n' +
-        ' * <%= pkg.name %>\n' +
-        ' * @version v<%= pkg.version %> - <%= today %>\n' +
-        ' * @link <%= pkg.homepage %>\n' +
-        ' * @author <%= pkg.author.name %> (<%= pkg.author.email %>)\n' +
-        ' * @license MIT License, http://www.opensource.org/licenses/MIT\n' +
-        ' */\n', {file: '', pkg: pkg, today: new Date().toISOString().substr(0, 10)}),
+    banner,
     createModuleName;
+
+require('matchdep')
+    .filterDev('gulp-*')
+    .forEach(function(module) {
+        global[module.replace(/^gulp-/, '')] = require(module);
+    });
+
+banner = util.template('/**\n' +
+    ' * <%= pkg.name %>\n' +
+    ' * @version v<%= pkg.version %> - <%= today %>\n' +
+    ' * @link <%= pkg.homepage %>\n' +
+    ' * @author <%= pkg.author.name %> (<%= pkg.author.email %>)\n' +
+    ' * @license MIT License, http://www.opensource.org/licenses/MIT\n' +
+    ' */\n', {file: '', pkg: pkg, today: new Date().toISOString().substr(0, 10)});
 
 // ========== CLEAN ========== //
 gulp.task('clean:dist', function() {
@@ -99,7 +89,7 @@ gulp.task('scripts:dist', function(foo) {
     );
 
     combined.on('error', function(err) {
-        gutil.log(chalk.red(util.format('Plugin error: %s', err.message)));
+        util.log(chalk.red(nutil.format('Plugin error: %s', err.message)));
     });
 
     return combined;
@@ -144,7 +134,7 @@ gulp.task('templates:dist', function() {
     );
 
     combined.on('error', function(err) {
-        gutil.log(chalk.red(util.format('Plugin error: %s', err.message)));
+        util.log(chalk.red(nutil.format('Plugin error: %s', err.message)));
     });
 
     return combined;
@@ -169,11 +159,11 @@ gulp.task('doc:view', function () {
 gulp.task('less', function () {
     return gulp.src(paths.mainLess)
         .pipe(less())
-        .on('error', util.log)
+        .on('error', nutil.log)
         .pipe(gulp.dest('app'))
-        .on('error', util.log)
+        .on('error', nutil.log)
         .pipe(connect.reload())
-        .on('error', util.log);
+        .on('error', nutil.log);
 });
 
 gulp.task('style:dist', function() {
@@ -183,11 +173,46 @@ gulp.task('style:dist', function() {
      .pipe(concat.header(banner))
      .pipe(gulp.dest(src.dist))
      .on('error', function(err) {
-         gutil.log(chalk.red(util.format('Plugin error: %s', err.message)));
+         util.log(chalk.red(nutil.format('Plugin error: %s', err.message)));
      });
+});
+
+// ========== validate ========== //
+gulp.task('htmlhint', function () {
+    gulp.src(src.html, {cwd: src.cwd})
+        .pipe(htmlhint({
+            htmlhintrc: '.htmlhintrc'
+        }))
+        .pipe(htmlhint.reporter());
+});
+
+gulp.task('htmlhint:fail', function () {
+    gulp.src(src.html, {cwd: src.cwd})
+        .pipe(htmlhint({
+            htmlhintrc: '.htmlhintrc'
+        }))
+        .pipe(htmlhint.failReporter());
+});
+
+gulp.task('jshint', function() {
+    gulp.src(src.js, {cwd: src.cwd})
+        .pipe(jshint())
+        .pipe(jshint.reporter('jshint-stylish'));
+});
+
+gulp.task('jshint:fail', function() {
+    gulp.src(src.js, {cwd: src.cwd})
+        .pipe(jshint())
+        .pipe(jshint.reporter('jshint-stylish'))
+        .pipe(jshint.reporter('fail'));
+});
+
+gulp.task('jscs', function () {
+    return gulp.src(src.js, {cwd: src.cwd})
+        .pipe(jscs());
 });
 
 // ========== DEFAULT TASKS ========== //
 gulp.task('dist', function() {
-    runSequence('clean:dist', ['templates:dist', 'scripts:dist', 'style:dist']);
+    runSequence(['jshint:fail', 'htmlhint:fail', 'jscs'],'clean:dist', ['templates:dist', 'scripts:dist', 'style:dist']);
 });

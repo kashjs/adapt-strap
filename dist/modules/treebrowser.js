@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v0.0.1 - 2014-07-24
+ * @version v0.0.2 - 2014-07-25
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -21,7 +21,6 @@ angular.module('adaptv.adaptStrap.treebrowser', []).provider('$treebrowser', fun
   '$treebrowser',
   '$templateCache',
   function ($compile, $http, $treebrowser, $templateCache) {
-    'use strict';
     return {
       restrict: 'E',
       link: function (scope, element, attrs) {

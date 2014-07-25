@@ -17,8 +17,8 @@ var gulp = require('gulp'),
         index: 'module.js',
         templates: '*/*.tpl.html',
         docView: '*/docs/*.view.html',
-        html: '*/**/*.html',
-        js: '*/**/*.js'
+        html: ['src/**/*.html', 'docs/**/*.html'],
+        js: ['src/**/*.js', 'docs/**/*.js']
     },
     docs = {
         cwd: 'docs',
@@ -179,7 +179,7 @@ gulp.task('style:dist', function() {
 
 // ========== validate ========== //
 gulp.task('htmlhint', function () {
-    gulp.src(src.html, {cwd: src.cwd})
+    gulp.src(src.html)
         .pipe(htmlhint({
             htmlhintrc: '.htmlhintrc'
         }))
@@ -187,7 +187,7 @@ gulp.task('htmlhint', function () {
 });
 
 gulp.task('htmlhint:fail', function () {
-    gulp.src(src.html, {cwd: src.cwd})
+    gulp.src(src.html)
         .pipe(htmlhint({
             htmlhintrc: '.htmlhintrc'
         }))
@@ -195,20 +195,20 @@ gulp.task('htmlhint:fail', function () {
 });
 
 gulp.task('jshint', function() {
-    gulp.src(src.js, {cwd: src.cwd})
+    gulp.src(src.js)
         .pipe(jshint())
         .pipe(jshint.reporter('jshint-stylish'));
 });
 
 gulp.task('jshint:fail', function() {
-    gulp.src(src.js, {cwd: src.cwd})
+    gulp.src(src.js)
         .pipe(jshint())
         .pipe(jshint.reporter('jshint-stylish'))
         .pipe(jshint.reporter('fail'));
 });
 
 gulp.task('jscs', function () {
-    return gulp.src(src.js, {cwd: src.cwd})
+    return gulp.src(src.js)
         .pipe(jscs());
 });
 

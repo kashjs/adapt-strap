@@ -17,7 +17,7 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
         type: 'String',
         default: 'NA',
         description: 'Name of the tree. Name has to be so that it' +
-          ' can be a valid javascript variable name. Make sure that your scope doesn not have' +
+          ' can be a valid javascript variable name. Make sure that your scope does not have' +
           'a property with the same name as the tree-name'
       },
       {
@@ -119,6 +119,50 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
         default: '"glyphicon glyphicon-refresh ad-spin"',
         type: 'String',
         description: 'class of te loading icon'
+      }
+    ]
+  },
+  {
+    moduleName: 'tablelite',
+    displayName: 'Table Lite',
+    controllerName: 'tableliteCtrl',
+    docFiles: [
+      'tablelite.view.html',
+      'tablelite.ctrl.js'
+    ],
+    attributeOptions: [
+      {
+        name: 'table-name',
+        required: true,
+        default: 'NA',
+        type: 'String',
+        description: 'Name of the table. Name has to be so that it' +
+          ' can be a valid javascript variable name. Make sure that your scope does not have' +
+          'a property with the same name as the tree-name'
+      },
+      {
+        name: 'column-definition',
+        required: true,
+        default: 'NA',
+        type: 'String',
+        description: 'Path to the object (array) that has all the column definitions. ' +
+          'Look at more info for details on how to build columnDefinition object'
+      },
+      {
+        name: 'local-data-source',
+        required: true,
+        default: 'NA',
+        type: 'String',
+        description: 'Required if api-params object is not supplied. Table can operate in ' +
+          'either local mode or in api mode.'
+      },
+      {
+        name: 'table-classes',
+        required: false,
+        default: '"table"',
+        type: 'String',
+        description: 'these classes will be applied to the table tag. ' +
+          'Ex (<code>table-classes: "table table-bordered"</code>)'
       }
     ]
   }

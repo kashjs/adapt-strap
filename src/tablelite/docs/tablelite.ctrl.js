@@ -21,6 +21,46 @@ angular.module('adaptv.adaptStrapDocs')
           name: 'Audi S8',
           modelYear: 2014,
           price: 100000
+        },
+        {
+          name: 'Audi A4',
+          modelYear: 2009,
+          price: 34000
+        },
+        {
+          name: 'BMW 328i',
+          modelYear: 2012,
+          price: 39000
+        },
+        {
+          name: 'Audi A6',
+          modelYear: 2012,
+          price: 44000
+        },
+        {
+          name: 'Audi S8',
+          modelYear: 2014,
+          price: 100000
+        },
+        {
+          name: 'Audi A6',
+          modelYear: 2012,
+          price: 44000
+        },
+        {
+          name: 'Audi S8',
+          modelYear: 2014,
+          price: 100000
+        },
+        {
+          name: 'Audi A6',
+          modelYear: 2012,
+          price: 44000
+        },
+        {
+          name: 'Audi S8',
+          modelYear: 2014,
+          price: 100000
         }
       ]
     };

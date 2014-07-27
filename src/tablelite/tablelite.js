@@ -79,7 +79,7 @@ angular.module('adaptv.adaptStrap.tablelite', [])
 
         tableModels.pageSizeChanged = function (size) {
           tableModels.items.paging.pageSize = size;
-          tableModels.loadPage(tableModels.items.paging.currentPage);
+          tableModels.loadPage(1);
         };
 
         // ---------- initialization and event listeners ---------- //

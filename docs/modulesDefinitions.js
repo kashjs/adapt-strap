@@ -1,6 +1,123 @@
 // ========== modules documentation configuration ========== //
 angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
   {
+    moduleName: 'tablelite',
+    displayName: 'Table Lite',
+    controllerName: 'tableliteCtrl',
+    docFiles: [
+      'tablelite.view.html',
+      'tablelite.ctrl.js'
+    ],
+    attributeOptions: [
+      {
+        name: 'table-name',
+        required: true,
+        default: 'NA',
+        type: 'String',
+        description: 'Name of the table. Name has to be so that it' +
+          ' can be a valid javascript variable name. Make sure that your scope does not have' +
+          'a property with the same name as the tree-name'
+      },
+      {
+        name: 'column-definition',
+        required: true,
+        default: 'NA',
+        type: 'String',
+        description: 'Path to the object (array) that has all the column definitions. ' +
+          'Look at more info for details on how to build columnDefinition object'
+      },
+      {
+        name: 'local-data-source',
+        required: true,
+        default: 'NA',
+        type: 'String',
+        description: 'Array of items to be rendered in table'
+      },
+      {
+        name: 'page-sizes',
+        required: false,
+        default: '[10, 25, 50]',
+        type: 'String',
+        description: 'Available page sizes'
+      },
+      {
+        name: 'table-classes',
+        required: false,
+        default: '"table"',
+        type: 'String',
+        description: 'these classes will be applied to the table tag. ' +
+          'Ex (<code>table-classes: "table table-bordered"</code>)'
+      },
+      {
+        name: 'pagination-classes',
+        required: false,
+        default: '"pagination"',
+        type: 'String',
+        description: 'these classes will be applied to the pagination ul tag. ' +
+          'Ex (<code>pagination-classes: "pagination pagination-sm"</code>)'
+      }
+    ]
+  },
+  {
+    moduleName: 'tableajax',
+    displayName: 'Table AJAX',
+    controllerName: 'tableajaxCtrl',
+    docFiles: [
+      'tableajax.view.html',
+      'tableajax.ctrl.js'
+    ],
+    attributeOptions: [
+      {
+        name: 'table-name',
+        required: true,
+        default: 'NA',
+        type: 'String',
+        description: 'Name of the table. Name has to be so that it' +
+          ' can be a valid javascript variable name. Make sure that your scope does not have' +
+          'a property with the same name as the tree-name'
+      },
+      {
+        name: 'column-definition',
+        required: true,
+        default: 'NA',
+        type: 'String',
+        description: 'Path to the object (array) that has all the column definitions. ' +
+          'Look at more info for details on how to build columnDefinition object'
+      },
+      {
+        name: 'table-classes',
+        required: false,
+        default: '"table"',
+        type: 'String',
+        description: 'these classes will be applied to the table tag. ' +
+          'Ex (<code>table-classes: "table table-bordered"</code>)'
+      },
+      {
+        name: 'ajax-config',
+        required: true,
+        default: 'NA',
+        type: 'String',
+        description:  'Path to the object that has ajax configuration. ' +
+          'Look at more info for details on how to build ajaxConfig object'
+      },
+      {
+        name: 'page-sizes',
+        required: false,
+        default: '[10, 25, 50]',
+        type: 'String',
+        description: 'Available page sizes'
+      },
+      {
+        name: 'pagination-classes',
+        required: false,
+        default: '"pagination"',
+        type: 'String',
+        description: 'these classes will be applied to the pagination ul tag. ' +
+          'Ex (<code>pagination-classes: "pagination pagination-sm"</code>)'
+      }
+    ]
+  },
+  {
     moduleName: 'treebrowser',
     displayName: 'Tree Browser',
     controllerName: 'treebrowserCtrl',
@@ -119,123 +236,6 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
         default: '"glyphicon glyphicon-refresh ad-spin"',
         type: 'String',
         description: 'class of te loading icon'
-      }
-    ]
-  },
-  {
-    moduleName: 'tablelite',
-    displayName: 'Table Lite',
-    controllerName: 'tableliteCtrl',
-    docFiles: [
-      'tablelite.view.html',
-      'tablelite.ctrl.js'
-    ],
-    attributeOptions: [
-      {
-        name: 'table-name',
-        required: true,
-        default: 'NA',
-        type: 'String',
-        description: 'Name of the table. Name has to be so that it' +
-          ' can be a valid javascript variable name. Make sure that your scope does not have' +
-          'a property with the same name as the tree-name'
-      },
-      {
-        name: 'column-definition',
-        required: true,
-        default: 'NA',
-        type: 'String',
-        description: 'Path to the object (array) that has all the column definitions. ' +
-          'Look at more info for details on how to build columnDefinition object'
-      },
-      {
-        name: 'local-data-source',
-        required: true,
-        default: 'NA',
-        type: 'String',
-        description: 'Array of items to be rendered in table'
-      },
-      {
-        name: 'page-sizes',
-        required: false,
-        default: '[10, 25, 50]',
-        type: 'String',
-        description: 'Available page sizes'
-      },
-      {
-        name: 'table-classes',
-        required: false,
-        default: '"table"',
-        type: 'String',
-        description: 'these classes will be applied to the table tag. ' +
-          'Ex (<code>table-classes: "table table-bordered"</code>)'
-      },
-      {
-        name: 'pagination-classes',
-        required: false,
-        default: '"pagination"',
-        type: 'String',
-        description: 'these classes will be applied to the pagination ul tag. ' +
-          'Ex (<code>pagination-classes: "pagination pagination-sm"</code>)'
-      }
-    ]
-  },
-  {
-    moduleName: 'tableajax',
-    displayName: 'Table AJAX',
-    controllerName: 'tableajaxCtrl',
-    docFiles: [
-      'tableajax.view.html',
-      'tableajax.ctrl.js'
-    ],
-    attributeOptions: [
-      {
-        name: 'table-name',
-        required: true,
-        default: 'NA',
-        type: 'String',
-        description: 'Name of the table. Name has to be so that it' +
-          ' can be a valid javascript variable name. Make sure that your scope does not have' +
-          'a property with the same name as the tree-name'
-      },
-      {
-        name: 'column-definition',
-        required: true,
-        default: 'NA',
-        type: 'String',
-        description: 'Path to the object (array) that has all the column definitions. ' +
-          'Look at more info for details on how to build columnDefinition object'
-      },
-      {
-        name: 'table-classes',
-        required: false,
-        default: '"table"',
-        type: 'String',
-        description: 'these classes will be applied to the table tag. ' +
-          'Ex (<code>table-classes: "table table-bordered"</code>)'
-      },
-      {
-        name: 'ajax-config',
-        required: true,
-        default: 'NA',
-        type: 'String',
-        description:  'Path to the object that has ajax configuration. ' +
-          'Look at more info for details on how to build ajaxConfig object'
-      },
-      {
-        name: 'page-sizes',
-        required: false,
-        default: '[10, 25, 50]',
-        type: 'String',
-        description: 'Available page sizes'
-      },
-      {
-        name: 'pagination-classes',
-        required: false,
-        default: '"pagination"',
-        type: 'String',
-        description: 'these classes will be applied to the pagination ul tag. ' +
-          'Ex (<code>pagination-classes: "pagination pagination-sm"</code>)'
       }
     ]
   }

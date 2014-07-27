@@ -1,7 +1,32 @@
 <div>
-    <p>The column definition object is an array of definition objects</p>
-    <p>The definition object should have properties shown in the example below:</p>
     <markdown>
+        # ==== Important === adapt-strap needs to know how your backend handles pagination ====:
+        ### Here is the default configuration for the pagination:
+        $adPagingProvider.defaults = {
+            request: {
+                start: 'skip', // number of items to be skipped.
+                pageSize: 'limit', // this is the page size (number of items to be requested).
+                page: 'page' // some api implementations expect page number instead of skip (ex: 1, 2, 3...)
+            },
+            response: {
+                itemsLocation: 'data', // when the response arrives, where the data items are.
+                totalItems: 'pagination.totalCount' // when the response arrives, where is the total items count.
+            }
+        }
+
+        ### You can globally configure the pagination configuration like this during the app initialization:
+        angular.module('myApp').config(['$adPagingProvider', function ($adPagingProvider) {
+            $adPagingProvider.defaults.response = {
+                totalItems: 'results.opensearch:totalResults',
+                itemsLocation: 'results.data'
+            };
+        }])
+
+        ### You can override global configuration by providing the paginationConfig object under ajaxConfig
+        ### look at ajaxConfig object below
+    </markdown>
+    <markdown>
+        ### The ajaxConfig Object is required. There are three major fields required url, method and params:
         {
             url: 'http://ws.audioscrobbler.com/2.0/', // api url
             method: 'JSONP', // calling method 'GET', 'POST' or 'JSONP'
@@ -10,7 +35,22 @@
                 artist: 'cher',
                 method: 'artist.search',
                 format: 'json'
-            } // any other params should go here. table will watch this object for changes and refresh
+            }, // any other params should go here. table will watch this object for changes and refresh
+            paginationConfig: { // this configuration will override $adPagingProvider.defaults
+                response: {
+                    totalItems: 'results.opensearch:totalResults',
+                    itemsLocation: 'results.artistmatches.artist'
+                }
+            }
+        }
+    </markdown>
+    <markdown>
+        ### The column definition object is an array of definition objects
+        ### The definition object should have properties shown in the example below:
+        {
+            columnHeaderDisplayName: 'Price', // (String) column heading
+            displayProperty: 'price', // (String) which attribute of the item object to render
+            cellFilter: 'currency' // (String) - Optional - the filter expression to apply to the displayProperty
         }
     </markdown>
 </div>

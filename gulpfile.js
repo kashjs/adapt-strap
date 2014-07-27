@@ -223,8 +223,7 @@ gulp.task('dist', function() {
 });
 
 gulp.task('dist:watch', function() {
-  runSequence('clean:dist', ['templates:dist', 'scripts:dist', 'style:dist'])
-    .on('error', util.log);
+  runSequence('clean:dist', ['templates:dist', 'scripts:dist', 'style:dist']);
 });
 
 gulp.task('default', function () {

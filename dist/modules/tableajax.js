@@ -37,15 +37,13 @@ angular.module('adaptv.adaptStrap.tableajax', []).provider('$tableajax', functio
           }
         },
         localConfig: { pagingArray: [] },
-        ajaxConfig: scope.$eval(attrs.ajaxConfig)
+        ajaxConfig: scope.$eval(attrs.ajaxConfig),
+        applyFilter: adStrapUtils.applyFilter
       };
       // ---------- Local data ---------- //
-      var tableModels = scope[attrs.tableName], mainTemplate = $templateCache.get('tablelite/tablelite.tpl.html');
+      var tableModels = scope[attrs.tableName], mainTemplate = $templateCache.get('tableajax/tableajax.tpl.html');
       // ---------- ui handlers ---------- //
-      scope.formatValue = function (value, filter) {
-        return adStrapUtils.applyFilter(value, filter);
-      };
-      scope.loadPage = function (page) {
+      tableModels.loadPage = function (page) {
         $adPaging.loadPage(page, tableModels.items.paging.pageSize, tableModels.ajaxConfig).then(function (response) {
           tableModels.items.list = response.items;
           tableModels.items.paging.totalPages = response.totalPages;
@@ -53,19 +51,19 @@ angular.module('adaptv.adaptStrap.tableajax', []).provider('$tableajax', functio
           tableModels.localConfig.pagingArray = response.pagingArray;
         });
       };
-      scope.loadNextPage = function () {
+      tableModels.loadNextPage = function () {
         if (tableModels.items.paging.currentPage + 1 <= tableModels.items.paging.totalPages) {
-          scope.loadPage(tableModels.items.paging.currentPage + 1);
+          tableModels.loadPage(tableModels.items.paging.currentPage + 1);
         }
       };
-      scope.loadPreviousPage = function () {
+      tableModels.loadPreviousPage = function () {
         if (tableModels.items.paging.currentPage - 1 > 0) {
-          scope.loadPage(tableModels.items.paging.currentPage - 1);
+          tableModels.loadPage(tableModels.items.paging.currentPage - 1);
         }
       };
       // ---------- initialization and event listeners ---------- //
       //We do the compile after injecting the name spacing into the template.
-      scope.loadPage(1);
+      tableModels.loadPage(1);
       attrs.tableClasses = attrs.tableClasses || 'table';
       mainTemplate = mainTemplate.replace(/%=tableName%/g, attrs.tableName).replace(/%=columnDefinition%/g, attrs.columnDefinition).replace(/%=tableClasses%/g, attrs.tableClasses);
       angular.element(element).html($compile(mainTemplate)(scope));

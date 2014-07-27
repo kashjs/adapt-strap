@@ -32,7 +32,8 @@ angular.module('adaptv.adaptStrap.tablelite', [])
           },
           localConfig: {
             pagingArray: []
-          }
+          },
+          applyFilter: adStrapUtils.applyFilter
         };
 
         // ---------- Local data ---------- //
@@ -40,10 +41,7 @@ angular.module('adaptv.adaptStrap.tablelite', [])
           mainTemplate = $templateCache.get('tablelite/tablelite.tpl.html');
 
         // ---------- ui handlers ---------- //
-        scope.formatValue = function (value, filter) {
-          return adStrapUtils.applyFilter(value, filter);
-        };
-        scope.loadPage = function (page) {
+        tableModels.loadPage = function (page) {
           var start = (page - 1) * tableModels.items.paging.pageSize,
             end = start + tableModels.items.paging.pageSize,
             i,
@@ -55,7 +53,8 @@ angular.module('adaptv.adaptStrap.tablelite', [])
               tableModels.items.paging.pageSize
           );
           tableModels.localConfig.pagingArray = [];
-          startPagingPage = (Math.ceil(page / 5) * 5) - 4;
+          startPagingPage = ((Math.ceil(page / tableModels.items.paging.pageSize) *
+            tableModels.items.paging.pageSize) - (tableModels.items.paging.pageSize - 1));
           for (i = 0; i < 5; i++) {
             if (startPagingPage + i > 0 && startPagingPage + i <= tableModels.items.paging.totalPages) {
               tableModels.localConfig.pagingArray.push(startPagingPage + i);
@@ -64,21 +63,21 @@ angular.module('adaptv.adaptStrap.tablelite', [])
 
         };
 
-        scope.loadNextPage = function () {
+        tableModels.loadNextPage = function () {
           if (tableModels.items.paging.currentPage + 1 <= tableModels.items.paging.totalPages) {
-            scope.loadPage(tableModels.items.paging.currentPage + 1);
+            tableModels.loadPage(tableModels.items.paging.currentPage + 1);
           }
         };
 
-        scope.loadPreviousPage = function () {
+        tableModels.loadPreviousPage = function () {
           if (tableModels.items.paging.currentPage - 1 > 0) {
-            scope.loadPage(tableModels.items.paging.currentPage - 1);
+            tableModels.loadPage(tableModels.items.paging.currentPage - 1);
           }
         };
 
         // ---------- initialization and event listeners ---------- //
         //We do the compile after injecting the name spacing into the template.
-        scope.loadPage(1);
+        tableModels.loadPage(1);
 
         attrs.tableClasses = attrs.tableClasses || 'table';
         mainTemplate = mainTemplate.replace(/%=tableName%/g, attrs.tableName).

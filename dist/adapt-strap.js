@@ -47,15 +47,13 @@ function _link(scope, element, attrs) {
           }
         },
         localConfig: { pagingArray: [] },
-        ajaxConfig: scope.$eval(attrs.ajaxConfig)
+        ajaxConfig: scope.$eval(attrs.ajaxConfig),
+        applyFilter: adStrapUtils.applyFilter
       };
       // ---------- Local data ---------- //
-      var tableModels = scope[attrs.tableName], mainTemplate = $templateCache.get('tablelite/tablelite.tpl.html');
+      var tableModels = scope[attrs.tableName], mainTemplate = $templateCache.get('tableajax/tableajax.tpl.html');
       // ---------- ui handlers ---------- //
-      scope.formatValue = function (value, filter) {
-        return adStrapUtils.applyFilter(value, filter);
-      };
-      scope.loadPage = function (page) {
+      tableModels.loadPage = function (page) {
         $adPaging.loadPage(page, tableModels.items.paging.pageSize, tableModels.ajaxConfig).then(function (response) {
           tableModels.items.list = response.items;
           tableModels.items.paging.totalPages = response.totalPages;
@@ -63,19 +61,19 @@ function _link(scope, element, attrs) {
           tableModels.localConfig.pagingArray = response.pagingArray;
         });
       };
-      scope.loadNextPage = function () {
+      tableModels.loadNextPage = function () {
         if (tableModels.items.paging.currentPage + 1 <= tableModels.items.paging.totalPages) {
-          scope.loadPage(tableModels.items.paging.currentPage + 1);
+          tableModels.loadPage(tableModels.items.paging.currentPage + 1);
         }
       };
-      scope.loadPreviousPage = function () {
+      tableModels.loadPreviousPage = function () {
         if (tableModels.items.paging.currentPage - 1 > 0) {
-          scope.loadPage(tableModels.items.paging.currentPage - 1);
+          tableModels.loadPage(tableModels.items.paging.currentPage - 1);
         }
       };
       // ---------- initialization and event listeners ---------- //
       //We do the compile after injecting the name spacing into the template.
-      scope.loadPage(1);
+      tableModels.loadPage(1);
       attrs.tableClasses = attrs.tableClasses || 'table';
       mainTemplate = mainTemplate.replace(/%=tableName%/g, attrs.tableName).replace(/%=columnDefinition%/g, attrs.columnDefinition).replace(/%=tableClasses%/g, attrs.tableClasses);
       angular.element(element).html($compile(mainTemplate)(scope));
@@ -117,40 +115,38 @@ function _link(scope, element, attrs) {
             pageSize: 5
           }
         },
-        localConfig: { pagingArray: [] }
+        localConfig: { pagingArray: [] },
+        applyFilter: adStrapUtils.applyFilter
       };
       // ---------- Local data ---------- //
       var tableModels = scope[attrs.tableName], mainTemplate = $templateCache.get('tablelite/tablelite.tpl.html');
       // ---------- ui handlers ---------- //
-      scope.formatValue = function (value, filter) {
-        return adStrapUtils.applyFilter(value, filter);
-      };
-      scope.loadPage = function (page) {
+      tableModels.loadPage = function (page) {
         var start = (page - 1) * tableModels.items.paging.pageSize, end = start + tableModels.items.paging.pageSize, i, startPagingPage;
         tableModels.items.list = scope.$eval(attrs.localDataSource).slice(start, end);
         tableModels.items.paging.currentPage = page;
         tableModels.items.paging.totalPages = Math.ceil(scope.$eval(attrs.localDataSource).length / tableModels.items.paging.pageSize);
         tableModels.localConfig.pagingArray = [];
-        startPagingPage = Math.ceil(page / 5) * 5 - 4;
+        startPagingPage = Math.ceil(page / tableModels.items.paging.pageSize) * tableModels.items.paging.pageSize - (tableModels.items.paging.pageSize - 1);
         for (i = 0; i < 5; i++) {
           if (startPagingPage + i > 0 && startPagingPage + i <= tableModels.items.paging.totalPages) {
             tableModels.localConfig.pagingArray.push(startPagingPage + i);
           }
         }
       };
-      scope.loadNextPage = function () {
+      tableModels.loadNextPage = function () {
         if (tableModels.items.paging.currentPage + 1 <= tableModels.items.paging.totalPages) {
-          scope.loadPage(tableModels.items.paging.currentPage + 1);
+          tableModels.loadPage(tableModels.items.paging.currentPage + 1);
         }
       };
-      scope.loadPreviousPage = function () {
+      tableModels.loadPreviousPage = function () {
         if (tableModels.items.paging.currentPage - 1 > 0) {
-          scope.loadPage(tableModels.items.paging.currentPage - 1);
+          tableModels.loadPage(tableModels.items.paging.currentPage - 1);
         }
       };
       // ---------- initialization and event listeners ---------- //
       //We do the compile after injecting the name spacing into the template.
-      scope.loadPage(1);
+      tableModels.loadPage(1);
       attrs.tableClasses = attrs.tableClasses || 'table';
       mainTemplate = mainTemplate.replace(/%=tableName%/g, attrs.tableName).replace(/%=columnDefinition%/g, attrs.columnDefinition).replace(/%=tableClasses%/g, attrs.tableClasses);
       angular.element(element).html($compile(mainTemplate)(scope));
@@ -261,22 +257,28 @@ angular.module('adaptv.adaptStrap.utils', []).factory('adStrapUtils', [
         page: 'page'
       },
       response: {
-        totalItems: 'results.opensearch:totalResults',
-        itemsLocation: 'results.artistmatches.artist'
+        totalItems: 'data',
+        itemsLocation: 'pagination.totalCount'
       }
     };
   this.$get = function ($q, $http, adStrapUtils) {
     return {
       loadPage: function (pageToLoad, pageSize, ajaxConfig) {
-        var start = (pageToLoad - 1) * pageSize, i, startPagingPage, success, defer = $q.defer();
-        ajaxConfig.params[defaults.request.start] = start;
-        ajaxConfig.params[defaults.request.pageSize] = pageSize;
-        ajaxConfig.params[defaults.request.page] = pageToLoad;
+        var start = (pageToLoad - 1) * pageSize, i, startPagingPage, success, defer = $q.defer(), pagingConfig = angular.copy(defaults);
+        if (ajaxConfig.paginationConfig && ajaxConfig.paginationConfig.request) {
+          angular.extend(pagingConfig.request, ajaxConfig.paginationConfig.request);
+        }
+        if (ajaxConfig.paginationConfig && ajaxConfig.paginationConfig.response) {
+          angular.extend(pagingConfig.response, ajaxConfig.paginationConfig.response);
+        }
+        ajaxConfig.params[pagingConfig.request.start] = start;
+        ajaxConfig.params[pagingConfig.request.pageSize] = pageSize;
+        ajaxConfig.params[pagingConfig.request.page] = pageToLoad;
         success = function (res) {
           var response = {
-              items: adStrapUtils.evalObjectProperty(res, defaults.response.itemsLocation),
+              items: adStrapUtils.evalObjectProperty(res, pagingConfig.response.itemsLocation),
               currentPage: pageToLoad,
-              totalPages: Math.ceil(adStrapUtils.evalObjectProperty(res, defaults.response.totalItems) / pageSize),
+              totalPages: Math.ceil(adStrapUtils.evalObjectProperty(res, pagingConfig.response.totalItems) / pageSize),
               pagingArray: []
             };
           startPagingPage = Math.ceil(pageToLoad / pageSize) * pageSize - (pageSize - 1);

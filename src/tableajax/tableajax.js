@@ -1,5 +1,5 @@
-angular.module('adaptv.adaptStrap.tablelite', [])
-  .provider('$tablelite', function () {
+angular.module('adaptv.adaptStrap.tableajax', [])
+  .provider('$tableajax', function () {
     var defaults = this.defaults = {
       expandIconClass: 'glyphicon glyphicon-plus-sign',
       collapseIconClass: 'glyphicon glyphicon-minus-sign',
@@ -13,10 +13,10 @@ angular.module('adaptv.adaptStrap.tablelite', [])
   })
 
 /**
- * Use this directive if you need to render a simple table with local data source.
+ * Use this directive if you need to render a table that loads data from ajax.
  */
-  .directive('adTableLite', ['$q', '$http', '$compile', '$filter', '$templateCache', 'adStrapUtils',
-    function ($q, $http, $compile, $filter, $templateCache, adStrapUtils) {
+  .directive('adTableAjax', ['$q', '$http', '$compile', '$filter', '$templateCache', '$adPaging', 'adStrapUtils',
+    function ($q, $http, $compile, $filter, $templateCache, $adPaging, adStrapUtils) {
       'use strict';
       function _link(scope, element, attrs) {
         // We do the name spacing so the if there are multiple adap-table-lite on the scope,
@@ -32,7 +32,8 @@ angular.module('adaptv.adaptStrap.tablelite', [])
           },
           localConfig: {
             pagingArray: []
-          }
+          },
+          ajaxConfig: scope.$eval(attrs.ajaxConfig)
         };
 
         // ---------- Local data ---------- //
@@ -43,25 +44,16 @@ angular.module('adaptv.adaptStrap.tablelite', [])
         scope.formatValue = function (value, filter) {
           return adStrapUtils.applyFilter(value, filter);
         };
-        scope.loadPage = function (page) {
-          var start = (page - 1) * tableModels.items.paging.pageSize,
-            end = start + tableModels.items.paging.pageSize,
-            i,
-            startPagingPage;
-          tableModels.items.list = scope.$eval(attrs.localDataSource).slice(start, end);
-          tableModels.items.paging.currentPage = page;
-          tableModels.items.paging.totalPages = Math.ceil(
-              scope.$eval(attrs.localDataSource).length /
-              tableModels.items.paging.pageSize
-          );
-          tableModels.localConfig.pagingArray = [];
-          startPagingPage = (Math.ceil(page / 5) * 5) - 4;
-          for (i = 0; i < 5; i++) {
-            if (startPagingPage + i > 0 && startPagingPage + i <= tableModels.items.paging.totalPages) {
-              tableModels.localConfig.pagingArray.push(startPagingPage + i);
-            }
-          }
 
+        scope.loadPage = function (page) {
+          $adPaging.loadPage(page, tableModels.items.paging.pageSize, tableModels.ajaxConfig).then(
+            function (response) {
+              tableModels.items.list = response.items;
+              tableModels.items.paging.totalPages = response.totalPages;
+              tableModels.items.paging.currentPage = response.currentPage;
+              tableModels.localConfig.pagingArray = response.pagingArray;
+            }
+          );
         };
 
         scope.loadNextPage = function () {

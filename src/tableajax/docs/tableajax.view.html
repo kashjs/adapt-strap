@@ -1,4 +1,6 @@
 <div ng-controller="tableajaxCtrl">
+
+     <!-- ========== Simple Table Implementation ========== -->
     <ad-table-ajax table-name="artistsTable"
                    column-definition="artistsColumnDef"
                    table-classes="table table-bordered"
@@ -6,4 +8,30 @@
                    pagination-classes="pagination pagination-sm"
                    ajax-config="artistsAjaxConfig">
     </ad-table-ajax>
+
+
+    <!--========== Advanced Implementation with search ========== -->
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="input-group">
+                        <input type="text" class="form-control" ng-change="searchArtist()" ng-model="artistSearchKey">
+                        <span class="input-group-addon">
+                          <i class="glyphicon glyphicon-search"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <ad-table-ajax table-name="artistsTableSearch"
+                           column-definition="artistsColumnDefSearch"
+                           table-classes="table table-bordered"
+                           page-sizes="[5, 20, 50]"
+                           pagination-classes="pagination pagination-sm"
+                           ajax-config="artistsAjaxConfigSearch">
+            </ad-table-ajax>
+        </div>
+    </div>
 </div>

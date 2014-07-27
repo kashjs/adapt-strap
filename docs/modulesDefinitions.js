@@ -64,7 +64,8 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
     controllerName: 'tableajaxCtrl',
     docFiles: [
       'tableajax.view.html',
-      'tableajax.ctrl.js'
+      'tableajax.ctrl.js',
+      'artistPicture.html'
     ],
     attributeOptions: [
       {

@@ -1,0 +1,16 @@
+<div>
+    <p>The column definition object is an array of definition objects</p>
+    <p>The definition object should have properties shown in the example below:</p>
+    <markdown>
+        {
+            url: 'http://ws.audioscrobbler.com/2.0/', // api url
+            method: 'JSONP', // calling method 'GET', 'POST' or 'JSONP'
+            params: {
+                api_key: '9b0cdcf446cc96dea3e747787ad23575',
+                artist: 'cher',
+                method: 'artist.search',
+                format: 'json'
+            } // any other params should go here. table will watch this object for changes and refresh
+        }
+    </markdown>
+</div>

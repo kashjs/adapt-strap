@@ -18,7 +18,8 @@ var gulp = require('gulp'),
         templates: '*/*.tpl.html',
         docView: '*/docs/*.view.html',
         html: ['src/**/*.html', 'docs/**/*.html'],
-        js: ['src/**/*.js', 'docs/**/*.js']
+        js: ['src/**/*.js', 'docs/**/*.js'],
+        watch: ['src/**/*.*','!src/**/docs/*.*']
     },
     docs = {
         cwd: 'docs',
@@ -219,4 +220,14 @@ gulp.task('jscs', function () {
 // ========== DEFAULT TASKS ========== //
 gulp.task('dist', function() {
     runSequence(['jshint:fail', 'htmlhint:fail', 'jscs'],'clean:dist', ['templates:dist', 'scripts:dist', 'style:dist']);
+});
+
+gulp.task('dist:watch', function() {
+  runSequence('clean:dist', ['templates:dist', 'scripts:dist', 'style:dist'])
+    .on('error', util.log);
+});
+
+gulp.task('default', function () {
+    gulp.watch(src.watch, ['dist:watch'])
+      .on('error', util.log);
 });

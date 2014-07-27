@@ -44,6 +44,7 @@ angular.module('adaptv.adaptStrap.utils', [])
             i,
             startPagingPage,
             success,
+            err,
             defer = $q.defer(),
             pagingConfig = angular.copy(defaults);
 
@@ -76,10 +77,15 @@ angular.module('adaptv.adaptStrap.utils', [])
             }
             defer.resolve(response);
           };
+
+          err = function (error) {
+            defer.reject(error);
+          };
+
           if (ajaxConfig.method === 'JSONP') {
-            $http.jsonp(ajaxConfig.url + '?callback=JSON_CALLBACK', ajaxConfig).success(success);
+            $http.jsonp(ajaxConfig.url + '?callback=JSON_CALLBACK', ajaxConfig).success(success).error(err);
           } else {
-            $http(ajaxConfig).success(success);
+            $http(ajaxConfig).success(success).error(err);
           }
           return defer.promise;
         }

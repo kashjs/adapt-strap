@@ -15,8 +15,8 @@ angular.module('adaptv.adaptStrap.tableajax', [])
 /**
  * Use this directive if you need to render a table that loads data from ajax.
  */
-  .directive('adTableAjax', ['$q', '$http', '$compile', '$filter', '$templateCache', '$adPaging', 'adStrapUtils',
-    function ($q, $http, $compile, $filter, $templateCache, $adPaging, adStrapUtils) {
+  .directive('adTableAjax', ['$parse', '$http', '$compile', '$filter', '$templateCache', '$adPaging', 'adStrapUtils',
+    function ($parse, $http, $compile, $filter, $templateCache, $adPaging, adStrapUtils) {
       'use strict';
       function _link(scope, element, attrs) {
         // We do the name spacing so the if there are multiple adap-table-lite on the scope,
@@ -27,11 +27,13 @@ angular.module('adaptv.adaptStrap.tableajax', [])
             paging: {
               currentPage: 1,
               totalPages: undefined,
-              pageSize: 5
+              pageSize: undefined,
+              pageSizes: $parse(attrs.pageSizes)() || [10, 25, 50]
             }
           },
           localConfig: {
-            pagingArray: []
+            pagingArray: [],
+            disablePaging: false
           },
           ajaxConfig: scope.$eval(attrs.ajaxConfig),
           applyFilter: adStrapUtils.applyFilter
@@ -40,17 +42,25 @@ angular.module('adaptv.adaptStrap.tableajax', [])
         // ---------- Local data ---------- //
         var tableModels = scope[attrs.tableName],
           mainTemplate = $templateCache.get('tableajax/tableajax.tpl.html');
+        tableModels.items.paging.pageSize = tableModels.items.paging.pageSizes[0];
 
         // ---------- ui handlers ---------- //
         tableModels.loadPage = function (page) {
-          $adPaging.loadPage(page, tableModels.items.paging.pageSize, tableModels.ajaxConfig).then(
-            function (response) {
-              tableModels.items.list = response.items;
-              tableModels.items.paging.totalPages = response.totalPages;
-              tableModels.items.paging.currentPage = response.currentPage;
-              tableModels.localConfig.pagingArray = response.pagingArray;
-            }
-          );
+          if (!tableModels.localConfig.disablePaging) {
+            tableModels.localConfig.disablePaging = true;
+            $adPaging.loadPage(page, tableModels.items.paging.pageSize, tableModels.ajaxConfig).then(
+              function (response) {
+                tableModels.items.list = response.items;
+                tableModels.items.paging.totalPages = response.totalPages;
+                tableModels.items.paging.currentPage = response.currentPage;
+                tableModels.localConfig.pagingArray = response.pagingArray;
+                tableModels.localConfig.disablePaging = false;
+              },
+              function () {
+                tableModels.localConfig.disablePaging = false;
+              }
+            );
+          }
         };
 
         tableModels.loadNextPage = function () {
@@ -65,14 +75,21 @@ angular.module('adaptv.adaptStrap.tableajax', [])
           }
         };
 
+        tableModels.pageSizeChanged = function (size) {
+          tableModels.items.paging.pageSize = size;
+          tableModels.loadPage(tableModels.items.paging.currentPage);
+        };
+
         // ---------- initialization and event listeners ---------- //
         //We do the compile after injecting the name spacing into the template.
         tableModels.loadPage(1);
 
         attrs.tableClasses = attrs.tableClasses || 'table';
+        attrs.paginationClasses = attrs.paginationClasses || 'pagination';
         mainTemplate = mainTemplate.replace(/%=tableName%/g, attrs.tableName).
           replace(/%=columnDefinition%/g, attrs.columnDefinition).
-          replace(/%=tableClasses%/g, attrs.tableClasses);
+          replace(/%=tableClasses%/g, attrs.tableClasses).
+          replace(/%=paginationClasses%/g, attrs.paginationClasses);
         angular.element(element).html($compile(mainTemplate)(scope));
       }
 

@@ -46,7 +46,7 @@ angular.module('adaptv.adaptStrap.utils', []).factory('adStrapUtils', [
   this.$get = function ($q, $http, adStrapUtils) {
     return {
       loadPage: function (pageToLoad, pageSize, ajaxConfig) {
-        var start = (pageToLoad - 1) * pageSize, i, startPagingPage, success, defer = $q.defer(), pagingConfig = angular.copy(defaults);
+        var start = (pageToLoad - 1) * pageSize, i, startPagingPage, success, err, defer = $q.defer(), pagingConfig = angular.copy(defaults);
         if (ajaxConfig.paginationConfig && ajaxConfig.paginationConfig.request) {
           angular.extend(pagingConfig.request, ajaxConfig.paginationConfig.request);
         }
@@ -71,10 +71,13 @@ angular.module('adaptv.adaptStrap.utils', []).factory('adStrapUtils', [
           }
           defer.resolve(response);
         };
+        err = function (error) {
+          defer.reject(error);
+        };
         if (ajaxConfig.method === 'JSONP') {
-          $http.jsonp(ajaxConfig.url + '?callback=JSON_CALLBACK', ajaxConfig).success(success);
+          $http.jsonp(ajaxConfig.url + '?callback=JSON_CALLBACK', ajaxConfig).success(success).error(err);
         } else {
-          $http(ajaxConfig).success(success);
+          $http(ajaxConfig).success(success).error(err);
         }
         return defer.promise;
       }

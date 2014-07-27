@@ -189,3 +189,9 @@
 .ad-tree-browser-container.tree-bordered .tree-sub-level:last-child {
   border-bottom: none;
 }
+.ad-table-lite-container .pagination {
+  margin-top: 0;
+}
+.ad-table-ajax-container .pagination {
+  margin-top: 0;
+}

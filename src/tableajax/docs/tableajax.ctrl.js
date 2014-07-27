@@ -15,6 +15,12 @@ angular.module('adaptv.adaptStrapDocs')
         artist: 'cher',
         method: 'artist.search',
         format: 'json'
+      },
+      paginationConfig: {
+        response: {
+          totalItems: 'results.opensearch:totalResults',
+          itemsLocation: 'results.artistmatches.artist'
+        }
       }
     };
 

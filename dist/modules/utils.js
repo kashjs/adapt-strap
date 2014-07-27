@@ -39,22 +39,28 @@ angular.module('adaptv.adaptStrap.utils', []).factory('adStrapUtils', [
         page: 'page'
       },
       response: {
-        totalItems: 'results.opensearch:totalResults',
-        itemsLocation: 'results.artistmatches.artist'
+        totalItems: 'data',
+        itemsLocation: 'pagination.totalCount'
       }
     };
   this.$get = function ($q, $http, adStrapUtils) {
     return {
       loadPage: function (pageToLoad, pageSize, ajaxConfig) {
-        var start = (pageToLoad - 1) * pageSize, i, startPagingPage, success, defer = $q.defer();
-        ajaxConfig.params[defaults.request.start] = start;
-        ajaxConfig.params[defaults.request.pageSize] = pageSize;
-        ajaxConfig.params[defaults.request.page] = pageToLoad;
+        var start = (pageToLoad - 1) * pageSize, i, startPagingPage, success, defer = $q.defer(), pagingConfig = angular.copy(defaults);
+        if (ajaxConfig.paginationConfig && ajaxConfig.paginationConfig.request) {
+          angular.extend(pagingConfig.request, ajaxConfig.paginationConfig.request);
+        }
+        if (ajaxConfig.paginationConfig && ajaxConfig.paginationConfig.response) {
+          angular.extend(pagingConfig.response, ajaxConfig.paginationConfig.response);
+        }
+        ajaxConfig.params[pagingConfig.request.start] = start;
+        ajaxConfig.params[pagingConfig.request.pageSize] = pageSize;
+        ajaxConfig.params[pagingConfig.request.page] = pageToLoad;
         success = function (res) {
           var response = {
-              items: adStrapUtils.evalObjectProperty(res, defaults.response.itemsLocation),
+              items: adStrapUtils.evalObjectProperty(res, pagingConfig.response.itemsLocation),
               currentPage: pageToLoad,
-              totalPages: Math.ceil(adStrapUtils.evalObjectProperty(res, defaults.response.totalItems) / pageSize),
+              totalPages: Math.ceil(adStrapUtils.evalObjectProperty(res, pagingConfig.response.totalItems) / pageSize),
               pagingArray: []
             };
           startPagingPage = Math.ceil(pageToLoad / pageSize) * pageSize - (pageSize - 1);

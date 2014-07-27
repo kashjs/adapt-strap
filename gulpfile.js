@@ -212,6 +212,12 @@ gulp.task('dist', function() {
     runSequence(['jshint:fail', 'htmlhint:fail', 'jscs'],'clean:dist', ['templates:dist', 'scripts:dist', 'style:dist']);
 });
 
+gulp.task('dist:release', function() {
+  src.dist = 'dist';
+  runSequence(['jshint:fail', 'htmlhint:fail', 'jscs'],'clean:dist', ['templates:dist', 'scripts:dist', 'style:dist']);
+});
+
+
 gulp.task('dist:watch', function() {
   runSequence('clean:dist', ['templates:dist', 'scripts:dist', 'style:dist']);
 });

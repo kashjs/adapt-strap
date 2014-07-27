@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v0.0.4 - 2014-07-27
+ * @version v0.0.5 - 2014-07-27
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -27,13 +27,12 @@ angular.module('adaptv.adaptStrap.tableajax', []).provider('$tableajax', functio
   };
 }).directive('adTableAjax', [
   '$parse',
-  '$http',
   '$compile',
-  '$filter',
   '$templateCache',
   '$adPaging',
+  'adDebounce',
   'adStrapUtils',
-  function ($parse, $http, $compile, $filter, $templateCache, $adPaging, adStrapUtils) {
+  function ($parse, $compile, $templateCache, $adPaging, adDebounce, adStrapUtils) {
 function _link(scope, element, attrs) {
       // We do the name spacing so the if there are multiple adap-table-lite on the scope,
       // they don't fight with each other.
@@ -62,7 +61,7 @@ function _link(scope, element, attrs) {
       var tableModels = scope[attrs.tableName], mainTemplate = $templateCache.get('tableajax/tableajax.tpl.html');
       tableModels.items.paging.pageSize = tableModels.items.paging.pageSizes[0];
       // ---------- ui handlers ---------- //
-      tableModels.loadPage = function (page) {
+      tableModels.loadPage = adDebounce(function (page) {
         if (!tableModels.localConfig.disablePaging) {
           tableModels.localConfig.disablePaging = true;
           $adPaging.loadPage(page, tableModels.items.paging.pageSize, tableModels.ajaxConfig).then(function (response) {
@@ -75,7 +74,7 @@ function _link(scope, element, attrs) {
             tableModels.localConfig.disablePaging = false;
           });
         }
-      };
+      }, 50, false);
       tableModels.loadNextPage = function () {
         if (tableModels.items.paging.currentPage + 1 <= tableModels.items.paging.totalPages) {
           tableModels.loadPage(tableModels.items.paging.currentPage + 1);
@@ -93,6 +92,10 @@ function _link(scope, element, attrs) {
       // ---------- initialization and event listeners ---------- //
       //We do the compile after injecting the name spacing into the template.
       tableModels.loadPage(1);
+      // reset on parameter change
+      scope.$watch(attrs.ajaxConfig, function () {
+        tableModels.loadPage(1);
+      }, true);
       attrs.tableClasses = attrs.tableClasses || 'table';
       attrs.paginationClasses = attrs.paginationClasses || 'pagination';
       mainTemplate = mainTemplate.replace(/%=tableName%/g, attrs.tableName).replace(/%=columnDefinition%/g, attrs.columnDefinition).replace(/%=tableClasses%/g, attrs.tableClasses).replace(/%=paginationClasses%/g, attrs.paginationClasses);
@@ -260,8 +263,12 @@ angular.module('adaptv.adaptStrap.utils', []).factory('adStrapUtils', [
     return {
       evalObjectProperty: function (obj, property) {
         var arr = property.split('.');
-        while (arr.length) {
-          obj = obj[arr.shift()];
+        if (obj) {
+          while (arr.length) {
+            if (obj) {
+              obj = obj[arr.shift()];
+            }
+          }
         }
         return obj;
       },
@@ -280,7 +287,33 @@ angular.module('adaptv.adaptStrap.utils', []).factory('adStrapUtils', [
       }
     };
   }
-]).provider('$adPaging', function () {
+]).constant('adDebounce', function (func, wait, immediate) {
+  var timeout, args, context, timestamp, result;
+  return function () {
+    context = this;
+    args = arguments;
+    timestamp = new Date();
+    var later = function () {
+      var last = new Date() - timestamp;
+      if (last < wait) {
+        timeout = setTimeout(later, wait - last);
+      } else {
+        timeout = null;
+        if (!immediate) {
+          result = func.apply(context, args);
+        }
+      }
+    };
+    var callNow = immediate && !timeout;
+    if (!timeout) {
+      timeout = setTimeout(later, wait);
+    }
+    if (callNow) {
+      result = func.apply(context, args);
+    }
+    return result;
+  };
+}).provider('$adPaging', function () {
   var defaults = this.defaults = {
       request: {
         start: 'skip',

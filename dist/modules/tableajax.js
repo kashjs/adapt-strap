@@ -78,7 +78,7 @@ angular.module('adaptv.adaptStrap.tableajax', []).provider('$tableajax', functio
       };
       tableModels.pageSizeChanged = function (size) {
         tableModels.items.paging.pageSize = size;
-        tableModels.loadPage(tableModels.items.paging.currentPage);
+        tableModels.loadPage(1);
       };
       // ---------- initialization and event listeners ---------- //
       //We do the compile after injecting the name spacing into the template.

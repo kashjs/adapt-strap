@@ -72,7 +72,7 @@ angular.module('adaptv.adaptStrap.tablelite', []).provider('$tablelite', functio
       };
       tableModels.pageSizeChanged = function (size) {
         tableModels.items.paging.pageSize = size;
-        tableModels.loadPage(tableModels.items.paging.currentPage);
+        tableModels.loadPage(1);
       };
       // ---------- initialization and event listeners ---------- //
       //We do the compile after injecting the name spacing into the template.

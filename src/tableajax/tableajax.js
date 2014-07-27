@@ -15,8 +15,9 @@ angular.module('adaptv.adaptStrap.tableajax', [])
 /**
  * Use this directive if you need to render a table that loads data from ajax.
  */
-  .directive('adTableAjax', ['$parse', '$http', '$compile', '$filter', '$templateCache', '$adPaging', 'adStrapUtils',
-    function ($parse, $http, $compile, $filter, $templateCache, $adPaging, adStrapUtils) {
+  .directive('adTableAjax',
+  ['$parse', '$compile', '$templateCache', '$adPaging', 'adDebounce', 'adStrapUtils',
+    function ($parse, $compile, $templateCache, $adPaging, adDebounce, adStrapUtils) {
       'use strict';
       function _link(scope, element, attrs) {
         // We do the name spacing so the if there are multiple adap-table-lite on the scope,
@@ -45,7 +46,7 @@ angular.module('adaptv.adaptStrap.tableajax', [])
         tableModels.items.paging.pageSize = tableModels.items.paging.pageSizes[0];
 
         // ---------- ui handlers ---------- //
-        tableModels.loadPage = function (page) {
+        tableModels.loadPage = adDebounce(function (page) {
           if (!tableModels.localConfig.disablePaging) {
             tableModels.localConfig.disablePaging = true;
             $adPaging.loadPage(page, tableModels.items.paging.pageSize, tableModels.ajaxConfig).then(
@@ -61,7 +62,7 @@ angular.module('adaptv.adaptStrap.tableajax', [])
               }
             );
           }
-        };
+        }, 50, false);
 
         tableModels.loadNextPage = function () {
           if (tableModels.items.paging.currentPage + 1 <= tableModels.items.paging.totalPages) {
@@ -83,6 +84,11 @@ angular.module('adaptv.adaptStrap.tableajax', [])
         // ---------- initialization and event listeners ---------- //
         //We do the compile after injecting the name spacing into the template.
         tableModels.loadPage(1);
+
+        // reset on parameter change
+        scope.$watch(attrs.ajaxConfig, function () {
+          tableModels.loadPage(1);
+        }, true);
 
         attrs.tableClasses = attrs.tableClasses || 'table';
         attrs.paginationClasses = attrs.paginationClasses || 'pagination';

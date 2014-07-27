@@ -3,9 +3,10 @@
         ### The column definition object is an array of definition objects
         ### The definition object should have properties shown in the example below:
         {
-            columnHeaderDisplayName: 'Price', // (String) column heading
-            displayProperty: 'price', // (String) which attribute of the item object to render
-            cellFilter: 'currency' // (String) - Optional - the filter expression to apply to the displayProperty
+            columnHeaderDisplayName: 'String', // Optional - column heading
+            displayProperty: 'String', // - Not required if templateUrl is specified - which attribute of the item object to render
+            cellFilter: 'String' // - Optional - the filter expression to apply to the displayProperty
+            templateUrl: 'String' // - Not required if displayProperty is specified - look at artistPicture.html
         }
     </markdown>
 </div>

@@ -2,11 +2,10 @@
     <!-- ===== Usage ===== -->
     <ad-tree-browser class="ad-border-default"
          tree-name="treeDemo"
-         row-ng-class="{added:true}"
+         row-ng-class="{added:item._selected}"
          tree-root="root"
          child-node="children"
          children-padding="15"
-         toggle-callback="segmentToggle"
          node-template-url="src/treebrowser/docs/treeNode.html">
     </ad-tree-browser>
     <hr>
@@ -14,11 +13,10 @@
     <p>With Border & header</p>
     <ad-tree-browser class="ad-border-default"
          tree-name="treeDemoBordered"
-         row-ng-class="{added:true}"
+         row-ng-class="{added:item._selected}"
          tree-root="root"
          child-node="children"
          children-padding="15"
-         toggle-callback="segmentToggle"
          bordered="true"
          collapse-icon-class="glyphicon glyphicon-minus"
          expand-icon-class="glyphicon glyphicon-plus"

@@ -15,13 +15,13 @@ angular.module('adaptv.adaptStrap.tablelite', []).provider('$tablelite', functio
     return { settings: defaults };
   };
 }).directive('adTableLite', [
-  '$q',
+  '$parse',
   '$http',
   '$compile',
   '$filter',
   '$templateCache',
   'adStrapUtils',
-  function ($q, $http, $compile, $filter, $templateCache, adStrapUtils) {
+  function ($parse, $http, $compile, $filter, $templateCache, adStrapUtils) {
     'use strict';
     function _link(scope, element, attrs) {
       // We do the name spacing so the if there are multiple adap-table-lite on the scope,
@@ -32,7 +32,12 @@ angular.module('adaptv.adaptStrap.tablelite', []).provider('$tablelite', functio
           paging: {
             currentPage: 1,
             totalPages: undefined,
-            pageSize: 5
+            pageSize: undefined,
+            pageSizes: $parse(attrs.pageSizes)() || [
+              10,
+              25,
+              50
+            ]
           }
         },
         localConfig: { pagingArray: [] },
@@ -40,6 +45,7 @@ angular.module('adaptv.adaptStrap.tablelite', []).provider('$tablelite', functio
       };
       // ---------- Local data ---------- //
       var tableModels = scope[attrs.tableName], mainTemplate = $templateCache.get('tablelite/tablelite.tpl.html');
+      tableModels.items.paging.pageSize = tableModels.items.paging.pageSizes[0];
       // ---------- ui handlers ---------- //
       tableModels.loadPage = function (page) {
         var start = (page - 1) * tableModels.items.paging.pageSize, end = start + tableModels.items.paging.pageSize, i, startPagingPage;
@@ -64,11 +70,16 @@ angular.module('adaptv.adaptStrap.tablelite', []).provider('$tablelite', functio
           tableModels.loadPage(tableModels.items.paging.currentPage - 1);
         }
       };
+      tableModels.pageSizeChanged = function (size) {
+        tableModels.items.paging.pageSize = size;
+        tableModels.loadPage(tableModels.items.paging.currentPage);
+      };
       // ---------- initialization and event listeners ---------- //
       //We do the compile after injecting the name spacing into the template.
       tableModels.loadPage(1);
       attrs.tableClasses = attrs.tableClasses || 'table';
-      mainTemplate = mainTemplate.replace(/%=tableName%/g, attrs.tableName).replace(/%=columnDefinition%/g, attrs.columnDefinition).replace(/%=tableClasses%/g, attrs.tableClasses);
+      attrs.paginationClasses = attrs.paginationClasses || 'pagination';
+      mainTemplate = mainTemplate.replace(/%=tableName%/g, attrs.tableName).replace(/%=columnDefinition%/g, attrs.columnDefinition).replace(/%=paginationClasses%/g, attrs.paginationClasses).replace(/%=tableClasses%/g, attrs.tableClasses);
       angular.element(element).html($compile(mainTemplate)(scope));
     }
     return {

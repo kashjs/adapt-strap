@@ -153,8 +153,14 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
         required: true,
         default: 'NA',
         type: 'String',
-        description: 'Required if api-params object is not supplied. Table can operate in ' +
-          'either local mode or in api mode.'
+        description: 'Array of items to be rendered in table'
+      },
+      {
+        name: 'page-sizes',
+        required: false,
+        default: '[10, 25, 50]',
+        type: 'String',
+        description: 'Available page sizes'
       },
       {
         name: 'table-classes',
@@ -163,6 +169,14 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
         type: 'String',
         description: 'these classes will be applied to the table tag. ' +
           'Ex (<code>table-classes: "table table-bordered"</code>)'
+      },
+      {
+        name: 'pagination-classes',
+        required: false,
+        default: '"pagination"',
+        type: 'String',
+        description: 'these classes will be applied to the pagination ul tag. ' +
+          'Ex (<code>pagination-classes: "pagination pagination-sm"</code>)'
       }
     ]
   },
@@ -207,6 +221,21 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
         type: 'String',
         description:  'Path to the object that has ajax configuration. ' +
           'Look at more info for details on how to build ajaxConfig object'
+      },
+      {
+        name: 'page-sizes',
+        required: false,
+        default: '[10, 25, 50]',
+        type: 'String',
+        description: 'Available page sizes'
+      },
+      {
+        name: 'pagination-classes',
+        required: false,
+        default: '"pagination"',
+        type: 'String',
+        description: 'these classes will be applied to the pagination ul tag. ' +
+          'Ex (<code>pagination-classes: "pagination pagination-sm"</code>)'
       }
     ]
   }

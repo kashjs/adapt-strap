@@ -11,7 +11,7 @@ var gulp = require('gulp'),
     runSequence = require('run-sequence'),
     src = {
         cwd: 'src',
-        dist: 'dist',
+        dist: 'dist_temp',
         scripts: '*/*.js',
         less: ['modules.less'],
         index: 'module.js',
@@ -20,16 +20,6 @@ var gulp = require('gulp'),
         html: ['src/**/*.html', 'docs/**/*.html'],
         js: ['src/**/*.js', 'docs/**/*.js'],
         watch: ['src/**/*.*','!src/**/docs/*.*']
-    },
-    docs = {
-        cwd: 'docs',
-        tmp: '.tmp',
-        dist: 'pages',
-        index: 'index.html',
-        views: 'views/**/*.html',
-        scripts: 'scripts/**/*.js',
-        images: 'images/{,*/}*.{jpg,png,svg}',
-        styles: 'styles/*.less'
     },
     banner,
     createModuleName;

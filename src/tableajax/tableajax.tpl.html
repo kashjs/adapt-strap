@@ -2,7 +2,10 @@
     <table class="%=tableClasses%">
         <tr>
             <th data-ng-repeat="definition in %=columnDefinition%">
-                {{ definition.columnHeaderDisplayName }}
+                <div ng-if="definition.columnHeaderTemplate"
+                     ng-bind-html="definition.columnHeaderTemplate"></div>
+                <div ng-if="definition.columnHeaderDisplayName"
+                     ng-bind="definition.columnHeaderDisplayName"></div>
             </th>
         </tr>
         <tr data-ng-repeat="item in %=tableName%.items.list">
@@ -17,7 +20,7 @@
         </tr>
     </table>
     <div class="row">
-        <div class="col-md-6 col-sm-6">
+        <div class="col-md-8 col-sm-8">
             <div class="%=paginationBtnGroupClasses% pull-left">
                 <button type="button"
                         class="btn btn-default"
@@ -53,7 +56,7 @@
                 </button>
             </div>
         </div>
-        <div class="col-md-6 col-sm-6">
+        <div class="col-md-4 col-sm-4">
             <div class="%=paginationBtnGroupClasses% pull-right">
                 <button type="button"
                         class="btn btn-default"

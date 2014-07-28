@@ -71,11 +71,11 @@ angular.module('adaptv.adaptStrapDocs')
         displayProperty: 'name'
       },
       {
-        columnHeaderDisplayName: 'Model Year',
+        columnHeaderTemplate: '<span><i class="glyphicon glyphicon-calendar"></i> Model Year</span>',
         displayProperty: 'modelYear'
       },
       {
-        columnHeaderDisplayName: 'Price',
+        columnHeaderTemplate: '<span><i class="glyphicon glyphicon-usd"></i> Price</span>',
         displayProperty: 'price',
         cellFilter: 'currency'
       }

@@ -218,11 +218,15 @@ gulp.task('dist:release', function() {
 });
 
 
-gulp.task('dist:watch', function() {
+gulp.task('dist:unsafe', function() {
   runSequence('clean:dist', ['templates:dist', 'scripts:dist', 'style:dist']);
 });
 
+gulp.task('watch', function () {
+  gulp.watch(src.watch, ['dist:unsafe'])
+    .on('error', util.log);
+});
+
 gulp.task('default', function () {
-    gulp.watch(src.watch, ['dist:watch'])
-      .on('error', util.log);
+  runSequence('dist:unsafe', 'watch');
 });

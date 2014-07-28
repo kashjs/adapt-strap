@@ -47,8 +47,14 @@ angular.module('adaptv.adaptStrap.tablelite', [])
           var start = (page - 1) * tableModels.items.paging.pageSize,
             end = start + tableModels.items.paging.pageSize,
             i,
-            startPagingPage;
-          tableModels.items.list = scope.$eval(attrs.localDataSource).slice(start, end);
+            startPagingPage,
+            localItems = $filter('orderBy')(
+              scope.$eval(attrs.localDataSource),
+              tableModels.localConfig.predicate,
+              tableModels.localConfig.reverse
+            );
+
+          tableModels.items.list = localItems.slice(start, end);
           tableModels.items.paging.currentPage = page;
           tableModels.items.paging.totalPages = Math.ceil(
               scope.$eval(attrs.localDataSource).length /
@@ -86,6 +92,14 @@ angular.module('adaptv.adaptStrap.tablelite', [])
         tableModels.pageSizeChanged = function (size) {
           tableModels.items.paging.pageSize = size;
           tableModels.loadPage(1);
+        };
+
+        tableModels.sortByColumn = function (column) {
+          if (column.sortable) {
+            tableModels.localConfig.predicate = column.displayProperty;
+            tableModels.localConfig.reverse = !tableModels.localConfig.reverse;
+            tableModels.loadPage(tableModels.items.paging.currentPage);
+          }
         };
 
         // ---------- initialization and event listeners ---------- //

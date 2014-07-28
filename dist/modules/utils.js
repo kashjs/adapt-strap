@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v0.0.5 - 2014-07-27
+ * @version v0.0.6 - 2014-07-28
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -75,8 +75,8 @@ angular.module('adaptv.adaptStrap.utils', []).factory('adStrapUtils', [
     };
   this.$get = function ($q, $http, adStrapUtils) {
     return {
-      loadPage: function (pageToLoad, pageSize, ajaxConfig) {
-        var start = (pageToLoad - 1) * pageSize, i, startPagingPage, success, err, defer = $q.defer(), pagingConfig = angular.copy(defaults);
+      loadPage: function (pageToLoad, pageSize, ajaxConfigOriginal, identityToken) {
+        var start = (pageToLoad - 1) * pageSize, i, startPagingPage, success, err, defer = $q.defer(), pagingConfig = angular.copy(defaults), ajaxConfig = angular.copy(ajaxConfigOriginal);
         if (ajaxConfig.paginationConfig && ajaxConfig.paginationConfig.request) {
           angular.extend(pagingConfig.request, ajaxConfig.paginationConfig.request);
         }
@@ -91,7 +91,8 @@ angular.module('adaptv.adaptStrap.utils', []).factory('adStrapUtils', [
               items: adStrapUtils.evalObjectProperty(res, pagingConfig.response.itemsLocation),
               currentPage: pageToLoad,
               totalPages: Math.ceil(adStrapUtils.evalObjectProperty(res, pagingConfig.response.totalItems) / pageSize),
-              pagingArray: []
+              pagingArray: [],
+              identityToken: identityToken
             };
           startPagingPage = Math.ceil(pageToLoad / pageSize) * pageSize - (pageSize - 1);
           for (i = 0; i < 5; i++) {

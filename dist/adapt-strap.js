@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v0.0.5 - 2014-07-27
+ * @version v0.0.6 - 2014-07-28
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -58,36 +58,50 @@ function _link(scope, element, attrs) {
         applyFilter: adStrapUtils.applyFilter
       };
       // ---------- Local data ---------- //
-      var tableModels = scope[attrs.tableName], mainTemplate = $templateCache.get('tableajax/tableajax.tpl.html');
+      var tableModels = scope[attrs.tableName], mainTemplate = $templateCache.get('tableajax/tableajax.tpl.html'), lastRequestToken;
       tableModels.items.paging.pageSize = tableModels.items.paging.pageSizes[0];
       // ---------- ui handlers ---------- //
       tableModels.loadPage = adDebounce(function (page) {
-        if (!tableModels.localConfig.disablePaging) {
-          tableModels.localConfig.disablePaging = true;
-          $adPaging.loadPage(page, tableModels.items.paging.pageSize, tableModels.ajaxConfig).then(function (response) {
+        lastRequestToken = Math.random();
+        tableModels.localConfig.disablePaging = true;
+        $adPaging.loadPage(page, tableModels.items.paging.pageSize, tableModels.ajaxConfig, lastRequestToken).then(function (response) {
+          if (response.identityToken === lastRequestToken) {
             tableModels.items.list = response.items;
             tableModels.items.paging.totalPages = response.totalPages;
             tableModels.items.paging.currentPage = response.currentPage;
             tableModels.localConfig.pagingArray = response.pagingArray;
             tableModels.localConfig.disablePaging = false;
-          }, function () {
-            tableModels.localConfig.disablePaging = false;
-          });
-        }
+          }
+        }, function () {
+          tableModels.localConfig.disablePaging = false;
+        });
       }, 50, false);
       tableModels.loadNextPage = function () {
-        if (tableModels.items.paging.currentPage + 1 <= tableModels.items.paging.totalPages) {
-          tableModels.loadPage(tableModels.items.paging.currentPage + 1);
+        if (!tableModels.localConfig.disablePaging) {
+          if (tableModels.items.paging.currentPage + 1 <= tableModels.items.paging.totalPages) {
+            tableModels.loadPage(tableModels.items.paging.currentPage + 1);
+          }
         }
       };
       tableModels.loadPreviousPage = function () {
-        if (tableModels.items.paging.currentPage - 1 > 0) {
-          tableModels.loadPage(tableModels.items.paging.currentPage - 1);
+        if (!tableModels.localConfig.disablePaging) {
+          if (tableModels.items.paging.currentPage - 1 > 0) {
+            tableModels.loadPage(tableModels.items.paging.currentPage - 1);
+          }
+        }
+      };
+      tableModels.loadLastPage = function () {
+        if (!tableModels.localConfig.disablePaging) {
+          if (tableModels.items.paging.currentPage !== tableModels.items.paging.totalPages) {
+            tableModels.loadPage(tableModels.items.paging.totalPages);
+          }
         }
       };
       tableModels.pageSizeChanged = function (size) {
-        tableModels.items.paging.pageSize = size;
-        tableModels.loadPage(1);
+        if (Number(size) !== tableModels.items.paging.pageSize) {
+          tableModels.items.paging.pageSize = Number(size);
+          tableModels.loadPage(1);
+        }
       };
       // ---------- initialization and event listeners ---------- //
       //We do the compile after injecting the name spacing into the template.
@@ -97,8 +111,8 @@ function _link(scope, element, attrs) {
         tableModels.loadPage(1);
       }, true);
       attrs.tableClasses = attrs.tableClasses || 'table';
-      attrs.paginationClasses = attrs.paginationClasses || 'pagination';
-      mainTemplate = mainTemplate.replace(/%=tableName%/g, attrs.tableName).replace(/%=columnDefinition%/g, attrs.columnDefinition).replace(/%=tableClasses%/g, attrs.tableClasses).replace(/%=paginationClasses%/g, attrs.paginationClasses);
+      attrs.paginationBtnGroupClasses = attrs.paginationBtnGroupClasses || 'btn-group btn-group-sm';
+      mainTemplate = mainTemplate.replace(/%=tableName%/g, attrs.tableName).replace(/%=columnDefinition%/g, attrs.columnDefinition).replace(/%=tableClasses%/g, attrs.tableClasses).replace(/%=paginationBtnGroupClasses%/g, attrs.paginationBtnGroupClasses);
       angular.element(element).html($compile(mainTemplate)(scope));
     }
     return {
@@ -173,6 +187,11 @@ function _link(scope, element, attrs) {
           tableModels.loadPage(tableModels.items.paging.currentPage - 1);
         }
       };
+      tableModels.loadLastPage = function () {
+        if (!tableModels.localConfig.disablePaging) {
+          tableModels.loadPage(tableModels.items.paging.totalPages);
+        }
+      };
       tableModels.pageSizeChanged = function (size) {
         tableModels.items.paging.pageSize = size;
         tableModels.loadPage(1);
@@ -181,8 +200,8 @@ function _link(scope, element, attrs) {
       //We do the compile after injecting the name spacing into the template.
       tableModels.loadPage(1);
       attrs.tableClasses = attrs.tableClasses || 'table';
-      attrs.paginationClasses = attrs.paginationClasses || 'pagination';
-      mainTemplate = mainTemplate.replace(/%=tableName%/g, attrs.tableName).replace(/%=columnDefinition%/g, attrs.columnDefinition).replace(/%=paginationClasses%/g, attrs.paginationClasses).replace(/%=tableClasses%/g, attrs.tableClasses);
+      attrs.paginationBtnGroupClasses = attrs.paginationBtnGroupClasses || 'btn-group btn-group-sm';
+      mainTemplate = mainTemplate.replace(/%=tableName%/g, attrs.tableName).replace(/%=columnDefinition%/g, attrs.columnDefinition).replace(/%=paginationBtnGroupClasses%/g, attrs.paginationBtnGroupClasses).replace(/%=tableClasses%/g, attrs.tableClasses);
       angular.element(element).html($compile(mainTemplate)(scope));
     }
     return {
@@ -327,8 +346,8 @@ angular.module('adaptv.adaptStrap.utils', []).factory('adStrapUtils', [
     };
   this.$get = function ($q, $http, adStrapUtils) {
     return {
-      loadPage: function (pageToLoad, pageSize, ajaxConfig) {
-        var start = (pageToLoad - 1) * pageSize, i, startPagingPage, success, err, defer = $q.defer(), pagingConfig = angular.copy(defaults);
+      loadPage: function (pageToLoad, pageSize, ajaxConfigOriginal, identityToken) {
+        var start = (pageToLoad - 1) * pageSize, i, startPagingPage, success, err, defer = $q.defer(), pagingConfig = angular.copy(defaults), ajaxConfig = angular.copy(ajaxConfigOriginal);
         if (ajaxConfig.paginationConfig && ajaxConfig.paginationConfig.request) {
           angular.extend(pagingConfig.request, ajaxConfig.paginationConfig.request);
         }
@@ -343,7 +362,8 @@ angular.module('adaptv.adaptStrap.utils', []).factory('adStrapUtils', [
               items: adStrapUtils.evalObjectProperty(res, pagingConfig.response.itemsLocation),
               currentPage: pageToLoad,
               totalPages: Math.ceil(adStrapUtils.evalObjectProperty(res, pagingConfig.response.totalItems) / pageSize),
-              pagingArray: []
+              pagingArray: [],
+              identityToken: identityToken
             };
           startPagingPage = Math.ceil(pageToLoad / pageSize) * pageSize - (pageSize - 1);
           for (i = 0; i < 5; i++) {

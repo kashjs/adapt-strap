@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v0.0.5 - 2014-07-27
+ * @version v0.0.6 - 2014-07-28
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -70,6 +70,11 @@ angular.module('adaptv.adaptStrap.tablelite', []).provider('$tablelite', functio
           tableModels.loadPage(tableModels.items.paging.currentPage - 1);
         }
       };
+      tableModels.loadLastPage = function () {
+        if (!tableModels.localConfig.disablePaging) {
+          tableModels.loadPage(tableModels.items.paging.totalPages);
+        }
+      };
       tableModels.pageSizeChanged = function (size) {
         tableModels.items.paging.pageSize = size;
         tableModels.loadPage(1);
@@ -78,8 +83,8 @@ angular.module('adaptv.adaptStrap.tablelite', []).provider('$tablelite', functio
       //We do the compile after injecting the name spacing into the template.
       tableModels.loadPage(1);
       attrs.tableClasses = attrs.tableClasses || 'table';
-      attrs.paginationClasses = attrs.paginationClasses || 'pagination';
-      mainTemplate = mainTemplate.replace(/%=tableName%/g, attrs.tableName).replace(/%=columnDefinition%/g, attrs.columnDefinition).replace(/%=paginationClasses%/g, attrs.paginationClasses).replace(/%=tableClasses%/g, attrs.tableClasses);
+      attrs.paginationBtnGroupClasses = attrs.paginationBtnGroupClasses || 'btn-group btn-group-sm';
+      mainTemplate = mainTemplate.replace(/%=tableName%/g, attrs.tableName).replace(/%=columnDefinition%/g, attrs.columnDefinition).replace(/%=paginationBtnGroupClasses%/g, attrs.paginationBtnGroupClasses).replace(/%=tableClasses%/g, attrs.tableClasses);
       angular.element(element).html($compile(mainTemplate)(scope));
     }
     return {

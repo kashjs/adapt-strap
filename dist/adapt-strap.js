@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v0.0.6 - 2014-07-28
+ * @version v0.0.8 - 2014-07-28
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -165,8 +165,8 @@ function _link(scope, element, attrs) {
       tableModels.items.paging.pageSize = tableModels.items.paging.pageSizes[0];
       // ---------- ui handlers ---------- //
       tableModels.loadPage = function (page) {
-        var start = (page - 1) * tableModels.items.paging.pageSize, end = start + tableModels.items.paging.pageSize, i, startPagingPage;
-        tableModels.items.list = scope.$eval(attrs.localDataSource).slice(start, end);
+        var start = (page - 1) * tableModels.items.paging.pageSize, end = start + tableModels.items.paging.pageSize, i, startPagingPage, localItems = $filter('orderBy')(scope.$eval(attrs.localDataSource), tableModels.localConfig.predicate, tableModels.localConfig.reverse);
+        tableModels.items.list = localItems.slice(start, end);
         tableModels.items.paging.currentPage = page;
         tableModels.items.paging.totalPages = Math.ceil(scope.$eval(attrs.localDataSource).length / tableModels.items.paging.pageSize);
         tableModels.localConfig.pagingArray = [];
@@ -195,6 +195,13 @@ function _link(scope, element, attrs) {
       tableModels.pageSizeChanged = function (size) {
         tableModels.items.paging.pageSize = size;
         tableModels.loadPage(1);
+      };
+      tableModels.sortByColumn = function (column) {
+        if (column.sortable) {
+          tableModels.localConfig.predicate = column.displayProperty;
+          tableModels.localConfig.reverse = !tableModels.localConfig.reverse;
+          tableModels.loadPage(tableModels.items.paging.currentPage);
+        }
       };
       // ---------- initialization and event listeners ---------- //
       //We do the compile after injecting the name spacing into the template.

@@ -9,6 +9,7 @@
 * Add adaptv.adaptStrap module as a dependency to you main app module:
 ```
 angular.module('myApp', [
+    'ngSanitize', // adapt-strap requires ngSanitize
     'adaptv.adaptStrap'
 ]);
 ```

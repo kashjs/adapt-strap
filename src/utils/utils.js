@@ -72,14 +72,15 @@ angular.module('adaptv.adaptStrap.utils', [])
 
     this.$get = function ($q, $http, adStrapUtils) {
       return {
-        loadPage: function (pageToLoad, pageSize, ajaxConfig) {
+        loadPage: function (pageToLoad, pageSize, ajaxConfigOriginal, identityToken) {
           var start = (pageToLoad - 1) * pageSize,
             i,
             startPagingPage,
             success,
             err,
             defer = $q.defer(),
-            pagingConfig = angular.copy(defaults);
+            pagingConfig = angular.copy(defaults),
+            ajaxConfig = angular.copy(ajaxConfigOriginal);
 
           if (ajaxConfig.paginationConfig && ajaxConfig.paginationConfig.request) {
             angular.extend(pagingConfig.request, ajaxConfig.paginationConfig.request);
@@ -100,7 +101,8 @@ angular.module('adaptv.adaptStrap.utils', [])
                   adStrapUtils.evalObjectProperty(res, pagingConfig.response.totalItems) /
                   pageSize
               ),
-              pagingArray: []
+              pagingArray: [],
+              identityToken: identityToken
             };
             startPagingPage = (Math.ceil(pageToLoad / pageSize) * pageSize) - (pageSize - 1);
             for (i = 0; i < 5; i++) {

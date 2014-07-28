@@ -15,9 +15,10 @@
                     <markdown src="docs/layout/scripts.html"></markdown>
                 </li>
                 <li>
-                    Add adaptv.adaptStrap module as a dependency to you main app module:
+                    Add adaptv.adaptStrap and ngSenitize modules as a dependency to you main app module:
 <markdown>
     angular.module('myApp', [
+        'ngSanitize', // adapt-strap requires ngSanitize
         'adaptv.adaptStrap'
     ]);
 </markdown>

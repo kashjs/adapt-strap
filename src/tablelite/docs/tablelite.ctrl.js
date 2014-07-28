@@ -68,16 +68,19 @@ angular.module('adaptv.adaptStrapDocs')
     $scope.carsTableColumnDefinition = [
       {
         columnHeaderDisplayName: 'Model',
-        displayProperty: 'name'
+        displayProperty: 'name',
+        sortable: true
       },
       {
         columnHeaderTemplate: '<span><i class="glyphicon glyphicon-calendar"></i> Model Year</span>',
-        displayProperty: 'modelYear'
+        displayProperty: 'modelYear',
+        sortable: true
       },
       {
         columnHeaderTemplate: '<span><i class="glyphicon glyphicon-usd"></i> Price</span>',
         displayProperty: 'price',
-        cellFilter: 'currency'
+        cellFilter: 'currency',
+        sortable: true
       }
     ];
   }]);

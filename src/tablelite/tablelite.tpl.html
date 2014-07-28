@@ -1,7 +1,16 @@
 <div class="ad-table-lite-container">
     <table class="%=tableClasses%">
         <tr>
-            <th data-ng-repeat="definition in %=columnDefinition%">
+            <th data-ng-repeat="definition in %=columnDefinition%"
+                ng-click="%=tableName%.sortByColumn(definition)"
+                ng-class="{'ad-cursor-pointer': definition.sortable}">
+                <div class="pull-right" ng-if="%=tableName%.localConfig.predicate == definition.displayProperty">
+                    <i class="glyphicon glyphicon-chevron-up" ng-hide="%=tableName%.localConfig.reverse"></i>
+                    <i class="glyphicon glyphicon-chevron-down" ng-show="%=tableName%.localConfig.reverse"></i>
+                </div>
+                <div class="pull-right" ng-if="%=tableName%.localConfig.predicate != definition.displayProperty && definition.sortable">
+                    <i class="glyphicon glyphicon-resize-vertical"></i>
+                </div>
                 <div ng-if="definition.columnHeaderTemplate"
                       ng-bind-html="definition.columnHeaderTemplate"></div>
                 <div ng-if="definition.columnHeaderDisplayName"

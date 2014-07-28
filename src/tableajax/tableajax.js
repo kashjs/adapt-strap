@@ -42,43 +42,64 @@ angular.module('adaptv.adaptStrap.tableajax', [])
 
         // ---------- Local data ---------- //
         var tableModels = scope[attrs.tableName],
-          mainTemplate = $templateCache.get('tableajax/tableajax.tpl.html');
+          mainTemplate = $templateCache.get('tableajax/tableajax.tpl.html'),
+          lastRequestToken;
         tableModels.items.paging.pageSize = tableModels.items.paging.pageSizes[0];
 
         // ---------- ui handlers ---------- //
         tableModels.loadPage = adDebounce(function (page) {
-          if (!tableModels.localConfig.disablePaging) {
-            tableModels.localConfig.disablePaging = true;
-            $adPaging.loadPage(page, tableModels.items.paging.pageSize, tableModels.ajaxConfig).then(
-              function (response) {
+          lastRequestToken = Math.random();
+          tableModels.localConfig.disablePaging = true;
+          $adPaging.loadPage(
+            page,
+            tableModels.items.paging.pageSize,
+            tableModels.ajaxConfig,
+            lastRequestToken
+          ).then(
+            function (response) {
+              if (response.identityToken === lastRequestToken) {
                 tableModels.items.list = response.items;
                 tableModels.items.paging.totalPages = response.totalPages;
                 tableModels.items.paging.currentPage = response.currentPage;
                 tableModels.localConfig.pagingArray = response.pagingArray;
                 tableModels.localConfig.disablePaging = false;
-              },
-              function () {
-                tableModels.localConfig.disablePaging = false;
               }
-            );
-          }
+            },
+            function () {
+              tableModels.localConfig.disablePaging = false;
+            }
+          );
         }, 50, false);
 
         tableModels.loadNextPage = function () {
-          if (tableModels.items.paging.currentPage + 1 <= tableModels.items.paging.totalPages) {
-            tableModels.loadPage(tableModels.items.paging.currentPage + 1);
+          if (!tableModels.localConfig.disablePaging) {
+            if (tableModels.items.paging.currentPage + 1 <= tableModels.items.paging.totalPages) {
+              tableModels.loadPage(tableModels.items.paging.currentPage + 1);
+            }
           }
         };
 
         tableModels.loadPreviousPage = function () {
-          if (tableModels.items.paging.currentPage - 1 > 0) {
-            tableModels.loadPage(tableModels.items.paging.currentPage - 1);
+          if (!tableModels.localConfig.disablePaging) {
+            if (tableModels.items.paging.currentPage - 1 > 0) {
+              tableModels.loadPage(tableModels.items.paging.currentPage - 1);
+            }
+          }
+        };
+
+        tableModels.loadLastPage = function () {
+          if (!tableModels.localConfig.disablePaging) {
+            if (tableModels.items.paging.currentPage !== tableModels.items.paging.totalPages) {
+              tableModels.loadPage(tableModels.items.paging.totalPages);
+            }
           }
         };
 
         tableModels.pageSizeChanged = function (size) {
-          tableModels.items.paging.pageSize = size;
-          tableModels.loadPage(1);
+          if (Number(size) !== tableModels.items.paging.pageSize) {
+            tableModels.items.paging.pageSize = Number(size);
+            tableModels.loadPage(1);
+          }
         };
 
         // ---------- initialization and event listeners ---------- //
@@ -91,11 +112,11 @@ angular.module('adaptv.adaptStrap.tableajax', [])
         }, true);
 
         attrs.tableClasses = attrs.tableClasses || 'table';
-        attrs.paginationClasses = attrs.paginationClasses || 'pagination';
+        attrs.paginationBtnGroupClasses = attrs.paginationBtnGroupClasses || 'btn-group btn-group-sm';
         mainTemplate = mainTemplate.replace(/%=tableName%/g, attrs.tableName).
           replace(/%=columnDefinition%/g, attrs.columnDefinition).
           replace(/%=tableClasses%/g, attrs.tableClasses).
-          replace(/%=paginationClasses%/g, attrs.paginationClasses);
+          replace(/%=paginationBtnGroupClasses%/g, attrs.paginationBtnGroupClasses);
         angular.element(element).html($compile(mainTemplate)(scope));
       }
 

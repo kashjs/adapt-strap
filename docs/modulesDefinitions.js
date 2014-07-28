@@ -49,12 +49,12 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
           'Ex (<code>table-classes: "table table-bordered"</code>)'
       },
       {
-        name: 'pagination-classes',
+        name: 'pagination-btn-group-classes',
         required: false,
         default: '"pagination"',
         type: 'String',
-        description: 'these classes will be applied to the pagination ul tag. ' +
-          'Ex (<code>pagination-classes: "pagination pagination-sm"</code>)'
+        description: 'these classes will be applied to the pagination btn-group tag. ' +
+          'Ex (<code>pagination-btn-group-classes="btn-group btn-group-xs"</code>)'
       }
     ]
   },
@@ -109,12 +109,12 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
         description: 'Available page sizes'
       },
       {
-        name: 'pagination-classes',
+        name: 'pagination-btn-group-classes',
         required: false,
         default: '"pagination"',
         type: 'String',
-        description: 'these classes will be applied to the pagination ul tag. ' +
-          'Ex (<code>pagination-classes: "pagination pagination-sm"</code>)'
+        description: 'these classes will be applied to the pagination btn-group tag. ' +
+          'Ex (<code>pagination-btn-group-classes="btn-group btn-group-xs"</code>)'
       }
     ]
   },

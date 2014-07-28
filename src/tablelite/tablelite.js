@@ -77,6 +77,12 @@ angular.module('adaptv.adaptStrap.tablelite', [])
           }
         };
 
+        tableModels.loadLastPage = function () {
+          if (!tableModels.localConfig.disablePaging) {
+            tableModels.loadPage(tableModels.items.paging.totalPages);
+          }
+        };
+
         tableModels.pageSizeChanged = function (size) {
           tableModels.items.paging.pageSize = size;
           tableModels.loadPage(1);
@@ -87,10 +93,10 @@ angular.module('adaptv.adaptStrap.tablelite', [])
         tableModels.loadPage(1);
 
         attrs.tableClasses = attrs.tableClasses || 'table';
-        attrs.paginationClasses = attrs.paginationClasses || 'pagination';
+        attrs.paginationBtnGroupClasses = attrs.paginationBtnGroupClasses || 'btn-group btn-group-sm';
         mainTemplate = mainTemplate.replace(/%=tableName%/g, attrs.tableName).
           replace(/%=columnDefinition%/g, attrs.columnDefinition).
-          replace(/%=paginationClasses%/g, attrs.paginationClasses).
+          replace(/%=paginationBtnGroupClasses%/g, attrs.paginationBtnGroupClasses).
           replace(/%=tableClasses%/g, attrs.tableClasses);
         angular.element(element).html($compile(mainTemplate)(scope));
       }

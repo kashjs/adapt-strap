@@ -1,14 +1,17 @@
 <div ng-controller="tableajaxCtrl">
 
      <!-- ========== Simple Table Implementation ========== -->
-    <ad-table-ajax table-name="artistsTable"
-                   column-definition="artistsColumnDef"
-                   table-classes="table table-bordered"
-                   page-sizes="[5, 20, 50]"
-                   pagination-classes="pagination pagination-sm"
-                   ajax-config="artistsAjaxConfig">
-    </ad-table-ajax>
-
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <ad-table-ajax table-name="artistsTable"
+                           column-definition="artistsColumnDef"
+                           table-classes="table table-bordered"
+                           page-sizes="[5, 20, 50]"
+                           pagination-btn-group-classes="btn-group btn-group-xs"
+                           ajax-config="artistsAjaxConfig">
+            </ad-table-ajax>
+        </div>
+    </div>
 
     <!--========== Advanced Implementation with search ========== -->
     <div class="panel panel-default">
@@ -29,7 +32,7 @@
                            column-definition="artistsColumnDefSearch"
                            table-classes="table table-bordered"
                            page-sizes="[5, 20, 50]"
-                           pagination-classes="pagination pagination-sm"
+                           pagination-btn-group-classes="btn-group btn-group-sm"
                            ajax-config="artistsAjaxConfigSearch">
             </ad-table-ajax>
         </div>

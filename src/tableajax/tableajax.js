@@ -1,4 +1,4 @@
-angular.module('adaptv.adaptStrap.tableajax', [])
+angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils'])
   .provider('$tableajax', function () {
     var defaults = this.defaults = {
       expandIconClass: 'glyphicon glyphicon-plus-sign',

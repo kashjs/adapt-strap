@@ -1,4 +1,4 @@
-angular.module('adaptv.adaptStrap.tablelite', [])
+angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
   .provider('$tablelite', function () {
     var defaults = this.defaults = {
       expandIconClass: 'glyphicon glyphicon-plus-sign',

@@ -65,8 +65,8 @@ angular.module('adaptv.adaptStrap.utils', [])
         page: 'page'
       },
       response: {
-        totalItems: 'data',
-        itemsLocation: 'pagination.totalCount'
+        itemsLocation: 'data',
+        totalItems: 'pagination.totalCount'
       }
     };
 

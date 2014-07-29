@@ -16,8 +16,8 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils'])
  * Use this directive if you need to render a table that loads data from ajax.
  */
   .directive('adTableAjax',
-  ['$parse', '$compile', '$templateCache', '$adPaging', 'adDebounce', 'adStrapUtils',
-    function ($parse, $compile, $templateCache, $adPaging, adDebounce, adStrapUtils) {
+  ['$parse', '$compile', '$templateCache', 'adLoadPage', 'adDebounce', 'adStrapUtils',
+    function ($parse, $compile, $templateCache, adLoadPage, adDebounce, adStrapUtils) {
       'use strict';
       function _link(scope, element, attrs) {
         // We do the name spacing so the if there are multiple adap-table-lite on the scope,
@@ -50,7 +50,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils'])
         tableModels.loadPage = adDebounce(function (page) {
           lastRequestToken = Math.random();
           tableModels.localConfig.disablePaging = true;
-          $adPaging.loadPage(
+          adLoadPage(
             page,
             tableModels.items.paging.pageSize,
             tableModels.ajaxConfig,

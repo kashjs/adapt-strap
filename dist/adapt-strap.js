@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v0.1.0 - 2014-07-29
+ * @version v0.1.1 - 2014-07-29
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -123,7 +123,7 @@ function _link(scope, element, attrs) {
 ]);
 
 // Source: tablelite.js
-angular.module('adaptv.adaptStrap.tablelite', []).provider('$tablelite', function () {
+angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils']).provider('$tablelite', function () {
   var defaults = this.defaults = {
       expandIconClass: 'glyphicon glyphicon-plus-sign',
       collapseIconClass: 'glyphicon glyphicon-minus-sign',

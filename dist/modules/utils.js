@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v0.1.4 - 2014-07-29
+ * @version v0.1.5 - 2014-07-29
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -35,33 +35,34 @@ angular.module('adaptv.adaptStrap.utils', []).factory('adStrapUtils', [
       }
     };
   }
-]).constant('adDebounce', function (func, wait, immediate) {
-  var timeout, args, context, timestamp, result;
-  return function () {
-    context = this;
-    args = arguments;
-    timestamp = new Date();
-    var later = function () {
-      var last = new Date() - timestamp;
-      if (last < wait) {
-        timeout = setTimeout(later, wait - last);
-      } else {
-        timeout = null;
-        if (!immediate) {
-          result = func.apply(context, args);
+]).factory('adDebounce', [
+  '$timeout',
+  '$q',
+  function ($timeout, $q) {
+    'use strict';
+    var deb = function (func, delay, immediate, ctx) {
+      var timer = null, deferred = $q.defer(), wait = delay || 300;
+      return function () {
+        var context = ctx || this, args = arguments, callNow = immediate && !timer, later = function () {
+            if (!immediate) {
+              deferred.resolve(func.apply(context, args));
+              deferred = $q.defer();
+            }
+          };
+        if (timer) {
+          $timeout.cancel(timer);
         }
-      }
+        timer = $timeout(later, wait);
+        if (callNow) {
+          deferred.resolve(func.apply(context, args));
+          deferred = $q.defer();
+        }
+        return deferred.promise;
+      };
     };
-    var callNow = immediate && !timeout;
-    if (!timeout) {
-      timeout = setTimeout(later, wait);
-    }
-    if (callNow) {
-      result = func.apply(context, args);
-    }
-    return result;
-  };
-}).provider('$adPaging', function () {
+    return deb;
+  }
+]).provider('$adPaging', function () {
   var defaults = this.defaults = {
       request: {
         start: 'skip',

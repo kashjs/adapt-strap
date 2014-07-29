@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v0.1.4 - 2014-07-29
+ * @version v0.1.5 - 2014-07-29
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -21,7 +21,8 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils']).provi
   '$filter',
   '$templateCache',
   'adStrapUtils',
-  function ($parse, $http, $compile, $filter, $templateCache, adStrapUtils) {
+  'adDebounce',
+  function ($parse, $http, $compile, $filter, $templateCache, adStrapUtils, adDebounce) {
     'use strict';
     function _link(scope, element, attrs) {
       // We do the name spacing so the if there are multiple adap-table-lite on the scope,
@@ -47,7 +48,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils']).provi
       var tableModels = scope[attrs.tableName], mainTemplate = $templateCache.get('tablelite/tablelite.tpl.html');
       tableModels.items.paging.pageSize = tableModels.items.paging.pageSizes[0];
       // ---------- ui handlers ---------- //
-      tableModels.loadPage = function (page) {
+      tableModels.loadPage = adDebounce(function (page) {
         var start = (page - 1) * tableModels.items.paging.pageSize, end = start + tableModels.items.paging.pageSize, i, startPagingPage, localItems = $filter('orderBy')(scope.$eval(attrs.localDataSource), tableModels.localConfig.predicate, tableModels.localConfig.reverse);
         tableModels.items.list = localItems.slice(start, end);
         tableModels.items.paging.currentPage = page;
@@ -59,7 +60,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils']).provi
             tableModels.localConfig.pagingArray.push(startPagingPage + i);
           }
         }
-      };
+      });
       tableModels.loadNextPage = function () {
         if (tableModels.items.paging.currentPage + 1 <= tableModels.items.paging.totalPages) {
           tableModels.loadPage(tableModels.items.paging.currentPage + 1);
@@ -93,6 +94,9 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils']).provi
       attrs.paginationBtnGroupClasses = attrs.paginationBtnGroupClasses || 'btn-group btn-group-sm';
       mainTemplate = mainTemplate.replace(/%=tableName%/g, attrs.tableName).replace(/%=columnDefinition%/g, attrs.columnDefinition).replace(/%=paginationBtnGroupClasses%/g, attrs.paginationBtnGroupClasses).replace(/%=tableClasses%/g, attrs.tableClasses);
       angular.element(element).html($compile(mainTemplate)(scope));
+      scope.$watch(attrs.localDataSource, function () {
+        tableModels.loadPage(1);
+      }, true);
     }
     return {
       restrict: 'E',

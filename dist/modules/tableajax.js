@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v0.1.4 - 2014-07-29
+ * @version v0.1.5 - 2014-07-29
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -65,7 +65,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils']).provi
         }, function () {
           tableModels.localConfig.disablePaging = false;
         });
-      }, 50, false);
+      });
       tableModels.loadNextPage = function () {
         if (!tableModels.localConfig.disablePaging) {
           if (tableModels.items.paging.currentPage + 1 <= tableModels.items.paging.totalPages) {

@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v0.1.4 - 2014-07-29
+ * @version v0.1.5 - 2014-07-29
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -75,7 +75,7 @@ function _link(scope, element, attrs) {
         }, function () {
           tableModels.localConfig.disablePaging = false;
         });
-      }, 50, false);
+      });
       tableModels.loadNextPage = function () {
         if (!tableModels.localConfig.disablePaging) {
           if (tableModels.items.paging.currentPage + 1 <= tableModels.items.paging.totalPages) {
@@ -139,7 +139,8 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils']).provi
   '$filter',
   '$templateCache',
   'adStrapUtils',
-  function ($parse, $http, $compile, $filter, $templateCache, adStrapUtils) {
+  'adDebounce',
+  function ($parse, $http, $compile, $filter, $templateCache, adStrapUtils, adDebounce) {
 function _link(scope, element, attrs) {
       // We do the name spacing so the if there are multiple adap-table-lite on the scope,
       // they don't fight with each other.
@@ -164,7 +165,7 @@ function _link(scope, element, attrs) {
       var tableModels = scope[attrs.tableName], mainTemplate = $templateCache.get('tablelite/tablelite.tpl.html');
       tableModels.items.paging.pageSize = tableModels.items.paging.pageSizes[0];
       // ---------- ui handlers ---------- //
-      tableModels.loadPage = function (page) {
+      tableModels.loadPage = adDebounce(function (page) {
         var start = (page - 1) * tableModels.items.paging.pageSize, end = start + tableModels.items.paging.pageSize, i, startPagingPage, localItems = $filter('orderBy')(scope.$eval(attrs.localDataSource), tableModels.localConfig.predicate, tableModels.localConfig.reverse);
         tableModels.items.list = localItems.slice(start, end);
         tableModels.items.paging.currentPage = page;
@@ -176,7 +177,7 @@ function _link(scope, element, attrs) {
             tableModels.localConfig.pagingArray.push(startPagingPage + i);
           }
         }
-      };
+      });
       tableModels.loadNextPage = function () {
         if (tableModels.items.paging.currentPage + 1 <= tableModels.items.paging.totalPages) {
           tableModels.loadPage(tableModels.items.paging.currentPage + 1);
@@ -210,6 +211,9 @@ function _link(scope, element, attrs) {
       attrs.paginationBtnGroupClasses = attrs.paginationBtnGroupClasses || 'btn-group btn-group-sm';
       mainTemplate = mainTemplate.replace(/%=tableName%/g, attrs.tableName).replace(/%=columnDefinition%/g, attrs.columnDefinition).replace(/%=paginationBtnGroupClasses%/g, attrs.paginationBtnGroupClasses).replace(/%=tableClasses%/g, attrs.tableClasses);
       angular.element(element).html($compile(mainTemplate)(scope));
+      scope.$watch(attrs.localDataSource, function () {
+        tableModels.loadPage(1);
+      }, true);
     }
     return {
       restrict: 'E',
@@ -313,33 +317,33 @@ angular.module('adaptv.adaptStrap.utils', []).factory('adStrapUtils', [
       }
     };
   }
-]).constant('adDebounce', function (func, wait, immediate) {
-  var timeout, args, context, timestamp, result;
-  return function () {
-    context = this;
-    args = arguments;
-    timestamp = new Date();
-    var later = function () {
-      var last = new Date() - timestamp;
-      if (last < wait) {
-        timeout = setTimeout(later, wait - last);
-      } else {
-        timeout = null;
-        if (!immediate) {
-          result = func.apply(context, args);
+]).factory('adDebounce', [
+  '$timeout',
+  '$q',
+  function ($timeout, $q) {
+var deb = function (func, delay, immediate, ctx) {
+      var timer = null, deferred = $q.defer(), wait = delay || 300;
+      return function () {
+        var context = ctx || this, args = arguments, callNow = immediate && !timer, later = function () {
+            if (!immediate) {
+              deferred.resolve(func.apply(context, args));
+              deferred = $q.defer();
+            }
+          };
+        if (timer) {
+          $timeout.cancel(timer);
         }
-      }
+        timer = $timeout(later, wait);
+        if (callNow) {
+          deferred.resolve(func.apply(context, args));
+          deferred = $q.defer();
+        }
+        return deferred.promise;
+      };
     };
-    var callNow = immediate && !timeout;
-    if (!timeout) {
-      timeout = setTimeout(later, wait);
-    }
-    if (callNow) {
-      result = func.apply(context, args);
-    }
-    return result;
-  };
-}).provider('$adPaging', function () {
+    return deb;
+  }
+]).provider('$adPaging', function () {
   var defaults = this.defaults = {
       request: {
         start: 'skip',

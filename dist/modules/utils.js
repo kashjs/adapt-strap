@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v0.1.3 - 2014-07-29
+ * @version v0.1.4 - 2014-07-29
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -73,7 +73,9 @@ angular.module('adaptv.adaptStrap.utils', []).factory('adStrapUtils', [
         totalItems: 'pagination.totalCount'
       }
     };
-  return { settings: defaults };
+  this.$get = function () {
+    return { settings: defaults };
+  };
 }).factory('adLoadPage', [
   '$adPaging',
   '$q',

@@ -69,8 +69,10 @@ angular.module('adaptv.adaptStrap.utils', [])
         totalItems: 'pagination.totalCount'
       }
     };
-    return {
-      settings: defaults
+    this.$get = function () {
+      return {
+        settings: defaults
+      };
     };
   })
   .factory('adLoadPage', ['$adPaging', '$q', '$http', 'adStrapUtils', function ($adPaging, $q, $http, adStrapUtils) {

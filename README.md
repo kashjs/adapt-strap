@@ -23,12 +23,32 @@ git remote add upstream https://github.com/Adaptv/adapt-strap.git
 ```
 
 ###Developers Contribute:
-* Make your changes under master, test your code and commit
 * Sync with upstream:
 ```
 git fetch upstream
 git checkout master
 git merge upstream/master
 ```
+
+* install local packages
+```
+npm install
+bower install
+```
+
+* run local environment. It will watch for changes and re-build.
+```
+gulp
+```
+* your local dev is running at `http://localhost:9003/##treebrowser`
+* you can force local build by `gulp dist`
+
+* Make your changes under master.
+
+* run validator test before commit and fix html, and js errors.
+```
+gulp test
+```
+
 * push your changes 
 * go to your github account and under forked repo, submit the pull request

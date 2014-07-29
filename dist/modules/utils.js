@@ -69,8 +69,8 @@ angular.module('adaptv.adaptStrap.utils', []).factory('adStrapUtils', [
         page: 'page'
       },
       response: {
-        totalItems: 'data',
-        itemsLocation: 'pagination.totalCount'
+        itemsLocation: 'data',
+        totalItems: 'pagination.totalCount'
       }
     };
   this.$get = function ($q, $http, adStrapUtils) {

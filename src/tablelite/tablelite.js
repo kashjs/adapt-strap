@@ -15,8 +15,8 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
 /**
  * Use this directive if you need to render a simple table with local data source.
  */
-  .directive('adTableLite', ['$parse', '$http', '$compile', '$filter', '$templateCache', 'adStrapUtils',
-    function ($parse, $http, $compile, $filter, $templateCache, adStrapUtils) {
+  .directive('adTableLite', ['$parse', '$http', '$compile', '$filter', '$templateCache', 'adStrapUtils', 'adDebounce',
+    function ($parse, $http, $compile, $filter, $templateCache, adStrapUtils, adDebounce) {
       'use strict';
       function _link(scope, element, attrs) {
         // We do the name spacing so the if there are multiple adap-table-lite on the scope,
@@ -43,7 +43,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
         tableModels.items.paging.pageSize = tableModels.items.paging.pageSizes[0];
 
         // ---------- ui handlers ---------- //
-        tableModels.loadPage = function (page) {
+        tableModels.loadPage = adDebounce(function (page) {
           var start = (page - 1) * tableModels.items.paging.pageSize,
             end = start + tableModels.items.paging.pageSize,
             i,
@@ -68,8 +68,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
               tableModels.localConfig.pagingArray.push(startPagingPage + i);
             }
           }
-
-        };
+        });
 
         tableModels.loadNextPage = function () {
           if (tableModels.items.paging.currentPage + 1 <= tableModels.items.paging.totalPages) {
@@ -113,6 +112,10 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           replace(/%=paginationBtnGroupClasses%/g, attrs.paginationBtnGroupClasses).
           replace(/%=tableClasses%/g, attrs.tableClasses);
         angular.element(element).html($compile(mainTemplate)(scope));
+
+        scope.$watch(attrs.localDataSource, function () {
+          tableModels.loadPage(1);
+        }, true);
       }
 
       return {

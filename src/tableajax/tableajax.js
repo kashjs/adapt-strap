@@ -69,7 +69,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils'])
               tableModels.localConfig.disablePaging = false;
             }
           );
-        }, 50, false);
+        });
 
         tableModels.loadNextPage = function () {
           if (!tableModels.localConfig.disablePaging) {

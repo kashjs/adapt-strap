@@ -41,7 +41,8 @@ banner = util.template('/**\n' +
 // ========== CLEAN ========== //
 gulp.task('clean:dist', function() {
   return gulp.src([src.dist + '/*'], {read: false})
-    .pipe(clean());
+    .pipe(clean())
+    .on('error', util.log);
 });
 
 // ========== SCRIPTS ========== //
@@ -62,7 +63,9 @@ gulp.task('scripts:dist', function(foo) {
       .pipe(uglify())
       .pipe(concat.header(banner))
       .pipe(sourcemaps.write('./'))
-      .pipe(gulp.dest(src.dist)),
+      .pipe(gulp.dest(src.dist)).pipe(gulp.dest(path.join(src.dist, 'modules'))).on('error', function(err) {
+        util.log(chalk.red(nutil.format('Plugin error: %s', err.message)));
+      }),
 
     // Build individual modules
     gulp.src(src.scripts, {cwd: src.cwd})
@@ -75,7 +78,9 @@ gulp.task('scripts:dist', function(foo) {
       .pipe(uglify())
       .pipe(concat.header(banner))
       .pipe(sourcemaps.write('./'))
-      .pipe(gulp.dest(path.join(src.dist, 'modules')))
+      .pipe(gulp.dest(path.join(src.dist, 'modules'))).on('error', function(err) {
+        util.log(chalk.red(nutil.format('Plugin error: %s', err.message)));
+      })
 
   );
 
@@ -107,7 +112,9 @@ gulp.task('templates:dist', function() {
       .pipe(rename(function(path) { path.extname = '.min.js'; }))
       .pipe(uglify())
       .pipe(concat.header(banner))
-      .pipe(gulp.dest(src.dist)),
+      .pipe(gulp.dest(src.dist)).on('error', function(err) {
+        util.log(chalk.red(nutil.format('Plugin error: %s', err.message)));
+      }),
 
     // Build individual modules
     gulp.src(src.templates, {cwd: src.cwd})
@@ -121,6 +128,9 @@ gulp.task('templates:dist', function() {
       .pipe(uglify())
       .pipe(concat.header(banner))
       .pipe(gulp.dest(path.join(src.dist, 'modules')))
+      .on('error', function(err) {
+        util.log(chalk.red(nutil.format('Plugin error: %s', err.message)));
+      })
 
   );
 

@@ -18,10 +18,10 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils']).provi
   '$parse',
   '$compile',
   '$templateCache',
-  '$adPaging',
+  'adLoadPage',
   'adDebounce',
   'adStrapUtils',
-  function ($parse, $compile, $templateCache, $adPaging, adDebounce, adStrapUtils) {
+  function ($parse, $compile, $templateCache, adLoadPage, adDebounce, adStrapUtils) {
     'use strict';
     function _link(scope, element, attrs) {
       // We do the name spacing so the if there are multiple adap-table-lite on the scope,
@@ -54,7 +54,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils']).provi
       tableModels.loadPage = adDebounce(function (page) {
         lastRequestToken = Math.random();
         tableModels.localConfig.disablePaging = true;
-        $adPaging.loadPage(page, tableModels.items.paging.pageSize, tableModels.ajaxConfig, lastRequestToken).then(function (response) {
+        adLoadPage(page, tableModels.items.paging.pageSize, tableModels.ajaxConfig, lastRequestToken).then(function (response) {
           if (response.identityToken === lastRequestToken) {
             tableModels.items.list = response.items;
             tableModels.items.paging.totalPages = response.totalPages;

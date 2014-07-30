@@ -1,20 +1,23 @@
-<table class="table table-striped table-bordered component-options">
-    <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Required</th>
-        <th>Globally Configurable</th>
-        <th>Default</th>
-        <th>Description</th>
-    </tr>
-    <tr ng-repeat="option in module.attributeOptions">
-        <td>{{ option.name}}</td>
-        <td>{{ option.type}}</td>
-        <td>{{ option.required ? 'Required' : 'Optional' }}</td>
-        <td>{{ option.globalConfig ? 'Yes' : 'No' }}</td>
-        <td>{{ option.default }}</td>
-        <td>
-            <p ng-bind-html="option.description"></p>
-        </td>
-    </tr>
-</table>
+<div ng-repeat="directive in module.directives">
+    <h4 class="text-muted">{{ directive.name }}</h4>
+    <table class="table table-striped table-bordered component-options">
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Required</th>
+            <th>Globally Configurable</th>
+            <th>Default</th>
+            <th>Description</th>
+        </tr>
+        <tr ng-repeat="option in directive.options">
+            <td>{{ option.name}}</td>
+            <td>{{ option.type}}</td>
+            <td>{{ option.required ? 'Required' : 'Optional' }}</td>
+            <td>{{ option.globalConfig ? 'Yes' : 'No' }}</td>
+            <td>{{ option.default }}</td>
+            <td>
+                <p ng-bind-html="option.description"></p>
+            </td>
+        </tr>
+    </table>
+</div>

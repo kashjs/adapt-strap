@@ -222,6 +222,9 @@
 .ad-tree-browser-container.tree-bordered .tree-sub-level:last-child {
   border-bottom: none;
 }
+.ad-table-ajax-container .ad-table-ajax-table-container {
+  position: relative;
+}
 .ad-loading-overlay-container {
   position: absolute;
   top: 0;

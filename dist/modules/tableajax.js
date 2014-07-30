@@ -5,7 +5,10 @@
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
  */
-angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils']).directive('adTableAjax', [
+angular.module('adaptv.adaptStrap.tableajax', [
+  'adaptv.adaptStrap.utils',
+  'adaptv.adaptStrap.loadingindicator'
+]).directive('adTableAjax', [
   '$parse',
   '$compile',
   '$templateCache',
@@ -33,7 +36,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils']).direc
         },
         localConfig: {
           pagingArray: [],
-          disablePaging: false
+          loadingData: false
         },
         ajaxConfig: scope.$eval(attrs.ajaxConfig),
         applyFilter: adStrapUtils.applyFilter
@@ -44,35 +47,35 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils']).direc
       // ---------- ui handlers ---------- //
       tableModels.loadPage = adDebounce(function (page) {
         lastRequestToken = Math.random();
-        tableModels.localConfig.disablePaging = true;
+        tableModels.localConfig.loadingData = true;
         adLoadPage(page, tableModels.items.paging.pageSize, tableModels.ajaxConfig, lastRequestToken).then(function (response) {
           if (response.identityToken === lastRequestToken) {
             tableModels.items.list = response.items;
             tableModels.items.paging.totalPages = response.totalPages;
             tableModels.items.paging.currentPage = response.currentPage;
             tableModels.localConfig.pagingArray = response.pagingArray;
-            tableModels.localConfig.disablePaging = false;
+            tableModels.localConfig.loadingData = false;
           }
         }, function () {
-          tableModels.localConfig.disablePaging = false;
+          tableModels.localConfig.loadingData = false;
         });
       });
       tableModels.loadNextPage = function () {
-        if (!tableModels.localConfig.disablePaging) {
+        if (!tableModels.localConfig.loadingData) {
           if (tableModels.items.paging.currentPage + 1 <= tableModels.items.paging.totalPages) {
             tableModels.loadPage(tableModels.items.paging.currentPage + 1);
           }
         }
       };
       tableModels.loadPreviousPage = function () {
-        if (!tableModels.localConfig.disablePaging) {
+        if (!tableModels.localConfig.loadingData) {
           if (tableModels.items.paging.currentPage - 1 > 0) {
             tableModels.loadPage(tableModels.items.paging.currentPage - 1);
           }
         }
       };
       tableModels.loadLastPage = function () {
-        if (!tableModels.localConfig.disablePaging) {
+        if (!tableModels.localConfig.loadingData) {
           if (tableModels.items.paging.currentPage !== tableModels.items.paging.totalPages) {
             tableModels.loadPage(tableModels.items.paging.totalPages);
           }

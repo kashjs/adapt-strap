@@ -1,17 +1,4 @@
 angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils'])
-  .provider('$tableajax', function () {
-    var defaults = this.defaults = {
-      expandIconClass: 'glyphicon glyphicon-plus-sign',
-      collapseIconClass: 'glyphicon glyphicon-minus-sign',
-      loadingIconClass: 'glyphicon glyphicon-refresh ad-spin'
-    };
-    this.$get = function () {
-      return {
-        settings: defaults
-      };
-    };
-  })
-
 /**
  * Use this directive if you need to render a table that loads data from ajax.
  */

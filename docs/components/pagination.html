@@ -1,20 +1,20 @@
 # ==== Important === adapt-strap needs to know how your backend handles pagination ====:
 ### Here is the default configuration for the pagination:
-$adPagingProvider.defaults = {
+$adConfigProvider.paging = {
     request: {
-        start: 'skip', // number of items to be skipped.
-        pageSize: 'limit', // this is the page size (number of items to be requested).
-        page: 'page' // some api implementations expect page number instead of skip (ex: 1, 2, 3...)
+        start: 'skip',
+        pageSize: 'limit',
+        page: 'page'
     },
     response: {
-        itemsLocation: 'data', // when the response arrives, where the data items are.
-        totalItems: 'pagination.totalCount' // when the response arrives, where is the total items count.
+        itemsLocation: 'data',
+        totalItems: 'pagination.totalCount'
     }
-}
+};
 
 ### You can globally configure the pagination configuration like this during the app initialization:
-angular.module('myApp').config(['$adPagingProvider', function ($adPagingProvider) {
-    $adPagingProvider.defaults.response = {
+angular.module('myApp').config(['$adConfigProvider', function ($adConfigProvider) {
+    $adConfigProvider.paging.response = {
         totalItems: 'results.opensearch:totalResults',
         itemsLocation: 'results.data'
     };

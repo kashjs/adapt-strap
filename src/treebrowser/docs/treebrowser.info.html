@@ -5,9 +5,10 @@
         So you can call your controller methods from within your node template.
 
         ### Globally configurable options can also be configured at app initialization:
-        angular.module('myApp').config(['$treebrowserProvider', function ($treebrowserProvider) {
-            $treebrowserProvider.defaults.expandIconClass = 'glyphicon glyphicon-plus';
-            $treebrowserProvider.defaults.collapseIconClass = 'glyphicon glyphicon-minus';
+        angular.module('myApp').config(['$adConfigProvider', function ($adConfigProvider) {
+            $adConfigProvider.iconClasses.expand = 'glyphicon glyphicon-plus';
+            $adConfigProvider.iconClasses.collapse = 'glyphicon glyphicon-minus';
+            $adConfigProvider.iconClasses.loadingSpinner = 'glyphicon glyphicon-refresh ad-spin';
         }]);
     </markdown>
 </div>

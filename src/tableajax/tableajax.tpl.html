@@ -1,24 +1,27 @@
 <div class="ad-table-ajax-container">
-    <table class="%=tableClasses%">
-        <tr>
-            <th data-ng-repeat="definition in %=columnDefinition%">
-                <div ng-if="definition.columnHeaderTemplate"
-                     ng-bind-html="definition.columnHeaderTemplate"></div>
-                <div ng-if="definition.columnHeaderDisplayName"
-                     ng-bind="definition.columnHeaderDisplayName"></div>
-            </th>
-        </tr>
-        <tr data-ng-repeat="item in %=tableName%.items.list">
-            <td data-ng-repeat="definition in %=columnDefinition%">
-                <div ng-if="definition.templateUrl">
-                    <ng-include src="definition.templateUrl"></ng-include>
-                </div>
-                <div ng-if="!definition.templateUrl">
-                    {{ %=tableName%.applyFilter(item[definition.displayProperty], definition.cellFilter) }}
-                </div>
-            </td>
-        </tr>
-    </table>
+    <div class="ad-table-ajax-table-container">
+        <table class="%=tableClasses%">
+            <tr>
+                <th data-ng-repeat="definition in %=columnDefinition%">
+                    <div ng-if="definition.columnHeaderTemplate"
+                         ng-bind-html="definition.columnHeaderTemplate"></div>
+                    <div ng-if="definition.columnHeaderDisplayName"
+                         ng-bind="definition.columnHeaderDisplayName"></div>
+                </th>
+            </tr>
+            <tr data-ng-repeat="item in %=tableName%.items.list">
+                <td data-ng-repeat="definition in %=columnDefinition%">
+                    <div ng-if="definition.templateUrl">
+                        <ng-include src="definition.templateUrl"></ng-include>
+                    </div>
+                    <div ng-if="!definition.templateUrl">
+                        {{ %=tableName%.applyFilter(item[definition.displayProperty], definition.cellFilter) }}
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <ad-loading-overlay loading="%=tableName%.localConfig.loadingData"></ad-loading-overlay>
+    </div>
     <div class="row">
         <div class="col-md-8 col-sm-8">
             <div class="%=paginationBtnGroupClasses% pull-left">

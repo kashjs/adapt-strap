@@ -1,4 +1,4 @@
-angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils'])
+angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adaptv.adaptStrap.loadingindicator'])
 /**
  * Use this directive if you need to render a table that loads data from ajax.
  */
@@ -21,7 +21,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils'])
           },
           localConfig: {
             pagingArray: [],
-            disablePaging: false
+            loadingData: false
           },
           ajaxConfig: scope.$eval(attrs.ajaxConfig),
           applyFilter: adStrapUtils.applyFilter
@@ -36,7 +36,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils'])
         // ---------- ui handlers ---------- //
         tableModels.loadPage = adDebounce(function (page) {
           lastRequestToken = Math.random();
-          tableModels.localConfig.disablePaging = true;
+          tableModels.localConfig.loadingData = true;
           adLoadPage(
             page,
             tableModels.items.paging.pageSize,
@@ -49,17 +49,17 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils'])
                 tableModels.items.paging.totalPages = response.totalPages;
                 tableModels.items.paging.currentPage = response.currentPage;
                 tableModels.localConfig.pagingArray = response.pagingArray;
-                tableModels.localConfig.disablePaging = false;
+                tableModels.localConfig.loadingData = false;
               }
             },
             function () {
-              tableModels.localConfig.disablePaging = false;
+              tableModels.localConfig.loadingData = false;
             }
           );
         });
 
         tableModels.loadNextPage = function () {
-          if (!tableModels.localConfig.disablePaging) {
+          if (!tableModels.localConfig.loadingData) {
             if (tableModels.items.paging.currentPage + 1 <= tableModels.items.paging.totalPages) {
               tableModels.loadPage(tableModels.items.paging.currentPage + 1);
             }
@@ -67,7 +67,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils'])
         };
 
         tableModels.loadPreviousPage = function () {
-          if (!tableModels.localConfig.disablePaging) {
+          if (!tableModels.localConfig.loadingData) {
             if (tableModels.items.paging.currentPage - 1 > 0) {
               tableModels.loadPage(tableModels.items.paging.currentPage - 1);
             }
@@ -75,7 +75,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils'])
         };
 
         tableModels.loadLastPage = function () {
-          if (!tableModels.localConfig.disablePaging) {
+          if (!tableModels.localConfig.loadingData) {
             if (tableModels.items.paging.currentPage !== tableModels.items.paging.totalPages) {
               tableModels.loadPage(tableModels.items.paging.totalPages);
             }

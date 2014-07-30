@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v0.1.5 - 2014-07-29
+ * @version v0.1.6 - 2014-07-30
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -221,4 +221,22 @@
 }
 .ad-tree-browser-container.tree-bordered .tree-sub-level:last-child {
   border-bottom: none;
+}
+.ad-loading-overlay-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: white;
+}
+.ad-loading-overlay-container .wrapper {
+  display: table;
+  height: 100%;
+  width: 100%;
+}
+.ad-loading-overlay-container .wrapper .loading-indicator {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
 }

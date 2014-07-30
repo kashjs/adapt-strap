@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v0.1.5 - 2014-07-29
+ * @version v0.1.6 - 2014-07-30
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -62,29 +62,14 @@ angular.module('adaptv.adaptStrap.utils', []).factory('adStrapUtils', [
     };
     return deb;
   }
-]).provider('$adPaging', function () {
-  var defaults = this.defaults = {
-      request: {
-        start: 'skip',
-        pageSize: 'limit',
-        page: 'page'
-      },
-      response: {
-        itemsLocation: 'data',
-        totalItems: 'pagination.totalCount'
-      }
-    };
-  this.$get = function () {
-    return { settings: defaults };
-  };
-}).factory('adLoadPage', [
-  '$adPaging',
+]).factory('adLoadPage', [
+  '$adConfig',
   '$q',
   '$http',
   'adStrapUtils',
-  function ($adPaging, $q, $http, adStrapUtils) {
+  function ($adConfig, $q, $http, adStrapUtils) {
     return function (pageToLoad, pageSize, ajaxConfigOriginal, identityToken) {
-      var start = (pageToLoad - 1) * pageSize, i, startPagingPage, success, err, defer = $q.defer(), pagingConfig = angular.copy($adPaging.settings), ajaxConfig = angular.copy(ajaxConfigOriginal);
+      var start = (pageToLoad - 1) * pageSize, i, startPagingPage, success, err, defer = $q.defer(), pagingConfig = angular.copy($adConfig.paging), ajaxConfig = angular.copy(ajaxConfigOriginal);
       if (ajaxConfig.paginationConfig && ajaxConfig.paginationConfig.request) {
         angular.extend(pagingConfig.request, ajaxConfig.paginationConfig.request);
       }

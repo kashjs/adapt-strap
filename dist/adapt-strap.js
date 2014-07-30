@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v0.1.5 - 2014-07-29
+ * @version v0.1.6 - 2014-07-30
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -12,20 +12,77 @@ angular.module('adaptv.adaptStrap', [
   'adaptv.adaptStrap.utils',
   'adaptv.adaptStrap.treebrowser',
   'adaptv.adaptStrap.tablelite',
-  'adaptv.adaptStrap.tableajax'
+  'adaptv.adaptStrap.tableajax',
+  'adaptv.adaptStrap.loadingindicator'
+]).provider('$adConfig', function () {
+  var iconClasses = this.iconClasses = {
+      expand: 'glyphicon glyphicon-plus-sign',
+      collapse: 'glyphicon glyphicon-minus-sign',
+      loadingSpinner: 'glyphicon glyphicon-refresh ad-spin'
+    }, paging = this.paging = {
+      request: {
+        start: 'skip',
+        pageSize: 'limit',
+        page: 'page'
+      },
+      response: {
+        itemsLocation: 'data',
+        totalItems: 'pagination.totalCount'
+      }
+    };
+  this.$get = function () {
+    return {
+      iconClasses: iconClasses,
+      paging: paging
+    };
+  };
+});
+
+// Source: loadingindicator.js
+angular.module('adaptv.adaptStrap.loadingindicator', []).directive('adLoadingIcon', [
+  '$adConfig',
+  '$compile',
+  function ($adConfig, $compile) {
+    return {
+      restrict: 'E',
+      compile: function compile() {
+        return {
+          pre: function preLink(scope, element, attrs) {
+            var loadingIconClass = attrs.loadingIconClass || $adConfig.iconClasses.loadingSpinner, ngStyleTemplate = attrs.loadingIconSize ? 'ng-style="{\'font-size\': \'' + attrs.loadingIconSize + '\'}"' : '', template = '<i class="' + loadingIconClass + '" ' + ngStyleTemplate + '></i>';
+            element.html($compile(template)(scope));
+          }
+        };
+      }
+    };
+  }
+]).directive('adLoadingOverlay', [
+  '$adConfig',
+  function ($adConfig) {
+    return {
+      restrict: 'E',
+      templateUrl: 'loadingindicator/loadingindicator.tpl.html',
+      scope: {
+        loading: '=',
+        zIndex: '@',
+        position: '@',
+        containerClasses: '@',
+        loadingIconClass: '@',
+        loadingIconSize: '@'
+      },
+      compile: function compile() {
+        return {
+          pre: function preLink(scope) {
+            scope.loadingIconClass = scope.loadingIconClass || $adConfig.iconClasses.loading;
+            scope.loadingIconSize = scope.loadingIconSize || '3em';
+          }
+        };
+      }
+    };
+  }
 ]);
 
 // Source: tableajax.js
-angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils']).provider('$tableajax', function () {
-  var defaults = this.defaults = {
-      expandIconClass: 'glyphicon glyphicon-plus-sign',
-      collapseIconClass: 'glyphicon glyphicon-minus-sign',
-      loadingIconClass: 'glyphicon glyphicon-refresh ad-spin'
-    };
-  this.$get = function () {
-    return { settings: defaults };
-  };
-}).directive('adTableAjax', [
+angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils']).directive('adTableAjax', [
   '$parse',
   '$compile',
   '$templateCache',
@@ -223,27 +280,18 @@ function _link(scope, element, attrs) {
 ]);
 
 // Source: treebrowser.js
-angular.module('adaptv.adaptStrap.treebrowser', []).provider('$treebrowser', function () {
-  var defaults = this.defaults = {
-      expandIconClass: 'glyphicon glyphicon-plus-sign',
-      collapseIconClass: 'glyphicon glyphicon-minus-sign',
-      loadingIconClass: 'glyphicon glyphicon-refresh ad-spin'
-    };
-  this.$get = function () {
-    return { settings: defaults };
-  };
-}).directive('adTreeBrowser', [
+angular.module('adaptv.adaptStrap.treebrowser', []).directive('adTreeBrowser', [
   '$compile',
   '$http',
-  '$treebrowser',
+  '$adConfig',
   '$templateCache',
-  function ($compile, $http, $treebrowser, $templateCache) {
+  function ($compile, $http, $adConfig, $templateCache) {
     return {
       restrict: 'E',
       link: function (scope, element, attrs) {
         var treeName = attrs.treeName || '', nodeTemplateUrl = attrs.nodeTemplateUrl || '', nodeHeaderUrl = attrs.nodeHeaderUrl || '', childrenPadding = attrs.childrenPadding || 15, template = '', populateMainTemplate = function (nodeTemplate, nodeHeaderTemplate) {
             var data = $templateCache.get('treebrowser/treebrowser.tpl.html');
-            template = data.replace(/%=treeName%/g, treeName).replace(/%=treeRootName%/g, attrs.treeRoot).replace(/%=bordered%/g, attrs.bordered).replace(/%=expandIconClass%/g, attrs.expandIconClass || $treebrowser.settings.expandIconClass).replace(/%=collapseIconClass%/g, attrs.collapseIconClass || $treebrowser.settings.collapseIconClass).replace(/%=loadingIconClass%/g, attrs.loadingIconClass || $treebrowser.settings.loadingIconClass).replace(/%=childNodeName%/g, attrs.childNode).replace(/%=childrenPadding%/g, childrenPadding).replace(/%=rowNgClass%/g, attrs.rowNgClass || '').replace(/%=nodeTemplate%/g, nodeTemplate).replace(/%=nodeHeaderTemplate%/g, nodeHeaderTemplate || '');
+            template = data.replace(/%=treeName%/g, treeName).replace(/%=treeRootName%/g, attrs.treeRoot).replace(/%=bordered%/g, attrs.bordered).replace(/%=expandIconClass%/g, attrs.expandIconClass || $adConfig.iconClasses.expand).replace(/%=collapseIconClass%/g, attrs.collapseIconClass || $adConfig.iconClasses.collapse).replace(/%=loadingIconClass%/g, attrs.loadingIconClass || $adConfig.iconClasses.loadingSpinner).replace(/%=childNodeName%/g, attrs.childNode).replace(/%=childrenPadding%/g, childrenPadding).replace(/%=rowNgClass%/g, attrs.rowNgClass || '').replace(/%=nodeTemplate%/g, nodeTemplate).replace(/%=nodeHeaderTemplate%/g, nodeHeaderTemplate || '');
             element.empty();
             element.append($compile(template)(scope));
           };
@@ -343,29 +391,14 @@ var deb = function (func, delay, immediate, ctx) {
     };
     return deb;
   }
-]).provider('$adPaging', function () {
-  var defaults = this.defaults = {
-      request: {
-        start: 'skip',
-        pageSize: 'limit',
-        page: 'page'
-      },
-      response: {
-        itemsLocation: 'data',
-        totalItems: 'pagination.totalCount'
-      }
-    };
-  this.$get = function () {
-    return { settings: defaults };
-  };
-}).factory('adLoadPage', [
-  '$adPaging',
+]).factory('adLoadPage', [
+  '$adConfig',
   '$q',
   '$http',
   'adStrapUtils',
-  function ($adPaging, $q, $http, adStrapUtils) {
+  function ($adConfig, $q, $http, adStrapUtils) {
     return function (pageToLoad, pageSize, ajaxConfigOriginal, identityToken) {
-      var start = (pageToLoad - 1) * pageSize, i, startPagingPage, success, err, defer = $q.defer(), pagingConfig = angular.copy($adPaging.settings), ajaxConfig = angular.copy(ajaxConfigOriginal);
+      var start = (pageToLoad - 1) * pageSize, i, startPagingPage, success, err, defer = $q.defer(), pagingConfig = angular.copy($adConfig.paging), ajaxConfig = angular.copy(ajaxConfigOriginal);
       if (ajaxConfig.paginationConfig && ajaxConfig.paginationConfig.request) {
         angular.extend(pagingConfig.request, ajaxConfig.paginationConfig.request);
       }

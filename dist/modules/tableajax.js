@@ -1,20 +1,11 @@
 /**
  * adapt-strap
- * @version v0.1.5 - 2014-07-29
+ * @version v0.1.6 - 2014-07-30
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
  */
-angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils']).provider('$tableajax', function () {
-  var defaults = this.defaults = {
-      expandIconClass: 'glyphicon glyphicon-plus-sign',
-      collapseIconClass: 'glyphicon glyphicon-minus-sign',
-      loadingIconClass: 'glyphicon glyphicon-refresh ad-spin'
-    };
-  this.$get = function () {
-    return { settings: defaults };
-  };
-}).directive('adTableAjax', [
+angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils']).directive('adTableAjax', [
   '$parse',
   '$compile',
   '$templateCache',

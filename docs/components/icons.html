@@ -1,0 +1,17 @@
+# You can configure the default icons used in adapt-strap compnents:
+### Here is the default configuration for icons:
+
+$adConfigProvider.iconClasses = {
+    expand: 'glyphicon glyphicon-plus-sign',
+    collapse: 'glyphicon glyphicon-minus-sign',
+    loadingSpinner: 'glyphicon glyphicon-refresh ad-spin'
+}
+
+### You can globally configure the pagination configuration like this during the app initialization:
+angular.module('myApp').config(['$adConfigProvider', function ($adConfigProvider) {
+    $adConfigProvider.iconClasses.collapse = 'glyphicon glyphicon-minus';
+    $adConfigProvider.iconClasses.expand = 'glyphicon glyphicon-plus';
+    $adConfigProvider.iconClasses.loadingSpinner = 'glyphicon glyphicon-repeat ad-spin';
+}])
+
+### You can override global configuration at the directive usage level too.

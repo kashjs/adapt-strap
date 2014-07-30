@@ -1,0 +1,47 @@
+<div ng-controller="loadingIndicatorCtrl">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    This is the demo for ad-loading-overlay
+                    <button class="btn btn-default"
+                            ng-click="showLoadingIcon = true">Show</button>
+                    <button class="btn btn-default"
+                            ng-click="showLoadingIcon = false">Hide</button>
+                </h3>
+            </div>
+            <div class="panel-body" style="position:relative;">
+                <h1>Some Content <br> Imagine this is the body of your page</h1>
+
+                <!-- ========== Usage (overlay) ========== -->
+                <ad-loading-overlay z-index="2000"
+                                    position="absolute"
+                                    loading-icon-size="2em"
+                                    loading="showLoadingIcon"
+                                    loading-icon-class="glyphicon glyphicon-refresh ad-spin"
+                                    container-classes="xyz">
+                </ad-loading-overlay>
+
+            </div>
+        </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                Simple icon tag
+                <button class="btn btn-default"
+                        ng-click="showSimpleIcon = true">Show</button>
+                <button class="btn btn-default"
+                        ng-click="showSimpleIcon = false">Hide</button>
+            </h3>
+        </div>
+        <div class="panel-body">
+
+            <!-- ========== Usage (Simple Icon) ========== -->
+            <ad-loading-icon ng-show="showSimpleIcon"></ad-loading-icon><br>
+            <ad-loading-icon ng-show="showSimpleIcon"
+                             loading-icon-size="26px"></ad-loading-icon><br>
+            <ad-loading-icon ng-show="showSimpleIcon"
+                             loading-icon-class="glyphicon glyphicon-plus ad-spin"></ad-loading-icon>
+
+        </div>
+    </div>
+</div>

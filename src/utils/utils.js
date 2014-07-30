@@ -58,25 +58,7 @@ angular.module('adaptv.adaptStrap.utils', [])
 
     return deb;
   }])
-  .provider('$adPaging', function () {
-    var defaults = this.defaults = {
-      request: {
-        start: 'skip',
-        pageSize: 'limit',
-        page: 'page'
-      },
-      response: {
-        itemsLocation: 'data',
-        totalItems: 'pagination.totalCount'
-      }
-    };
-    this.$get = function () {
-      return {
-        settings: defaults
-      };
-    };
-  })
-  .factory('adLoadPage', ['$adPaging', '$q', '$http', 'adStrapUtils', function ($adPaging, $q, $http, adStrapUtils) {
+  .factory('adLoadPage', ['$adConfig', '$q', '$http', 'adStrapUtils', function ($adConfig, $q, $http, adStrapUtils) {
     return function (pageToLoad, pageSize, ajaxConfigOriginal, identityToken) {
       var start = (pageToLoad - 1) * pageSize,
         i,
@@ -84,7 +66,7 @@ angular.module('adaptv.adaptStrap.utils', [])
         success,
         err,
         defer = $q.defer(),
-        pagingConfig = angular.copy($adPaging.settings),
+        pagingConfig = angular.copy($adConfig.paging),
         ajaxConfig = angular.copy(ajaxConfigOriginal);
 
       if (ajaxConfig.paginationConfig && ajaxConfig.paginationConfig.request) {

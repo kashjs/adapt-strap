@@ -2,24 +2,11 @@
 
 angular.module('adaptv.adaptStrap.treebrowser', [])
 
-  .provider('$treebrowser', function () {
-    var defaults = this.defaults = {
-      expandIconClass: 'glyphicon glyphicon-plus-sign',
-      collapseIconClass: 'glyphicon glyphicon-minus-sign',
-      loadingIconClass: 'glyphicon glyphicon-refresh ad-spin'
-    };
-    this.$get = function () {
-      return {
-        settings: defaults
-      };
-    };
-  })
-
 /**
  * adTreeBrowser directive populates a tree dataStructure
  */
-  .directive('adTreeBrowser', ['$compile', '$http', '$treebrowser', '$templateCache',
-    function ($compile, $http, $treebrowser, $templateCache) {
+  .directive('adTreeBrowser', ['$compile', '$http', '$adConfig', '$templateCache',
+    function ($compile, $http, $adConfig, $templateCache) {
       return {
         restrict: 'E',
         link: function (scope, element, attrs) {
@@ -33,9 +20,9 @@ angular.module('adaptv.adaptStrap.treebrowser', [])
               template = data.replace(/%=treeName%/g, treeName).
                 replace(/%=treeRootName%/g, attrs.treeRoot).
                 replace(/%=bordered%/g, attrs.bordered).
-                replace(/%=expandIconClass%/g, attrs.expandIconClass || $treebrowser.settings.expandIconClass).
-                replace(/%=collapseIconClass%/g, attrs.collapseIconClass || $treebrowser.settings.collapseIconClass).
-                replace(/%=loadingIconClass%/g, attrs.loadingIconClass || $treebrowser.settings.loadingIconClass).
+                replace(/%=expandIconClass%/g, attrs.expandIconClass || $adConfig.iconClasses.expand).
+                replace(/%=collapseIconClass%/g, attrs.collapseIconClass || $adConfig.iconClasses.collapse).
+                replace(/%=loadingIconClass%/g, attrs.loadingIconClass || $adConfig.iconClasses.loadingSpinner).
                 replace(/%=childNodeName%/g, attrs.childNode).
                 replace(/%=childrenPadding%/g, childrenPadding).
                 replace(/%=rowNgClass%/g, attrs.rowNgClass || '').

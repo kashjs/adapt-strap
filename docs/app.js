@@ -4,8 +4,8 @@ angular.module('adaptv.adaptStrapDocs', [
   'adaptv.adaptStrap'
 ])
 
-  .config(['$adPagingProvider', function ($adPagingProvider) {
-    $adPagingProvider.defaults.response = {
+  .config(['$adConfigProvider', function ($adConfigProvider) {
+    $adConfigProvider.paging.response = {
       totalItems: 'results.opensearch:totalResults',
       itemsLocation: 'results.data'
     };

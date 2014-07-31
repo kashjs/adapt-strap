@@ -331,7 +331,7 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             name: 'loading-icon-size',
             required: false,
             globalConfig: false,
-            default: '3em',
+            default: 'font-size inherited from parent elements',
             type: 'String',
             description: 'You can pass in the size of spinner icon. ' +
               'Ex: <code>loading-icon-size="16px"</code>'

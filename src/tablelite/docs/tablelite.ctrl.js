@@ -78,9 +78,7 @@ angular.module('adaptv.adaptStrapDocs')
       },
       {
         columnHeaderTemplate: '<span><i class="glyphicon glyphicon-usd"></i> Price</span>',
-        displayProperty: 'price',
-        cellFilter: 'currency',
-        sortable: true
+        templateUrl: 'src/tablelite/docs/priceTemplate.html'
       }
     ];
   }]);

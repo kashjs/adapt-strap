@@ -85,4 +85,16 @@ angular.module('adaptv.adaptStrapDocs', [
       },
       templateUrl: 'docs/componentOptions.html'
     };
+  }])
+  .directive('adVersion', ['$http', function ($http) {
+    return {
+      restrict: 'E',
+      template: '<p style="padding-left:10px; color: rgba(255,255,255,.5)">' +
+        'current v{{ version }}<ad-loading-icon ng-hide="version"></ad-loading-icon></p>',
+      link: function (scope) {
+        $http.get('bower.json').success(function (response) {
+          scope.version = response.version;
+        });
+      }
+    };
   }]);

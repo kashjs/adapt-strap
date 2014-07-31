@@ -2,7 +2,8 @@
     <div class="ad-table-ajax-table-container">
         <table class="%=tableClasses%">
             <tr>
-                <th data-ng-repeat="definition in %=columnDefinition%">
+                <th class="ad-user-select-none"
+                    data-ng-repeat="definition in %=columnDefinition%">
                     <div ng-if="definition.columnHeaderTemplate"
                          ng-bind-html="definition.columnHeaderTemplate"></div>
                     <div ng-if="definition.columnHeaderDisplayName"
@@ -23,7 +24,7 @@
         <ad-loading-overlay loading="%=tableName%.localConfig.loadingData"></ad-loading-overlay>
     </div>
     <div class="row">
-        <div class="col-md-8 col-sm-8">
+        <div class="col-md-8 col-sm-8 ad-user-select-none">
             <div class="%=paginationBtnGroupClasses% pull-left">
                 <button type="button"
                         class="btn btn-default"

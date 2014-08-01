@@ -104,7 +104,8 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
           replace(/%=columnDefinition%/g, attrs.columnDefinition).
           replace(/%=tableClasses%/g, attrs.tableClasses).
           replace(/%=paginationBtnGroupClasses%/g, attrs.paginationBtnGroupClasses);
-        angular.element(element).html($compile(mainTemplate)(scope));
+        element.empty();
+        element.append($compile(mainTemplate)(scope));
       }
 
       return {

@@ -111,7 +111,8 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           replace(/%=columnDefinition%/g, attrs.columnDefinition).
           replace(/%=paginationBtnGroupClasses%/g, attrs.paginationBtnGroupClasses).
           replace(/%=tableClasses%/g, attrs.tableClasses);
-        angular.element(element).html($compile(mainTemplate)(scope));
+        element.empty();
+        element.append($compile(mainTemplate)(scope));
 
         scope.$watch(attrs.localDataSource, function () {
           tableModels.loadPage(1);

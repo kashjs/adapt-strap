@@ -11,7 +11,8 @@ angular.module('adaptv.adaptStrap.loadingindicator', [])
               ngStyleTemplate = (attrs.loadingIconSize) ?
                 'ng-style="{\'font-size\': \'' + attrs.loadingIconSize + '\'}"' : '',
               template = '<i class="' + loadingIconClass + '" ' + ngStyleTemplate + '></i>';
-            element.html($compile(template)(scope));
+            element.empty();
+            element.append($compile(template)(scope));
           }
         };
       }

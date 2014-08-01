@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v0.1.8 - 2014-08-01
+ * @version v0.1.9 - 2014-08-01
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -124,13 +124,9 @@
 }
 .ad-tree-browser-container .tree-view .tree .content .toggle {
   cursor: pointer;
-  height: 20px;
   width: 20px;
   display: table-cell;
   vertical-align: middle;
-}
-.ad-tree-browser-container .tree-view .tree .content .toggle i {
-  min-width: 10px;
 }
 .ad-tree-browser-container .tree-view .tree .content .node-content {
   display: table-cell;

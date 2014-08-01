@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v0.1.8 - 2014-08-01
+ * @version v0.1.9 - 2014-08-01
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -49,7 +49,8 @@ angular.module('adaptv.adaptStrap.loadingindicator', []).directive('adLoadingIco
         return {
           pre: function preLink(scope, element, attrs) {
             var loadingIconClass = attrs.loadingIconClass || $adConfig.iconClasses.loadingSpinner, ngStyleTemplate = attrs.loadingIconSize ? 'ng-style="{\'font-size\': \'' + attrs.loadingIconSize + '\'}"' : '', template = '<i class="' + loadingIconClass + '" ' + ngStyleTemplate + '></i>';
-            element.html($compile(template)(scope));
+            element.empty();
+            element.append($compile(template)(scope));
           }
         };
       }
@@ -173,7 +174,8 @@ function _link(scope, element, attrs) {
       attrs.tableClasses = attrs.tableClasses || 'table';
       attrs.paginationBtnGroupClasses = attrs.paginationBtnGroupClasses || 'btn-group btn-group-sm';
       mainTemplate = mainTemplate.replace(/%=tableName%/g, attrs.tableName).replace(/%=columnDefinition%/g, attrs.columnDefinition).replace(/%=tableClasses%/g, attrs.tableClasses).replace(/%=paginationBtnGroupClasses%/g, attrs.paginationBtnGroupClasses);
-      angular.element(element).html($compile(mainTemplate)(scope));
+      element.empty();
+      element.append($compile(mainTemplate)(scope));
     }
     return {
       restrict: 'E',
@@ -270,7 +272,8 @@ function _link(scope, element, attrs) {
       attrs.tableClasses = attrs.tableClasses || 'table';
       attrs.paginationBtnGroupClasses = attrs.paginationBtnGroupClasses || 'btn-group btn-group-sm';
       mainTemplate = mainTemplate.replace(/%=tableName%/g, attrs.tableName).replace(/%=columnDefinition%/g, attrs.columnDefinition).replace(/%=paginationBtnGroupClasses%/g, attrs.paginationBtnGroupClasses).replace(/%=tableClasses%/g, attrs.tableClasses);
-      angular.element(element).html($compile(mainTemplate)(scope));
+      element.empty();
+      element.append($compile(mainTemplate)(scope));
       scope.$watch(attrs.localDataSource, function () {
         tableModels.loadPage(1);
       }, true);

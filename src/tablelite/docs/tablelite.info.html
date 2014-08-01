@@ -6,9 +6,10 @@
             columnHeaderDisplayName: 'String', // Not Required if columnHeaderTemplate is specified
             columnHeaderTemplate: 'String', // Not Required if columnHeaderDisplayName is specified.
             displayProperty: 'String', // Required if sortable is true. if templateUrl is missing, this property will be rendered in each cell
-            cellFilter: 'String' // - Optional - the filter expression to apply to the displayProperty
-            templateUrl: 'String' // - Not required if displayProperty is specified - look at artistPicture.html,
-            sortable: 'Boolean' // - Optional - if true, cell becomes sortable
+            cellFilter: 'String', // - Optional - the filter expression to apply to the displayProperty
+            templateUrl: 'String', // - Not required if displayProperty is specified - look at artistPicture.html,
+            sortable: 'Boolean', // - Optional - if true, cell becomes sortable
+            width: 'String' // - Optional - the explicitly specify width of the column. (Ex: '10em', '30px'). If not specified, width is calculated automatically based on content width.
         }
     </markdown>
 </div>

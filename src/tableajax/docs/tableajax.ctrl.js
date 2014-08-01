@@ -29,7 +29,8 @@ angular.module('adaptv.adaptStrapDocs')
     $scope.artistsColumnDefSearch = [
       {
         columnHeaderTemplate: '<em>Picture</em>',
-        templateUrl: 'src/tableajax/docs/artistPicture.html'
+        templateUrl: 'src/tableajax/docs/artistPicture.html',
+        width: '7em'
       },
       {
         columnHeaderDisplayName: 'Name',

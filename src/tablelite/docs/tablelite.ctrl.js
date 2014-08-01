@@ -74,11 +74,15 @@ angular.module('adaptv.adaptStrapDocs')
       {
         columnHeaderTemplate: '<span><i class="glyphicon glyphicon-calendar"></i> Model Year</span>',
         displayProperty: 'modelYear',
-        sortable: true
+        sortable: true,
+        width: '12em'
       },
       {
         columnHeaderTemplate: '<span><i class="glyphicon glyphicon-usd"></i> Price</span>',
-        templateUrl: 'src/tablelite/docs/priceTemplate.html'
+        displayProperty: 'price',
+        cellFilter: 'currency',
+        sortable: true,
+        width: '9em'
       }
     ];
   }]);

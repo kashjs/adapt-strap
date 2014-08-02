@@ -1,0 +1,14 @@
+language: node_js
+node_js:
+  - "0.10"
+
+before_script:
+  - sleep 3 # give xvfb some time to start
+  - npm install -gq bower # coveralls
+  - bower install --dev --config.interactive=0
+  - gulp --version
+  - bower --version
+  - date --rfc-2822
+
+script:
+  - gulp test

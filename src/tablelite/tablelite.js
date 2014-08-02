@@ -104,7 +104,6 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
         // ---------- initialization and event listeners ---------- //
         //We do the compile after injecting the name spacing into the template.
         tableModels.loadPage(1);
-
         attrs.tableClasses = attrs.tableClasses || 'table';
         attrs.paginationBtnGroupClasses = attrs.paginationBtnGroupClasses || 'btn-group btn-group-sm';
         mainTemplate = mainTemplate.replace(/%=tableName%/g, attrs.tableName).

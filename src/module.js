@@ -15,7 +15,13 @@ angular.module('adaptv.adaptStrap', [
         request: {
           start: 'skip',
           pageSize: 'limit',
-          page: 'page'
+          page: 'page',
+          sort: {
+            field: 'sort',
+            direction: 'sort_dir',
+            ascValue: 'asc',
+            descValue: 'desc'
+          }
         },
         response: {
           itemsLocation: 'data',

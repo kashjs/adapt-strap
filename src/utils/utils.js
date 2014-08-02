@@ -59,7 +59,7 @@ angular.module('adaptv.adaptStrap.utils', [])
     return deb;
   }])
   .factory('adLoadPage', ['$adConfig', '$http', 'adStrapUtils', function ($adConfig, $http, adStrapUtils) {
-    return function (pageToLoad, pageSize, ajaxConfigOriginal, identityToken) {
+    return function (pageToLoad, pageSize, sortingOptions, ajaxConfigOriginal, identityToken) {
       var start = (pageToLoad - 1) * pageSize,
         pagingConfig = angular.copy($adConfig.paging),
         ajaxConfig = angular.copy(ajaxConfigOriginal);
@@ -74,6 +74,16 @@ angular.module('adaptv.adaptStrap.utils', [])
       ajaxConfig.params[pagingConfig.request.start] = start;
       ajaxConfig.params[pagingConfig.request.pageSize] = pageSize;
       ajaxConfig.params[pagingConfig.request.page] = pageToLoad;
+
+      if (sortingOptions.field) {
+        ajaxConfig.params[pagingConfig.request.sortField] = sortingOptions.field;
+      }
+
+      if (sortingOptions.reverse === false) {
+        ajaxConfig.params[pagingConfig.request.sortDirection] = pagingConfig.request.sortAscValue;
+      } else if (sortingOptions.reverse === true) {
+        ajaxConfig.params[pagingConfig.request.sortDirection] = pagingConfig.request.sortDescValue;
+      }
 
       var promise;
       if (ajaxConfig.method === 'JSONP') {

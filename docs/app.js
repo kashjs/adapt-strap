@@ -90,7 +90,7 @@ angular.module('adaptv.adaptStrapDocs', [
     return {
       restrict: 'E',
       template: '<p style="padding-left:10px; color: rgba(255,255,255,.5)">' +
-        'current v{{ version }}<ad-loading-icon ng-hide="version"></ad-loading-icon></p>',
+        '<img src="//travis-ci.org/Adaptv/adapt-strap.svg"> | current v{{ version }}</p>',
       link: function (scope) {
         $http.get('bower.json').success(function (response) {
           scope.version = response.version;

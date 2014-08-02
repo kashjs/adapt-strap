@@ -4,7 +4,14 @@
 $adConfigProvider.iconClasses = {
     expand: 'glyphicon glyphicon-plus-sign',
     collapse: 'glyphicon glyphicon-minus-sign',
-    loadingSpinner: 'glyphicon glyphicon-refresh ad-spin'
+    loadingSpinner: 'glyphicon glyphicon-refresh ad-spin',
+    firstArrow: 'glyphicon glyphicon-fast-backward',
+    backArrow: 'glyphicon glyphicon-backward',
+    nextArrow: 'glyphicon glyphicon-forward',
+    lastArrow: 'glyphicon glyphicon-fast-forward',
+    upArrow: 'glyphicon glyphicon-chevron-up',
+    downArrow: 'glyphicon glyphicon-chevron-down',
+    upDownArrow: 'glyphicon glyphicon-resize-vertical'
 }
 
 ### You can globally configure the pagination configuration like this during the app initialization:
@@ -12,6 +19,13 @@ angular.module('myApp').config(['$adConfigProvider', function ($adConfigProvider
     $adConfigProvider.iconClasses.collapse = 'glyphicon glyphicon-minus';
     $adConfigProvider.iconClasses.expand = 'glyphicon glyphicon-plus';
     $adConfigProvider.iconClasses.loadingSpinner = 'glyphicon glyphicon-repeat ad-spin';
+    $adConfigProvider.iconClasses.firstArrow = 'glyphicon glyphicon-fast-backward';
+    $adConfigProvider.iconClasses.backArrow = 'glyphicon glyphicon-backward';
+    $adConfigProvider.iconClasses.nextArrow = 'glyphicon glyphicon-forward';
+    $adConfigProvider.iconClasses.lastArrow = 'glyphicon glyphicon-fast-forward';
+    $adConfigProvider.iconClasses.upArrow = 'glyphicon glyphicon-chevron-up';
+    $adConfigProvider.iconClasses.downArrow = 'glyphicon glyphicon-chevron-down';
+    $adConfigProvider.iconClasses.upDownArrow = 'glyphicon glyphicon-resize-vertical';
 }])
 
 ### You can override global configuration at the directive usage level too.

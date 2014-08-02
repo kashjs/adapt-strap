@@ -6,11 +6,11 @@
                 ng-class="{'ad-cursor-pointer': definition.sortable}"
                 ng-style="{'width': definition.width}">
                 <div class="pull-right" ng-if="definition.sortable && %=tableName%.localConfig.predicate == definition.displayProperty">
-                    <i class="glyphicon glyphicon-chevron-up" ng-hide="%=tableName%.localConfig.reverse"></i>
-                    <i class="glyphicon glyphicon-chevron-down" ng-show="%=tableName%.localConfig.reverse"></i>
+                    <i class="%=icon-upArrow%" ng-hide="%=tableName%.localConfig.reverse"></i>
+                    <i class="%=icon-downArrow%" ng-show="%=tableName%.localConfig.reverse"></i>
                 </div>
                 <div class="pull-right" ng-if="definition.sortable && %=tableName%.localConfig.predicate != definition.displayProperty">
-                    <i class="glyphicon glyphicon-resize-vertical"></i>
+                    <i class="%=icon-upDownArrow%"></i>
                 </div>
                 <div ng-if="definition.columnHeaderTemplate"
                       ng-bind-html="definition.columnHeaderTemplate"></div>
@@ -36,13 +36,13 @@
                         class="btn btn-default"
                         ng-click="%=tableName%.loadPage(1)"
                         ng-disabled="%=tableName%.items.paging.currentPage == 1">
-                    <i class="glyphicon glyphicon-fast-backward"></i>
+                    <i class="%=icon-firstArrow%"></i>
                 </button>
                 <button type="button"
                         class="btn btn-default"
                         ng-click="%=tableName%.loadPreviousPage()"
                         ng-disabled="%=tableName%.items.paging.currentPage == 1">
-                    <i class="glyphicon glyphicon-backward"></i>
+                    <i class="%=icon-backArrow%"></i>
                 </button>
                 <button type="button"
                         class="btn btn-default"
@@ -55,14 +55,14 @@
                     class="btn btn-default"
                     ng-click="%=tableName%.loadNextPage()"
                     ng-disabled="%=tableName%.items.paging.currentPage == %=tableName%.items.paging.totalPages">
-                    <i class="glyphicon glyphicon-forward"></i>
+                    <i class="%=icon-nextArrow%"></i>
                 </button>
                 <button
                     type="button"
                     class="btn btn-default"
                     ng-click="%=tableName%.loadLastPage()"
                     ng-disabled="%=tableName%.items.paging.currentPage == %=tableName%.items.paging.totalPages">
-                    <i class="glyphicon glyphicon-fast-forward"></i>
+                    <i class="%=icon-lastArrow%"></i>
                 </button>
             </div>
         </div>

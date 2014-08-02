@@ -1,3 +1,6 @@
+## adaptStrap Ui Cmponents/utilities based on AngularJs 1.2+ & Bootstrap 3
+[![Build Status](https://travis-ci.org/Adaptv/adapt-strap.svg)](https://travis-ci.org/Adaptv/adapt-strap)
+
 ###Usage
 * Install the library using `bower install adapt-strap --save`
 * Include the library files in your index.html file:

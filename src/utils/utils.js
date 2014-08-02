@@ -76,13 +76,13 @@ angular.module('adaptv.adaptStrap.utils', [])
       ajaxConfig.params[pagingConfig.request.page] = pageToLoad;
 
       if (sortingOptions.field) {
-        ajaxConfig.params[pagingConfig.request.sort.field] = sortingOptions.field;
+        ajaxConfig.params[pagingConfig.request.sortField] = sortingOptions.field;
       }
 
       if (sortingOptions.reverse === false) {
-        ajaxConfig.params[pagingConfig.request.sort.direction] = pagingConfig.request.sort.ascValue;
+        ajaxConfig.params[pagingConfig.request.sortDirection] = pagingConfig.request.sortAscValue;
       } else if (sortingOptions.reverse === true) {
-        ajaxConfig.params[pagingConfig.request.sort.direction] = pagingConfig.request.sort.descValue;
+        ajaxConfig.params[pagingConfig.request.sortDirection] = pagingConfig.request.sortDescValue;
       }
 
       var promise;

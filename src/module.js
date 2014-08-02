@@ -16,12 +16,10 @@ angular.module('adaptv.adaptStrap', [
           start: 'skip',
           pageSize: 'limit',
           page: 'page',
-          sort: {
-            field: 'sort',
-            direction: 'sort_dir',
-            ascValue: 'asc',
-            descValue: 'desc'
-          }
+          sortField: 'sort',
+          sortDirection: 'sort_dir',
+          sortAscValue: 'asc',
+          sortDescValue: 'desc'
         },
         response: {
           itemsLocation: 'data',

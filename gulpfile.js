@@ -262,6 +262,7 @@ gulp.task('server', function () {
 });
 
 gulp.task('test', ['jshint', 'jscs', 'htmlhint']);
+gulp.task('test:fail', ['jscs', 'jshint:fail', 'htmlhint:fail']);
 
 gulp.task('default', function() {
   runSequence('server','dist:unsafe', 'watch');

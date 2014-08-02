@@ -34,7 +34,7 @@ angular.module('adaptv.adaptStrap.loadingindicator', [])
         return {
           pre: function preLink(scope) {
             scope.loadingIconClass = scope.loadingIconClass || $adConfig.iconClasses.loading;
-            scope.loadingIconSize = scope.loadingIconSize || '3em'
+            scope.loadingIconSize = scope.loadingIconSize || '3em';
           }
         };
       }

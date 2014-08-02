@@ -1,22 +1,10 @@
 angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
-  .provider('$tablelite', function () {
-    var defaults = this.defaults = {
-      expandIconClass: 'glyphicon glyphicon-plus-sign',
-      collapseIconClass: 'glyphicon glyphicon-minus-sign',
-      loadingIconClass: 'glyphicon glyphicon-refresh ad-spin'
-    };
-    this.$get = function () {
-      return {
-        settings: defaults
-      };
-    };
-  })
 
 /**
  * Use this directive if you need to render a simple table with local data source.
  */
-  .directive('adTableLite', ['$parse', '$http', '$compile', '$filter', '$templateCache', 'adStrapUtils', 'adDebounce',
-    function ($parse, $http, $compile, $filter, $templateCache, adStrapUtils, adDebounce) {
+  .directive('adTableLite', ['$parse', '$http', '$compile', '$filter', '$templateCache', '$adConfig', 'adStrapUtils', 'adDebounce',
+    function ($parse, $http, $compile, $filter, $templateCache, $adConfig, adStrapUtils, adDebounce) {
       'use strict';
       function _link(scope, element, attrs) {
         // We do the name spacing so the if there are multiple adap-table-lite on the scope,
@@ -106,10 +94,19 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
         tableModels.loadPage(1);
         attrs.tableClasses = attrs.tableClasses || 'table';
         attrs.paginationBtnGroupClasses = attrs.paginationBtnGroupClasses || 'btn-group btn-group-sm';
-        mainTemplate = mainTemplate.replace(/%=tableName%/g, attrs.tableName).
+        mainTemplate = mainTemplate.
+          replace(/%=tableName%/g, attrs.tableName).
           replace(/%=columnDefinition%/g, attrs.columnDefinition).
           replace(/%=paginationBtnGroupClasses%/g, attrs.paginationBtnGroupClasses).
-          replace(/%=tableClasses%/g, attrs.tableClasses);
+          replace(/%=tableClasses%/g, attrs.tableClasses).
+          replace(/%=icon-firstArrow%/g, $adConfig.iconClasses.firstArrow).
+          replace(/%=icon-backArrow%/g, $adConfig.iconClasses.backArrow).
+          replace(/%=icon-nextArrow%/g, $adConfig.iconClasses.nextArrow).
+          replace(/%=icon-lastArrow%/g, $adConfig.iconClasses.lastArrow).
+          replace(/%=icon-upArrow%/g, $adConfig.iconClasses.upArrow).
+          replace(/%=icon-downArrow%/g, $adConfig.iconClasses.downArrow).
+          replace(/%=icon-upDownArrow%/g, $adConfig.iconClasses.upDownArrow)
+        ;
         element.empty();
         element.append($compile(mainTemplate)(scope));
 

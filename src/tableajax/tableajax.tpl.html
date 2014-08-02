@@ -30,13 +30,13 @@
                         class="btn btn-default"
                         ng-click="%=tableName%.loadPage(1)"
                         ng-disabled="%=tableName%.items.paging.currentPage == 1">
-                    <i class="glyphicon glyphicon-fast-backward"></i>
+                    <i class="%=icon-firstArrow%"></i>
                 </button>
                 <button type="button"
                         class="btn btn-default"
                         ng-click="%=tableName%.loadPreviousPage()"
                         ng-disabled="%=tableName%.items.paging.currentPage == 1">
-                    <i class="glyphicon glyphicon-backward"></i>
+                    <i class="%=icon-backArrow%"></i>
                 </button>
                 <button type="button"
                         class="btn btn-default"
@@ -49,14 +49,14 @@
                     class="btn btn-default"
                     ng-click="%=tableName%.loadNextPage()"
                     ng-disabled="%=tableName%.items.paging.currentPage == %=tableName%.items.paging.totalPages">
-                    <i class="glyphicon glyphicon-forward"></i>
+                    <i class="%=icon-nextArrow%"></i>
                 </button>
                 <button
                     type="button"
                     class="btn btn-default"
                     ng-click="%=tableName%.loadLastPage()"
                     ng-disabled="%=tableName%.items.paging.currentPage == %=tableName%.items.paging.totalPages">
-                    <i class="glyphicon glyphicon-fast-forward"></i>
+                    <i class="%=icon-lastArrow%"></i>
                 </button>
             </div>
         </div>

@@ -3,8 +3,8 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
  * Use this directive if you need to render a table that loads data from ajax.
  */
   .directive('adTableAjax',
-  ['$parse', '$compile', '$templateCache', 'adLoadPage', 'adDebounce', 'adStrapUtils',
-    function ($parse, $compile, $templateCache, adLoadPage, adDebounce, adStrapUtils) {
+  ['$parse', '$compile', '$templateCache', '$adConfig', 'adLoadPage', 'adDebounce', 'adStrapUtils',
+    function ($parse, $compile, $templateCache, $adConfig, adLoadPage, adDebounce, adStrapUtils) {
       'use strict';
       function _link(scope, element, attrs) {
         // We do the name spacing so the if there are multiple adap-table-lite on the scope,
@@ -103,7 +103,15 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
         mainTemplate = mainTemplate.replace(/%=tableName%/g, attrs.tableName).
           replace(/%=columnDefinition%/g, attrs.columnDefinition).
           replace(/%=tableClasses%/g, attrs.tableClasses).
-          replace(/%=paginationBtnGroupClasses%/g, attrs.paginationBtnGroupClasses);
+          replace(/%=paginationBtnGroupClasses%/g, attrs.paginationBtnGroupClasses).
+          replace(/%=icon-firstArrow%/g, $adConfig.iconClasses.firstArrow).
+          replace(/%=icon-backArrow%/g, $adConfig.iconClasses.backArrow).
+          replace(/%=icon-nextArrow%/g, $adConfig.iconClasses.nextArrow).
+          replace(/%=icon-lastArrow%/g, $adConfig.iconClasses.lastArrow).
+          replace(/%=icon-upArrow%/g, $adConfig.iconClasses.upArrow).
+          replace(/%=icon-downArrow%/g, $adConfig.iconClasses.downArrow).
+          replace(/%=icon-upDownArrow%/g, $adConfig.iconClasses.upDownArrow)
+        ;
         element.empty();
         element.append($compile(mainTemplate)(scope));
       }

@@ -3,7 +3,8 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
 /**
  * Use this directive if you need to render a simple table with local data source.
  */
-  .directive('adTableLite', ['$parse', '$http', '$compile', '$filter', '$templateCache', '$adConfig', 'adStrapUtils', 'adDebounce',
+  .directive('adTableLite', [
+    '$parse', '$http', '$compile', '$filter', '$templateCache', '$adConfig', 'adStrapUtils', 'adDebounce',
     function ($parse, $http, $compile, $filter, $templateCache, $adConfig, adStrapUtils, adDebounce) {
       'use strict';
       function _link(scope, element, attrs) {

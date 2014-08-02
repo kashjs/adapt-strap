@@ -75,10 +75,11 @@ angular.module('adaptv.adaptStrap.utils', [])
       ajaxConfig.params[pagingConfig.request.pageSize] = pageSize;
       ajaxConfig.params[pagingConfig.request.page] = pageToLoad;
 
+      var promise;
       if (ajaxConfig.method === 'JSONP') {
-        var promise = $http.jsonp(ajaxConfig.url + '?callback=JSON_CALLBACK', ajaxConfig);
+        promise = $http.jsonp(ajaxConfig.url + '?callback=JSON_CALLBACK', ajaxConfig);
       } else {
-        var promise = $http(ajaxConfig);
+        promise = $http(ajaxConfig);
       }
 
       return promise.then(function(result) {

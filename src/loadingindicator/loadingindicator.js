@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('adaptv.adaptStrap.loadingindicator', [])
-  .directive('adLoadingIcon', [ '$adConfig', '$compile', function ($adConfig, $compile) {
+  .directive('adLoadingIcon', ['$adConfig', '$compile', function ($adConfig, $compile) {
     return {
       restrict: 'E',
       compile: function compile() {
@@ -18,7 +18,7 @@ angular.module('adaptv.adaptStrap.loadingindicator', [])
       }
     };
   }])
-  .directive('adLoadingOverlay', [ '$adConfig', function ($adConfig) {
+  .directive('adLoadingOverlay', ['$adConfig', function ($adConfig) {
     return {
       restrict: 'E',
       templateUrl: 'loadingindicator/loadingindicator.tpl.html',
@@ -34,7 +34,7 @@ angular.module('adaptv.adaptStrap.loadingindicator', [])
         return {
           pre: function preLink(scope) {
             scope.loadingIconClass = scope.loadingIconClass || $adConfig.iconClasses.loading;
-            scope.loadingIconSize = scope.loadingIconSize || '3em';
+            scope.loadingIconSize = scope.loadingIconSize || '3em'
           }
         };
       }

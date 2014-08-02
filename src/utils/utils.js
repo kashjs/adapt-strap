@@ -58,14 +58,9 @@ angular.module('adaptv.adaptStrap.utils', [])
 
     return deb;
   }])
-  .factory('adLoadPage', ['$adConfig', '$q', '$http', 'adStrapUtils', function ($adConfig, $q, $http, adStrapUtils) {
+  .factory('adLoadPage', ['$adConfig', '$http', 'adStrapUtils', function ($adConfig, $http, adStrapUtils) {
     return function (pageToLoad, pageSize, ajaxConfigOriginal, identityToken) {
       var start = (pageToLoad - 1) * pageSize,
-        i,
-        startPagingPage,
-        success,
-        err,
-        defer = $q.defer(),
         pagingConfig = angular.copy($adConfig.paging),
         ajaxConfig = angular.copy(ajaxConfigOriginal);
 
@@ -80,35 +75,40 @@ angular.module('adaptv.adaptStrap.utils', [])
       ajaxConfig.params[pagingConfig.request.pageSize] = pageSize;
       ajaxConfig.params[pagingConfig.request.page] = pageToLoad;
 
-      success = function (res) {
+      if (ajaxConfig.method === 'JSONP') {
+        var promise = $http.jsonp(ajaxConfig.url + '?callback=JSON_CALLBACK', ajaxConfig);
+      } else {
+        var promise = $http(ajaxConfig);
+      }
+
+      return promise.then(function(result) {
         var response = {
-          items: adStrapUtils.evalObjectProperty(res, pagingConfig.response.itemsLocation),
+          items: adStrapUtils.evalObjectProperty(result.data, pagingConfig.response.itemsLocation),
           currentPage: pageToLoad,
           totalPages: Math.ceil(
-              adStrapUtils.evalObjectProperty(res, pagingConfig.response.totalItems) /
+              adStrapUtils.evalObjectProperty(result.data, pagingConfig.response.totalItems) /
               pageSize
           ),
           pagingArray: [],
           identityToken: identityToken
         };
-        startPagingPage = (Math.ceil(pageToLoad / pageSize) * pageSize) - (pageSize - 1);
-        for (i = 0; i < 5; i++) {
-          if (startPagingPage + i > 0 && startPagingPage + i <= response.totalPages) {
-            response.pagingArray.push(startPagingPage + i);
+
+        var TOTAL_PAGINATION_ITEMS = 5;
+        var minimumBound = pageToLoad - Math.floor(TOTAL_PAGINATION_ITEMS / 2);
+        for (var i = minimumBound; i <= pageToLoad; i++) {
+          if (i > 0) {
+            response.pagingArray.push(i);
           }
         }
-        defer.resolve(response);
-      };
+        while (response.pagingArray.length < TOTAL_PAGINATION_ITEMS) {
+          if (i > response.totalPages) {
+            break;
+          }
+          response.pagingArray.push(i);
+          i++;
+        }
 
-      err = function (error) {
-        defer.reject(error);
-      };
-
-      if (ajaxConfig.method === 'JSONP') {
-        $http.jsonp(ajaxConfig.url + '?callback=JSON_CALLBACK', ajaxConfig).success(success).error(err);
-      } else {
-        $http(ajaxConfig).success(success).error(err);
-      }
-      return defer.promise;
+        return response;
+      });
     };
   }]);

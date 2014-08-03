@@ -40,6 +40,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
           adLoadPage(
             page,
             tableModels.items.paging.pageSize,
+            {field: tableModels.localConfig.predicate, reverse: tableModels.localConfig.reverse},
             tableModels.ajaxConfig,
             lastRequestToken
           ).then(
@@ -86,6 +87,14 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
           if (Number(size) !== tableModels.items.paging.pageSize) {
             tableModels.items.paging.pageSize = Number(size);
             tableModels.loadPage(1);
+          }
+        };
+
+        tableModels.sortByColumn = function (column) {
+          if (column.sortable) {
+            tableModels.localConfig.predicate = column.displayProperty;
+            tableModels.localConfig.reverse = !tableModels.localConfig.reverse;
+            tableModels.loadPage(tableModels.items.paging.currentPage);
           }
         };
 

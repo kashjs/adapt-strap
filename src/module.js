@@ -9,7 +9,14 @@ angular.module('adaptv.adaptStrap', [
     var iconClasses = this.iconClasses = {
         expand: 'glyphicon glyphicon-plus-sign',
         collapse: 'glyphicon glyphicon-minus-sign',
-        loadingSpinner: 'glyphicon glyphicon-refresh ad-spin'
+        loadingSpinner: 'glyphicon glyphicon-refresh ad-spin',
+        firstPage: 'glyphicon glyphicon-fast-backward',
+        previousPage: 'glyphicon glyphicon-backward',
+        nextPage: 'glyphicon glyphicon-forward',
+        lastPage: 'glyphicon glyphicon-fast-forward',
+        sortAscending: 'glyphicon glyphicon-chevron-up',
+        sortDescending: 'glyphicon glyphicon-chevron-down',
+        sortable: 'glyphicon glyphicon-resize-vertical'
       },
       paging = this.paging = {
         request: {

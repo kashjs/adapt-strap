@@ -10,13 +10,13 @@ angular.module('adaptv.adaptStrap', [
         expand: 'glyphicon glyphicon-plus-sign',
         collapse: 'glyphicon glyphicon-minus-sign',
         loadingSpinner: 'glyphicon glyphicon-refresh ad-spin',
-        firstArrow: 'glyphicon glyphicon-fast-backward',
-        backArrow: 'glyphicon glyphicon-backward',
-        nextArrow: 'glyphicon glyphicon-forward',
-        lastArrow: 'glyphicon glyphicon-fast-forward',
-        upArrow: 'glyphicon glyphicon-chevron-up',
-        downArrow: 'glyphicon glyphicon-chevron-down',
-        upDownArrow: 'glyphicon glyphicon-resize-vertical'
+        firstPage: 'glyphicon glyphicon-fast-backward',
+        previousPage: 'glyphicon glyphicon-backward',
+        nextPage: 'glyphicon glyphicon-forward',
+        lastPage: 'glyphicon glyphicon-fast-forward',
+        sortAscending: 'glyphicon glyphicon-chevron-up',
+        sortDescending: 'glyphicon glyphicon-chevron-down',
+        sortable: 'glyphicon glyphicon-resize-vertical'
       },
       paging = this.paging = {
         request: {

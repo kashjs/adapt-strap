@@ -113,13 +113,13 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
           replace(/%=columnDefinition%/g, attrs.columnDefinition).
           replace(/%=tableClasses%/g, attrs.tableClasses).
           replace(/%=paginationBtnGroupClasses%/g, attrs.paginationBtnGroupClasses).
-          replace(/%=icon-firstArrow%/g, $adConfig.iconClasses.firstArrow).
-          replace(/%=icon-backArrow%/g, $adConfig.iconClasses.backArrow).
-          replace(/%=icon-nextArrow%/g, $adConfig.iconClasses.nextArrow).
-          replace(/%=icon-lastArrow%/g, $adConfig.iconClasses.lastArrow).
-          replace(/%=icon-upArrow%/g, $adConfig.iconClasses.upArrow).
-          replace(/%=icon-downArrow%/g, $adConfig.iconClasses.downArrow).
-          replace(/%=icon-upDownArrow%/g, $adConfig.iconClasses.upDownArrow)
+          replace(/%=icon-firstPage%/g, $adConfig.iconClasses.firstPage).
+          replace(/%=icon-previousPage%/g, $adConfig.iconClasses.previousPage).
+          replace(/%=icon-nextPage%/g, $adConfig.iconClasses.nextPage).
+          replace(/%=icon-lastPage%/g, $adConfig.iconClasses.lastPage).
+          replace(/%=icon-sortAscending%/g, $adConfig.iconClasses.sortAscending).
+          replace(/%=icon-sortDescending%/g, $adConfig.iconClasses.sortDescending).
+          replace(/%=icon-sortable%/g, $adConfig.iconClasses.sortable)
         ;
         element.empty();
         element.append($compile(mainTemplate)(scope));

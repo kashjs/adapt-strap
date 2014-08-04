@@ -92,8 +92,17 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
 
         tableModels.sortByColumn = function (column) {
           if (column.sortKey) {
-            tableModels.localConfig.predicate = column.sortKey;
-            tableModels.localConfig.reverse = !tableModels.localConfig.reverse;
+            if (column.sortKey !== tableModels.localConfig.predicate) {
+              tableModels.localConfig.predicate = column.sortKey;
+              tableModels.localConfig.reverse = true;
+            } else {
+              if (tableModels.localConfig.reverse === true) {
+                tableModels.localConfig.reverse = false;
+              } else {
+                tableModels.localConfig.reverse = undefined;
+                tableModels.localConfig.predicate = undefined;
+              }
+            }
             tableModels.loadPage(tableModels.items.paging.currentPage);
           }
         };

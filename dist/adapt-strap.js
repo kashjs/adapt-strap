@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v0.1.9 - 2014-08-01
+ * @version v0.2.0 - 2014-08-04
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -18,12 +18,23 @@ angular.module('adaptv.adaptStrap', [
   var iconClasses = this.iconClasses = {
       expand: 'glyphicon glyphicon-plus-sign',
       collapse: 'glyphicon glyphicon-minus-sign',
-      loadingSpinner: 'glyphicon glyphicon-refresh ad-spin'
+      loadingSpinner: 'glyphicon glyphicon-refresh ad-spin',
+      firstPage: 'glyphicon glyphicon-fast-backward',
+      previousPage: 'glyphicon glyphicon-backward',
+      nextPage: 'glyphicon glyphicon-forward',
+      lastPage: 'glyphicon glyphicon-fast-forward',
+      sortAscending: 'glyphicon glyphicon-chevron-up',
+      sortDescending: 'glyphicon glyphicon-chevron-down',
+      sortable: 'glyphicon glyphicon-resize-vertical'
     }, paging = this.paging = {
       request: {
         start: 'skip',
         pageSize: 'limit',
-        page: 'page'
+        page: 'page',
+        sortField: 'sort',
+        sortDirection: 'sort_dir',
+        sortAscValue: 'asc',
+        sortDescValue: 'desc'
       },
       response: {
         itemsLocation: 'data',
@@ -90,10 +101,11 @@ angular.module('adaptv.adaptStrap.tableajax', [
   '$parse',
   '$compile',
   '$templateCache',
+  '$adConfig',
   'adLoadPage',
   'adDebounce',
   'adStrapUtils',
-  function ($parse, $compile, $templateCache, adLoadPage, adDebounce, adStrapUtils) {
+  function ($parse, $compile, $templateCache, $adConfig, adLoadPage, adDebounce, adStrapUtils) {
 function _link(scope, element, attrs) {
       // We do the name spacing so the if there are multiple adap-table-lite on the scope,
       // they don't fight with each other.
@@ -125,7 +137,10 @@ function _link(scope, element, attrs) {
       tableModels.loadPage = adDebounce(function (page) {
         lastRequestToken = Math.random();
         tableModels.localConfig.loadingData = true;
-        adLoadPage(page, tableModels.items.paging.pageSize, tableModels.ajaxConfig, lastRequestToken).then(function (response) {
+        adLoadPage(page, tableModels.items.paging.pageSize, {
+          field: tableModels.localConfig.predicate,
+          reverse: tableModels.localConfig.reverse
+        }, tableModels.ajaxConfig, lastRequestToken).then(function (response) {
           if (response.identityToken === lastRequestToken) {
             tableModels.items.list = response.items;
             tableModels.items.paging.totalPages = response.totalPages;
@@ -164,6 +179,13 @@ function _link(scope, element, attrs) {
           tableModels.loadPage(1);
         }
       };
+      tableModels.sortByColumn = function (column) {
+        if (column.sortKey) {
+          tableModels.localConfig.predicate = column.sortKey;
+          tableModels.localConfig.reverse = !tableModels.localConfig.reverse;
+          tableModels.loadPage(tableModels.items.paging.currentPage);
+        }
+      };
       // ---------- initialization and event listeners ---------- //
       //We do the compile after injecting the name spacing into the template.
       tableModels.loadPage(1);
@@ -173,7 +195,8 @@ function _link(scope, element, attrs) {
       }, true);
       attrs.tableClasses = attrs.tableClasses || 'table';
       attrs.paginationBtnGroupClasses = attrs.paginationBtnGroupClasses || 'btn-group btn-group-sm';
-      mainTemplate = mainTemplate.replace(/%=tableName%/g, attrs.tableName).replace(/%=columnDefinition%/g, attrs.columnDefinition).replace(/%=tableClasses%/g, attrs.tableClasses).replace(/%=paginationBtnGroupClasses%/g, attrs.paginationBtnGroupClasses);
+      mainTemplate = mainTemplate.replace(/%=tableName%/g, attrs.tableName).replace(/%=columnDefinition%/g, attrs.columnDefinition).replace(/%=tableClasses%/g, attrs.tableClasses).replace(/%=paginationBtnGroupClasses%/g, attrs.paginationBtnGroupClasses).replace(/%=icon-firstPage%/g, $adConfig.iconClasses.firstPage).replace(/%=icon-previousPage%/g, $adConfig.iconClasses.previousPage).replace(/%=icon-nextPage%/g, $adConfig.iconClasses.nextPage).replace(/%=icon-lastPage%/g, $adConfig.iconClasses.lastPage).replace(/%=icon-sortAscending%/g, $adConfig.iconClasses.sortAscending).replace(/%=icon-sortDescending%/g, $adConfig.iconClasses.sortDescending).replace(/%=icon-sortable%/g, $adConfig.iconClasses.sortable);
+      ;
       element.empty();
       element.append($compile(mainTemplate)(scope));
     }
@@ -185,24 +208,16 @@ function _link(scope, element, attrs) {
 ]);
 
 // Source: tablelite.js
-angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils']).provider('$tablelite', function () {
-  var defaults = this.defaults = {
-      expandIconClass: 'glyphicon glyphicon-plus-sign',
-      collapseIconClass: 'glyphicon glyphicon-minus-sign',
-      loadingIconClass: 'glyphicon glyphicon-refresh ad-spin'
-    };
-  this.$get = function () {
-    return { settings: defaults };
-  };
-}).directive('adTableLite', [
+angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils']).directive('adTableLite', [
   '$parse',
   '$http',
   '$compile',
   '$filter',
   '$templateCache',
+  '$adConfig',
   'adStrapUtils',
   'adDebounce',
-  function ($parse, $http, $compile, $filter, $templateCache, adStrapUtils, adDebounce) {
+  function ($parse, $http, $compile, $filter, $templateCache, $adConfig, adStrapUtils, adDebounce) {
 function _link(scope, element, attrs) {
       // We do the name spacing so the if there are multiple adap-table-lite on the scope,
       // they don't fight with each other.
@@ -233,11 +248,19 @@ function _link(scope, element, attrs) {
         tableModels.items.paging.currentPage = page;
         tableModels.items.paging.totalPages = Math.ceil(scope.$eval(attrs.localDataSource).length / tableModels.items.paging.pageSize);
         tableModels.localConfig.pagingArray = [];
-        startPagingPage = Math.ceil(page / tableModels.items.paging.pageSize) * tableModels.items.paging.pageSize - (tableModels.items.paging.pageSize - 1);
-        for (i = 0; i < 5; i++) {
-          if (startPagingPage + i > 0 && startPagingPage + i <= tableModels.items.paging.totalPages) {
-            tableModels.localConfig.pagingArray.push(startPagingPage + i);
+        var TOTAL_PAGINATION_ITEMS = 5;
+        var minimumBound = page - Math.floor(TOTAL_PAGINATION_ITEMS / 2);
+        for (i = minimumBound; i <= page; i++) {
+          if (i > 0) {
+            tableModels.localConfig.pagingArray.push(i);
           }
+        }
+        while (tableModels.localConfig.pagingArray.length < TOTAL_PAGINATION_ITEMS) {
+          if (i > tableModels.items.paging.totalPages) {
+            break;
+          }
+          tableModels.localConfig.pagingArray.push(i);
+          i++;
         }
       });
       tableModels.loadNextPage = function () {
@@ -260,8 +283,8 @@ function _link(scope, element, attrs) {
         tableModels.loadPage(1);
       };
       tableModels.sortByColumn = function (column) {
-        if (column.sortable) {
-          tableModels.localConfig.predicate = column.displayProperty;
+        if (column.sortKey) {
+          tableModels.localConfig.predicate = column.sortKey;
           tableModels.localConfig.reverse = !tableModels.localConfig.reverse;
           tableModels.loadPage(tableModels.items.paging.currentPage);
         }
@@ -271,7 +294,8 @@ function _link(scope, element, attrs) {
       tableModels.loadPage(1);
       attrs.tableClasses = attrs.tableClasses || 'table';
       attrs.paginationBtnGroupClasses = attrs.paginationBtnGroupClasses || 'btn-group btn-group-sm';
-      mainTemplate = mainTemplate.replace(/%=tableName%/g, attrs.tableName).replace(/%=columnDefinition%/g, attrs.columnDefinition).replace(/%=paginationBtnGroupClasses%/g, attrs.paginationBtnGroupClasses).replace(/%=tableClasses%/g, attrs.tableClasses);
+      mainTemplate = mainTemplate.replace(/%=tableName%/g, attrs.tableName).replace(/%=columnDefinition%/g, attrs.columnDefinition).replace(/%=paginationBtnGroupClasses%/g, attrs.paginationBtnGroupClasses).replace(/%=tableClasses%/g, attrs.tableClasses).replace(/%=icon-firstPage%/g, $adConfig.iconClasses.firstPage).replace(/%=icon-previousPage%/g, $adConfig.iconClasses.previousPage).replace(/%=icon-nextPage%/g, $adConfig.iconClasses.nextPage).replace(/%=icon-lastPage%/g, $adConfig.iconClasses.lastPage).replace(/%=icon-sortAscending%/g, $adConfig.iconClasses.sortAscending).replace(/%=icon-sortDescending%/g, $adConfig.iconClasses.sortDescending).replace(/%=icon-sortable%/g, $adConfig.iconClasses.sortable);
+      ;
       element.empty();
       element.append($compile(mainTemplate)(scope));
       scope.$watch(attrs.localDataSource, function () {
@@ -297,7 +321,7 @@ angular.module('adaptv.adaptStrap.treebrowser', []).directive('adTreeBrowser', [
       link: function (scope, element, attrs) {
         var treeName = attrs.treeName || '', nodeTemplateUrl = attrs.nodeTemplateUrl || '', nodeHeaderUrl = attrs.nodeHeaderUrl || '', childrenPadding = attrs.childrenPadding || 15, template = '', populateMainTemplate = function (nodeTemplate, nodeHeaderTemplate) {
             var data = $templateCache.get('treebrowser/treebrowser.tpl.html');
-            template = data.replace(/%=treeName%/g, treeName).replace(/%=treeRootName%/g, attrs.treeRoot).replace(/%=bordered%/g, attrs.bordered).replace(/%=expandIconClass%/g, attrs.expandIconClass || $adConfig.iconClasses.expand).replace(/%=collapseIconClass%/g, attrs.collapseIconClass || $adConfig.iconClasses.collapse).replace(/%=loadingIconClass%/g, attrs.loadingIconClass || $adConfig.iconClasses.loadingSpinner).replace(/%=childNodeName%/g, attrs.childNode).replace(/%=childrenPadding%/g, childrenPadding).replace(/%=rowNgClass%/g, attrs.rowNgClass || '').replace(/%=nodeTemplate%/g, nodeTemplate).replace(/%=nodeHeaderTemplate%/g, nodeHeaderTemplate || '');
+            template = data.replace(/%=treeName%/g, treeName).replace(/%=treeRootName%/g, attrs.treeRoot).replace(/%=bordered%/g, attrs.bordered).replace(/%=icon-expand%/g, $adConfig.iconClasses.expand).replace(/%=icon-collapse%/g, $adConfig.iconClasses.collapse).replace(/%=icon-loadingSpinner%/g, $adConfig.iconClasses.loadingSpinner).replace(/%=childNodeName%/g, attrs.childNode).replace(/%=childrenPadding%/g, childrenPadding).replace(/%=rowNgClass%/g, attrs.rowNgClass || '').replace(/%=nodeTemplate%/g, nodeTemplate).replace(/%=nodeHeaderTemplate%/g, nodeHeaderTemplate || '');
             element.empty();
             element.append($compile(template)(scope));
           };
@@ -399,12 +423,11 @@ var deb = function (func, delay, immediate, ctx) {
   }
 ]).factory('adLoadPage', [
   '$adConfig',
-  '$q',
   '$http',
   'adStrapUtils',
-  function ($adConfig, $q, $http, adStrapUtils) {
-    return function (pageToLoad, pageSize, ajaxConfigOriginal, identityToken) {
-      var start = (pageToLoad - 1) * pageSize, i, startPagingPage, success, err, defer = $q.defer(), pagingConfig = angular.copy($adConfig.paging), ajaxConfig = angular.copy(ajaxConfigOriginal);
+  function ($adConfig, $http, adStrapUtils) {
+    return function (pageToLoad, pageSize, sortingOptions, ajaxConfigOriginal, identityToken) {
+      var start = (pageToLoad - 1) * pageSize, pagingConfig = angular.copy($adConfig.paging), ajaxConfig = angular.copy(ajaxConfigOriginal);
       if (ajaxConfig.paginationConfig && ajaxConfig.paginationConfig.request) {
         angular.extend(pagingConfig.request, ajaxConfig.paginationConfig.request);
       }
@@ -414,31 +437,44 @@ var deb = function (func, delay, immediate, ctx) {
       ajaxConfig.params[pagingConfig.request.start] = start;
       ajaxConfig.params[pagingConfig.request.pageSize] = pageSize;
       ajaxConfig.params[pagingConfig.request.page] = pageToLoad;
-      success = function (res) {
+      if (sortingOptions.field) {
+        ajaxConfig.params[pagingConfig.request.sortField] = sortingOptions.field;
+      }
+      if (sortingOptions.reverse === false) {
+        ajaxConfig.params[pagingConfig.request.sortDirection] = pagingConfig.request.sortAscValue;
+      } else if (sortingOptions.reverse === true) {
+        ajaxConfig.params[pagingConfig.request.sortDirection] = pagingConfig.request.sortDescValue;
+      }
+      var promise;
+      if (ajaxConfig.method === 'JSONP') {
+        promise = $http.jsonp(ajaxConfig.url + '?callback=JSON_CALLBACK', ajaxConfig);
+      } else {
+        promise = $http(ajaxConfig);
+      }
+      return promise.then(function (result) {
         var response = {
-            items: adStrapUtils.evalObjectProperty(res, pagingConfig.response.itemsLocation),
+            items: adStrapUtils.evalObjectProperty(result.data, pagingConfig.response.itemsLocation),
             currentPage: pageToLoad,
-            totalPages: Math.ceil(adStrapUtils.evalObjectProperty(res, pagingConfig.response.totalItems) / pageSize),
+            totalPages: Math.ceil(adStrapUtils.evalObjectProperty(result.data, pagingConfig.response.totalItems) / pageSize),
             pagingArray: [],
             identityToken: identityToken
           };
-        startPagingPage = Math.ceil(pageToLoad / pageSize) * pageSize - (pageSize - 1);
-        for (i = 0; i < 5; i++) {
-          if (startPagingPage + i > 0 && startPagingPage + i <= response.totalPages) {
-            response.pagingArray.push(startPagingPage + i);
+        var TOTAL_PAGINATION_ITEMS = 5;
+        var minimumBound = pageToLoad - Math.floor(TOTAL_PAGINATION_ITEMS / 2);
+        for (var i = minimumBound; i <= pageToLoad; i++) {
+          if (i > 0) {
+            response.pagingArray.push(i);
           }
         }
-        defer.resolve(response);
-      };
-      err = function (error) {
-        defer.reject(error);
-      };
-      if (ajaxConfig.method === 'JSONP') {
-        $http.jsonp(ajaxConfig.url + '?callback=JSON_CALLBACK', ajaxConfig).success(success).error(err);
-      } else {
-        $http(ajaxConfig).success(success).error(err);
-      }
-      return defer.promise;
+        while (response.pagingArray.length < TOTAL_PAGINATION_ITEMS) {
+          if (i > response.totalPages) {
+            break;
+          }
+          response.pagingArray.push(i);
+          i++;
+        }
+        return response;
+      });
     };
   }
 ]);

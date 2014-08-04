@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v0.1.9 - 2014-08-01
+ * @version v0.2.0 - 2014-08-04
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -12,10 +12,11 @@ angular.module('adaptv.adaptStrap.tableajax', [
   '$parse',
   '$compile',
   '$templateCache',
+  '$adConfig',
   'adLoadPage',
   'adDebounce',
   'adStrapUtils',
-  function ($parse, $compile, $templateCache, adLoadPage, adDebounce, adStrapUtils) {
+  function ($parse, $compile, $templateCache, $adConfig, adLoadPage, adDebounce, adStrapUtils) {
     'use strict';
     function _link(scope, element, attrs) {
       // We do the name spacing so the if there are multiple adap-table-lite on the scope,
@@ -48,7 +49,10 @@ angular.module('adaptv.adaptStrap.tableajax', [
       tableModels.loadPage = adDebounce(function (page) {
         lastRequestToken = Math.random();
         tableModels.localConfig.loadingData = true;
-        adLoadPage(page, tableModels.items.paging.pageSize, tableModels.ajaxConfig, lastRequestToken).then(function (response) {
+        adLoadPage(page, tableModels.items.paging.pageSize, {
+          field: tableModels.localConfig.predicate,
+          reverse: tableModels.localConfig.reverse
+        }, tableModels.ajaxConfig, lastRequestToken).then(function (response) {
           if (response.identityToken === lastRequestToken) {
             tableModels.items.list = response.items;
             tableModels.items.paging.totalPages = response.totalPages;
@@ -87,6 +91,13 @@ angular.module('adaptv.adaptStrap.tableajax', [
           tableModels.loadPage(1);
         }
       };
+      tableModels.sortByColumn = function (column) {
+        if (column.sortKey) {
+          tableModels.localConfig.predicate = column.sortKey;
+          tableModels.localConfig.reverse = !tableModels.localConfig.reverse;
+          tableModels.loadPage(tableModels.items.paging.currentPage);
+        }
+      };
       // ---------- initialization and event listeners ---------- //
       //We do the compile after injecting the name spacing into the template.
       tableModels.loadPage(1);
@@ -96,7 +107,8 @@ angular.module('adaptv.adaptStrap.tableajax', [
       }, true);
       attrs.tableClasses = attrs.tableClasses || 'table';
       attrs.paginationBtnGroupClasses = attrs.paginationBtnGroupClasses || 'btn-group btn-group-sm';
-      mainTemplate = mainTemplate.replace(/%=tableName%/g, attrs.tableName).replace(/%=columnDefinition%/g, attrs.columnDefinition).replace(/%=tableClasses%/g, attrs.tableClasses).replace(/%=paginationBtnGroupClasses%/g, attrs.paginationBtnGroupClasses);
+      mainTemplate = mainTemplate.replace(/%=tableName%/g, attrs.tableName).replace(/%=columnDefinition%/g, attrs.columnDefinition).replace(/%=tableClasses%/g, attrs.tableClasses).replace(/%=paginationBtnGroupClasses%/g, attrs.paginationBtnGroupClasses).replace(/%=icon-firstPage%/g, $adConfig.iconClasses.firstPage).replace(/%=icon-previousPage%/g, $adConfig.iconClasses.previousPage).replace(/%=icon-nextPage%/g, $adConfig.iconClasses.nextPage).replace(/%=icon-lastPage%/g, $adConfig.iconClasses.lastPage).replace(/%=icon-sortAscending%/g, $adConfig.iconClasses.sortAscending).replace(/%=icon-sortDescending%/g, $adConfig.iconClasses.sortDescending).replace(/%=icon-sortable%/g, $adConfig.iconClasses.sortable);
+      ;
       element.empty();
       element.append($compile(mainTemplate)(scope));
     }

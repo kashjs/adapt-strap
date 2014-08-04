@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v0.1.9 - 2014-08-01
+ * @version v0.2.0 - 2014-08-04
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -64,12 +64,11 @@ angular.module('adaptv.adaptStrap.utils', []).factory('adStrapUtils', [
   }
 ]).factory('adLoadPage', [
   '$adConfig',
-  '$q',
   '$http',
   'adStrapUtils',
-  function ($adConfig, $q, $http, adStrapUtils) {
-    return function (pageToLoad, pageSize, ajaxConfigOriginal, identityToken) {
-      var start = (pageToLoad - 1) * pageSize, i, startPagingPage, success, err, defer = $q.defer(), pagingConfig = angular.copy($adConfig.paging), ajaxConfig = angular.copy(ajaxConfigOriginal);
+  function ($adConfig, $http, adStrapUtils) {
+    return function (pageToLoad, pageSize, sortingOptions, ajaxConfigOriginal, identityToken) {
+      var start = (pageToLoad - 1) * pageSize, pagingConfig = angular.copy($adConfig.paging), ajaxConfig = angular.copy(ajaxConfigOriginal);
       if (ajaxConfig.paginationConfig && ajaxConfig.paginationConfig.request) {
         angular.extend(pagingConfig.request, ajaxConfig.paginationConfig.request);
       }
@@ -79,31 +78,44 @@ angular.module('adaptv.adaptStrap.utils', []).factory('adStrapUtils', [
       ajaxConfig.params[pagingConfig.request.start] = start;
       ajaxConfig.params[pagingConfig.request.pageSize] = pageSize;
       ajaxConfig.params[pagingConfig.request.page] = pageToLoad;
-      success = function (res) {
+      if (sortingOptions.field) {
+        ajaxConfig.params[pagingConfig.request.sortField] = sortingOptions.field;
+      }
+      if (sortingOptions.reverse === false) {
+        ajaxConfig.params[pagingConfig.request.sortDirection] = pagingConfig.request.sortAscValue;
+      } else if (sortingOptions.reverse === true) {
+        ajaxConfig.params[pagingConfig.request.sortDirection] = pagingConfig.request.sortDescValue;
+      }
+      var promise;
+      if (ajaxConfig.method === 'JSONP') {
+        promise = $http.jsonp(ajaxConfig.url + '?callback=JSON_CALLBACK', ajaxConfig);
+      } else {
+        promise = $http(ajaxConfig);
+      }
+      return promise.then(function (result) {
         var response = {
-            items: adStrapUtils.evalObjectProperty(res, pagingConfig.response.itemsLocation),
+            items: adStrapUtils.evalObjectProperty(result.data, pagingConfig.response.itemsLocation),
             currentPage: pageToLoad,
-            totalPages: Math.ceil(adStrapUtils.evalObjectProperty(res, pagingConfig.response.totalItems) / pageSize),
+            totalPages: Math.ceil(adStrapUtils.evalObjectProperty(result.data, pagingConfig.response.totalItems) / pageSize),
             pagingArray: [],
             identityToken: identityToken
           };
-        startPagingPage = Math.ceil(pageToLoad / pageSize) * pageSize - (pageSize - 1);
-        for (i = 0; i < 5; i++) {
-          if (startPagingPage + i > 0 && startPagingPage + i <= response.totalPages) {
-            response.pagingArray.push(startPagingPage + i);
+        var TOTAL_PAGINATION_ITEMS = 5;
+        var minimumBound = pageToLoad - Math.floor(TOTAL_PAGINATION_ITEMS / 2);
+        for (var i = minimumBound; i <= pageToLoad; i++) {
+          if (i > 0) {
+            response.pagingArray.push(i);
           }
         }
-        defer.resolve(response);
-      };
-      err = function (error) {
-        defer.reject(error);
-      };
-      if (ajaxConfig.method === 'JSONP') {
-        $http.jsonp(ajaxConfig.url + '?callback=JSON_CALLBACK', ajaxConfig).success(success).error(err);
-      } else {
-        $http(ajaxConfig).success(success).error(err);
-      }
-      return defer.promise;
+        while (response.pagingArray.length < TOTAL_PAGINATION_ITEMS) {
+          if (i > response.totalPages) {
+            break;
+          }
+          response.pagingArray.push(i);
+          i++;
+        }
+        return response;
+      });
     };
   }
 ]);

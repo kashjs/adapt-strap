@@ -69,19 +69,19 @@ angular.module('adaptv.adaptStrapDocs')
       {
         columnHeaderDisplayName: 'Model',
         displayProperty: 'name',
-        sortable: true
+        sortKey: 'name'
       },
       {
         columnHeaderTemplate: '<span><i class="glyphicon glyphicon-calendar"></i> Model Year</span>',
         displayProperty: 'modelYear',
-        sortable: true,
+        sortKey: 'modelYear',
         width: '12em'
       },
       {
         columnHeaderTemplate: '<span><i class="glyphicon glyphicon-usd"></i> Price</span>',
         displayProperty: 'price',
         cellFilter: 'currency',
-        sortable: true,
+        sortKey: 'price',
         width: '9em'
       }
     ];

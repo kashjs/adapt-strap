@@ -91,8 +91,8 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
         };
 
         tableModels.sortByColumn = function (column) {
-          if (column.sortable) {
-            tableModels.localConfig.predicate = column.displayProperty;
+          if (column.sortKey) {
+            tableModels.localConfig.predicate = column.sortKey;
             tableModels.localConfig.reverse = !tableModels.localConfig.reverse;
             tableModels.loadPage(tableModels.items.paging.currentPage);
           }

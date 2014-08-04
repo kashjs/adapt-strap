@@ -82,8 +82,8 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
         };
 
         tableModels.sortByColumn = function (column) {
-          if (column.sortable) {
-            tableModels.localConfig.predicate = column.displayProperty;
+          if (column.sortKey) {
+            tableModels.localConfig.predicate = column.sortKey;
             tableModels.localConfig.reverse = !tableModels.localConfig.reverse;
             tableModels.loadPage(tableModels.items.paging.currentPage);
           }

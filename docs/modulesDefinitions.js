@@ -221,30 +221,6 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
           default: 'false',
           type: 'boolean',
           description: 'If true, adds border to the tree levels'
-        },
-        {
-          name: 'expand-icon-class',
-          required: false,
-          globalConfig: true,
-          default: '"glyphicon glyphicon-plus-sign"',
-          type: 'String',
-          description: 'class of te expand icon'
-        },
-        {
-          name: 'collapse-icon-class',
-          required: false,
-          globalConfig: true,
-          default: '"glyphicon glyphicon-minus-sign"',
-          type: 'String',
-          description: 'class of te collapse icon'
-        },
-        {
-          name: 'loading-icon-class',
-          required: false,
-          globalConfig: true,
-          default: '"glyphicon glyphicon-refresh ad-spin"',
-          type: 'String',
-          description: 'class of te loading icon'
         }
       ]
     }]

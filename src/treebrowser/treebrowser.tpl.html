@@ -13,11 +13,11 @@
                         <div class="toggle">
                             <!--todo: create a callback api to handle the expand and collapse functions-->
                             <i ng-show="!item._expanded && %=treeName%TreeBrowser.hasChildren(item) && !item._loading"
-                               class="%=expandIconClass%" ng-click="%=treeName%TreeBrowser.toggle($event,item)"></i>
+                               class="%=icon-expand%" ng-click="%=treeName%TreeBrowser.toggle($event,item)"></i>
                             <i ng-show="item._expanded && !item._loading"
-                               class="%=collapseIconClass%" ng-click="%=treeName%TreeBrowser.toggle($event,item)"></i>
+                               class="%=icon-collapse%" ng-click="%=treeName%TreeBrowser.toggle($event,item)"></i>
                             <span ng-show="item._loading">
-                                <i class="%=loadingIconClass%"></i>
+                                <i class="%=icon-loadingSpinner%"></i>
                             </span>
                         </div>
                         <div class="node-content">

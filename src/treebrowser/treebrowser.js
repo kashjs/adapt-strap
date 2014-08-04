@@ -20,9 +20,9 @@ angular.module('adaptv.adaptStrap.treebrowser', [])
               template = data.replace(/%=treeName%/g, treeName).
                 replace(/%=treeRootName%/g, attrs.treeRoot).
                 replace(/%=bordered%/g, attrs.bordered).
-                replace(/%=expandIconClass%/g, attrs.expandIconClass || $adConfig.iconClasses.expand).
-                replace(/%=collapseIconClass%/g, attrs.collapseIconClass || $adConfig.iconClasses.collapse).
-                replace(/%=loadingIconClass%/g, attrs.loadingIconClass || $adConfig.iconClasses.loadingSpinner).
+                replace(/%=icon-expand%/g, $adConfig.iconClasses.expand).
+                replace(/%=icon-collapse%/g, $adConfig.iconClasses.collapse).
+                replace(/%=icon-loadingSpinner%/g, $adConfig.iconClasses.loadingSpinner).
                 replace(/%=childNodeName%/g, attrs.childNode).
                 replace(/%=childrenPadding%/g, childrenPadding).
                 replace(/%=rowNgClass%/g, attrs.rowNgClass || '').

@@ -49,12 +49,19 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
               tableModels.items.paging.pageSize
           );
           tableModels.localConfig.pagingArray = [];
-          startPagingPage = ((Math.ceil(page / tableModels.items.paging.pageSize) *
-            tableModels.items.paging.pageSize) - (tableModels.items.paging.pageSize - 1));
-          for (i = 0; i < 5; i++) {
-            if (startPagingPage + i > 0 && startPagingPage + i <= tableModels.items.paging.totalPages) {
-              tableModels.localConfig.pagingArray.push(startPagingPage + i);
+          var TOTAL_PAGINATION_ITEMS = 5;
+          var minimumBound = page - Math.floor(TOTAL_PAGINATION_ITEMS / 2);
+          for (i = minimumBound; i <= page; i++) {
+            if (i > 0) {
+              tableModels.localConfig.pagingArray.push(i);
             }
+          }
+          while (tableModels.localConfig.pagingArray.length < TOTAL_PAGINATION_ITEMS) {
+            if (i > tableModels.items.paging.totalPages) {
+              break;
+            }
+            tableModels.localConfig.pagingArray.push(i);
+            i++;
           }
         });
 

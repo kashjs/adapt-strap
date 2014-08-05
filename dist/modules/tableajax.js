@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v0.2.0 - 2014-08-04
+ * @version v0.2.1 - 2014-08-05
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -93,8 +93,17 @@ angular.module('adaptv.adaptStrap.tableajax', [
       };
       tableModels.sortByColumn = function (column) {
         if (column.sortKey) {
-          tableModels.localConfig.predicate = column.sortKey;
-          tableModels.localConfig.reverse = !tableModels.localConfig.reverse;
+          if (column.sortKey !== tableModels.localConfig.predicate) {
+            tableModels.localConfig.predicate = column.sortKey;
+            tableModels.localConfig.reverse = true;
+          } else {
+            if (tableModels.localConfig.reverse === true) {
+              tableModels.localConfig.reverse = false;
+            } else {
+              tableModels.localConfig.reverse = undefined;
+              tableModels.localConfig.predicate = undefined;
+            }
+          }
           tableModels.loadPage(tableModels.items.paging.currentPage);
         }
       };

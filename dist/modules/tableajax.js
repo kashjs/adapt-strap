@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v0.2.1 - 2014-08-05
+ * @version v0.2.2 - 2014-08-05
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -49,20 +49,25 @@ angular.module('adaptv.adaptStrap.tableajax', [
       tableModels.loadPage = adDebounce(function (page) {
         lastRequestToken = Math.random();
         tableModels.localConfig.loadingData = true;
-        adLoadPage(page, tableModels.items.paging.pageSize, {
-          field: tableModels.localConfig.predicate,
-          reverse: tableModels.localConfig.reverse
-        }, tableModels.ajaxConfig, lastRequestToken).then(function (response) {
-          if (response.identityToken === lastRequestToken) {
-            tableModels.items.list = response.items;
-            tableModels.items.paging.totalPages = response.totalPages;
-            tableModels.items.paging.currentPage = response.currentPage;
-            tableModels.localConfig.pagingArray = response.pagingArray;
+        var pageLoader = scope.$eval(attrs.pageLoader) || adLoadPage, params = {
+            pageNumber: page,
+            pageSize: tableModels.items.paging.pageSize,
+            sortKey: tableModels.localConfig.predicate,
+            sortDirection: tableModels.localConfig.reverse,
+            ajaxConfig: tableModels.ajaxConfig,
+            token: lastRequestToken
+          }, successHandler = function (response) {
+            if (response.token === lastRequestToken) {
+              tableModels.items.list = response.items;
+              tableModels.items.paging.totalPages = response.totalPages;
+              tableModels.items.paging.currentPage = response.currentPage;
+              tableModels.localConfig.pagingArray = response.pagingArray;
+              tableModels.localConfig.loadingData = false;
+            }
+          }, errorHandler = function () {
             tableModels.localConfig.loadingData = false;
-          }
-        }, function () {
-          tableModels.localConfig.loadingData = false;
-        });
+          };
+        pageLoader(params).then(successHandler, errorHandler);
       });
       tableModels.loadNextPage = function () {
         if (!tableModels.localConfig.loadingData) {

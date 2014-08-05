@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v0.2.1 - 2014-08-05
+ * @version v0.2.2 - 2014-08-05
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -137,20 +137,25 @@ function _link(scope, element, attrs) {
       tableModels.loadPage = adDebounce(function (page) {
         lastRequestToken = Math.random();
         tableModels.localConfig.loadingData = true;
-        adLoadPage(page, tableModels.items.paging.pageSize, {
-          field: tableModels.localConfig.predicate,
-          reverse: tableModels.localConfig.reverse
-        }, tableModels.ajaxConfig, lastRequestToken).then(function (response) {
-          if (response.identityToken === lastRequestToken) {
-            tableModels.items.list = response.items;
-            tableModels.items.paging.totalPages = response.totalPages;
-            tableModels.items.paging.currentPage = response.currentPage;
-            tableModels.localConfig.pagingArray = response.pagingArray;
+        var pageLoader = scope.$eval(attrs.pageLoader) || adLoadPage, params = {
+            pageNumber: page,
+            pageSize: tableModels.items.paging.pageSize,
+            sortKey: tableModels.localConfig.predicate,
+            sortDirection: tableModels.localConfig.reverse,
+            ajaxConfig: tableModels.ajaxConfig,
+            token: lastRequestToken
+          }, successHandler = function (response) {
+            if (response.token === lastRequestToken) {
+              tableModels.items.list = response.items;
+              tableModels.items.paging.totalPages = response.totalPages;
+              tableModels.items.paging.currentPage = response.currentPage;
+              tableModels.localConfig.pagingArray = response.pagingArray;
+              tableModels.localConfig.loadingData = false;
+            }
+          }, errorHandler = function () {
             tableModels.localConfig.loadingData = false;
-          }
-        }, function () {
-          tableModels.localConfig.loadingData = false;
-        });
+          };
+        pageLoader(params).then(successHandler, errorHandler);
       });
       tableModels.loadNextPage = function () {
         if (!tableModels.localConfig.loadingData) {
@@ -444,8 +449,8 @@ var deb = function (func, delay, immediate, ctx) {
   '$http',
   'adStrapUtils',
   function ($adConfig, $http, adStrapUtils) {
-    return function (pageToLoad, pageSize, sortingOptions, ajaxConfigOriginal, identityToken) {
-      var start = (pageToLoad - 1) * pageSize, pagingConfig = angular.copy($adConfig.paging), ajaxConfig = angular.copy(ajaxConfigOriginal);
+    return function (options) {
+      var start = (options.pageNumber - 1) * options.pageSize, pagingConfig = angular.copy($adConfig.paging), ajaxConfig = angular.copy(options.ajaxConfig);
       if (ajaxConfig.paginationConfig && ajaxConfig.paginationConfig.request) {
         angular.extend(pagingConfig.request, ajaxConfig.paginationConfig.request);
       }
@@ -453,14 +458,14 @@ var deb = function (func, delay, immediate, ctx) {
         angular.extend(pagingConfig.response, ajaxConfig.paginationConfig.response);
       }
       ajaxConfig.params[pagingConfig.request.start] = start;
-      ajaxConfig.params[pagingConfig.request.pageSize] = pageSize;
-      ajaxConfig.params[pagingConfig.request.page] = pageToLoad;
-      if (sortingOptions.field) {
-        ajaxConfig.params[pagingConfig.request.sortField] = sortingOptions.field;
+      ajaxConfig.params[pagingConfig.request.pageSize] = options.pageSize;
+      ajaxConfig.params[pagingConfig.request.page] = options.pageNumber;
+      if (options.sortKey) {
+        ajaxConfig.params[pagingConfig.request.sortField] = options.sortKey;
       }
-      if (sortingOptions.reverse === false) {
+      if (options.sortDirection === false) {
         ajaxConfig.params[pagingConfig.request.sortDirection] = pagingConfig.request.sortAscValue;
-      } else if (sortingOptions.reverse === true) {
+      } else if (options.sortDirection === true) {
         ajaxConfig.params[pagingConfig.request.sortDirection] = pagingConfig.request.sortDescValue;
       }
       var promise;
@@ -472,14 +477,14 @@ var deb = function (func, delay, immediate, ctx) {
       return promise.then(function (result) {
         var response = {
             items: adStrapUtils.evalObjectProperty(result.data, pagingConfig.response.itemsLocation),
-            currentPage: pageToLoad,
-            totalPages: Math.ceil(adStrapUtils.evalObjectProperty(result.data, pagingConfig.response.totalItems) / pageSize),
+            currentPage: options.pageNumber,
+            totalPages: Math.ceil(adStrapUtils.evalObjectProperty(result.data, pagingConfig.response.totalItems) / options.pageSize),
             pagingArray: [],
-            identityToken: identityToken
+            token: options.token
           };
         var TOTAL_PAGINATION_ITEMS = 5;
-        var minimumBound = pageToLoad - Math.floor(TOTAL_PAGINATION_ITEMS / 2);
-        for (var i = minimumBound; i <= pageToLoad; i++) {
+        var minimumBound = options.pageNumber - Math.floor(TOTAL_PAGINATION_ITEMS / 2);
+        for (var i = minimumBound; i <= options.pageNumber; i++) {
           if (i > 0) {
             response.pagingArray.push(i);
           }

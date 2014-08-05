@@ -43,4 +43,25 @@
             width: 'String' // - Optional - the explicitly specify width of the column. (Ex: '10em', '30px'). If not specified, width is calculated automatically based on content width.
         }
     </markdown>
+    <markdown>
+        ### You can pass in your own page loader. If you pass your own page loader, it is your responsibility to load models from the api.
+
+        ### Page loader function will be called with following parameters object:
+        {
+            pageNumber: // - Number - page number to be loaded,
+            pageSize: // - Number - number of items to be loaded,
+            sortKey: // - String - key to sort by,
+            sortDirection: // - Boolean - true for descending and false for ascending,
+            token: // - Number - the token that you need to return.
+        }
+
+        the page loader should return a promise that resolves with following object or rejects in case of error:
+        {
+          items: // - Array - array of models (Objects)
+          currentPage: // - Number - current page number,
+          totalPages: // - Number - total number of pages in the result set,
+          pagingArray: // - Array - this is the pagination array that will show up in pagination. Ex: if current page is 5, this array would look like [3,4,5,6,7],
+          token: options.token // - Number - simply return the token that was passed in to you in the options parameter.
+        }
+    </markdown>
 </div>

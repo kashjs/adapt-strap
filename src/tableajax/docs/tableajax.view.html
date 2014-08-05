@@ -1,6 +1,6 @@
 <div ng-controller="tableajaxCtrl">
 
-     <!-- ========== Simple Table Implementation ========== -->
+    <!-- ========== Simple Table Implementation ========== -->
     <div class="panel panel-default">
         <div class="panel-body">
             <ad-table-ajax table-name="artistsTable"
@@ -33,7 +33,8 @@
                            table-classes="table table-bordered"
                            page-sizes="[5, 20, 50]"
                            pagination-btn-group-classes="btn-group btn-group-sm"
-                           ajax-config="artistsAjaxConfigSearch">
+                           ajax-config="artistsAjaxConfigSearch"
+                           page-loader="methods.pageLoader">
             </ad-table-ajax>
         </div>
     </div>

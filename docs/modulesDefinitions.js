@@ -120,6 +120,17 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
           type: 'String',
           description: 'these classes will be applied to the pagination btn-group tag. ' +
             'Ex (<code>pagination-btn-group-classes="btn-group btn-group-xs"</code>)'
+        },
+        {
+          name: 'page-loader',
+          required: false,
+          default: 'adaptStrap default page loader',
+          type: 'path',
+          description: 'You can specify your own page loader. Adapt Strap has its own page loader that makes ajax ' +
+            'calls to load items. Look at adLoadPage in utils.js in the source to see how it is implemented. ' +
+            'But for some reason if you need to provide your own page loader, you can specify the path ' +
+            'to that function on your scope. Look at more info below to find out how request object looks like and ' +
+            'what is expected from this function'
         }
       ]
     }]

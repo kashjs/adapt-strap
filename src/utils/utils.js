@@ -59,10 +59,10 @@ angular.module('adaptv.adaptStrap.utils', [])
     return deb;
   }])
   .factory('adLoadPage', ['$adConfig', '$http', 'adStrapUtils', function ($adConfig, $http, adStrapUtils) {
-    return function (pageToLoad, pageSize, sortingOptions, ajaxConfigOriginal, identityToken) {
-      var start = (pageToLoad - 1) * pageSize,
+    return function (options) {
+      var start = (options.pageNumber - 1) * options.pageSize,
         pagingConfig = angular.copy($adConfig.paging),
-        ajaxConfig = angular.copy(ajaxConfigOriginal);
+        ajaxConfig = angular.copy(options.ajaxConfig);
 
       if (ajaxConfig.paginationConfig && ajaxConfig.paginationConfig.request) {
         angular.extend(pagingConfig.request, ajaxConfig.paginationConfig.request);
@@ -72,16 +72,16 @@ angular.module('adaptv.adaptStrap.utils', [])
       }
 
       ajaxConfig.params[pagingConfig.request.start] = start;
-      ajaxConfig.params[pagingConfig.request.pageSize] = pageSize;
-      ajaxConfig.params[pagingConfig.request.page] = pageToLoad;
+      ajaxConfig.params[pagingConfig.request.pageSize] = options.pageSize;
+      ajaxConfig.params[pagingConfig.request.page] = options.pageNumber;
 
-      if (sortingOptions.field) {
-        ajaxConfig.params[pagingConfig.request.sortField] = sortingOptions.field;
+      if (options.sortKey) {
+        ajaxConfig.params[pagingConfig.request.sortField] = options.sortKey;
       }
 
-      if (sortingOptions.reverse === false) {
+      if (options.sortDirection === false) {
         ajaxConfig.params[pagingConfig.request.sortDirection] = pagingConfig.request.sortAscValue;
-      } else if (sortingOptions.reverse === true) {
+      } else if (options.sortDirection === true) {
         ajaxConfig.params[pagingConfig.request.sortDirection] = pagingConfig.request.sortDescValue;
       }
 
@@ -95,18 +95,18 @@ angular.module('adaptv.adaptStrap.utils', [])
       return promise.then(function(result) {
         var response = {
           items: adStrapUtils.evalObjectProperty(result.data, pagingConfig.response.itemsLocation),
-          currentPage: pageToLoad,
+          currentPage: options.pageNumber,
           totalPages: Math.ceil(
               adStrapUtils.evalObjectProperty(result.data, pagingConfig.response.totalItems) /
-              pageSize
+              options.pageSize
           ),
           pagingArray: [],
-          identityToken: identityToken
+          token: options.token
         };
 
         var TOTAL_PAGINATION_ITEMS = 5;
-        var minimumBound = pageToLoad - Math.floor(TOTAL_PAGINATION_ITEMS / 2);
-        for (var i = minimumBound; i <= pageToLoad; i++) {
+        var minimumBound = options.pageNumber - Math.floor(TOTAL_PAGINATION_ITEMS / 2);
+        for (var i = minimumBound; i <= options.pageNumber; i++) {
           if (i > 0) {
             response.pagingArray.push(i);
           }

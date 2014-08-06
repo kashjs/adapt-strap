@@ -39,11 +39,11 @@ npm install
 bower install
 ```
 
-* run local environment. It will watch for changes and re-build.
+* run local environment. It will watch for changes and re-build
 ```
 gulp
 ```
-* your local dev is running at `http://localhost:9003/##treebrowser`
+* your local dev is running at `http://localhost:9003`
 * you can force local build by `gulp dist`
 
 * Make your changes under master.

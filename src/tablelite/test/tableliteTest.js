@@ -34,7 +34,7 @@ describe('tablelite component', function () {
       expect($rootScope.carsForSale.items.paging.currentPage).toEqual(1);
       expect($rootScope.carsForSale.items.paging.totalPages).toEqual(2);
       expect($rootScope.carsForSale.items.paging.pageSize).toEqual(7);
-      expect($rootScope.carsForSale.items.list.length).toEqual(7);
+      expect($rootScope.carsForSale.items.list.length).toEqual(6);
     }, 1000);
 
     $timeout.flush();

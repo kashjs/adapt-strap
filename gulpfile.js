@@ -47,114 +47,40 @@ gulp.task('clean:dist', function() {
 
 // ========== SCRIPTS ========== //
 gulp.task('scripts:dist', function(foo) {
-
-  var combined = combine(
-
-    // Build unified package
-    gulp.src([src.index, src.scripts], {cwd: src.cwd})
-      .pipe(sourcemaps.init())
-      .pipe(ngmin())
-      .pipe(concat(pkg.name + '.js', {process: function(src) { return '// Source: ' + path.basename(this.path) + '\n' + (src.trim() + '\n').replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1'); }}))
-      .pipe(concat.header('(function(window, document, undefined) {\n\'use strict\';\n'))
-      .pipe(concat.footer('\n})(window, document);\n'))
-      .pipe(concat.header(banner))
-      .pipe(gulp.dest(src.dist))
-      .pipe(rename(function(path) { path.extname = '.min.js'; }))
-      .pipe(uglify())
-      .pipe(concat.header(banner))
-      .pipe(sourcemaps.write('./'))
-      .pipe(gulp.dest(src.dist)).pipe(gulp.dest(path.join(src.dist, 'modules'))).on('error', function(err) {
-        util.log(chalk.red(nutil.format('Plugin error: %s', err.message)));
-      }),
-
-    // Build individual modules
-    gulp.src(src.scripts, {cwd: src.cwd})
-      .pipe(sourcemaps.init())
-      .pipe(ngmin())
-      .pipe(rename(function(path){ path.dirname = ''; })) // flatten
-      .pipe(concat.header(banner))
-      .pipe(gulp.dest(path.join(src.dist, 'modules')))
-      .pipe(rename(function(path) { path.extname = '.min.js'; }))
-      .pipe(uglify())
-      .pipe(concat.header(banner))
-      .pipe(sourcemaps.write('./'))
-      .pipe(gulp.dest(path.join(src.dist, 'modules'))).on('error', function(err) {
-        util.log(chalk.red(nutil.format('Plugin error: %s', err.message)));
-      })
-
-  );
-
-  combined.on('error', function(err) {
-    util.log(chalk.red(nutil.format('Plugin error: %s', err.message)));
-  });
-
-  return combined;
-
+  // Build unified package
+  return gulp.src([src.index, src.scripts], {cwd: src.cwd})
+    .pipe(ngmin())
+    .pipe(concat(pkg.name + '.js', {process: function(src) { return '// Source: ' + path.basename(this.path) + '\n' + (src.trim() + '\n').replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1'); }}))
+    .pipe(concat.header('(function(window, document, undefined) {\n\'use strict\';\n'))
+    .pipe(concat.footer('\n})(window, document);\n'))
+    .pipe(concat.header(banner))
+    .pipe(gulp.dest(src.dist))
+    .pipe(rename(function(path) { path.extname = '.min.js'; }))
+    .pipe(uglify())
+    .pipe(concat.header(banner))
+    .pipe(gulp.dest(src.dist));
 });
 
 
 // ========== TEMPLATES ========== //
 createModuleName = function(src) { return 'adaptv.adaptStrap.' + src.split(path.sep)[0]; };
 gulp.task('templates:dist', function() {
-
-  var combined = combine(
-
-    // Build unified package
-    gulp.src(src.templates, {cwd: src.cwd})
-      .pipe(htmlmin({removeComments: true, collapseWhitespace: true}))
-      .pipe(ngtemplate({module: createModuleName}))
-      .pipe(ngmin())
-      .pipe(concat(pkg.name + '.tpl.js', {process: function(src) { return '// Source: ' + path.basename(this.path) + '\n' + (src.trim() + '\n').replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1'); }}))
-      .pipe(concat.header('(function(window, document, undefined) {\n\'use strict\';\n\n'))
-      .pipe(concat.footer('\n\n})(window, document);\n'))
-      .pipe(concat.header(banner))
-      .pipe(gulp.dest(src.dist))
-      .pipe(rename(function(path) { path.extname = '.min.js'; }))
-      .pipe(uglify())
-      .pipe(concat.header(banner))
-      .pipe(gulp.dest(src.dist)).on('error', function(err) {
-        util.log(chalk.red(nutil.format('Plugin error: %s', err.message)));
-      }),
-
-    // Build individual modules
-    gulp.src(src.templates, {cwd: src.cwd})
-      .pipe(htmlmin({removeComments: true, collapseWhitespace: true}))
-      .pipe(ngtemplate({module: createModuleName}))
-      .pipe(ngmin())
-      .pipe(rename(function(path){ path.dirname = ''; })) // flatten
-      .pipe(concat.header(banner))
-      .pipe(gulp.dest(path.join(src.dist, 'modules')))
-      .pipe(rename(function(path) { path.extname = '.min.js'; }))
-      .pipe(uglify())
-      .pipe(concat.header(banner))
-      .pipe(gulp.dest(path.join(src.dist, 'modules')))
-      .on('error', function(err) {
-        util.log(chalk.red(nutil.format('Plugin error: %s', err.message)));
-      })
-
-  );
-
-  combined.on('error', function(err) {
-    util.log(chalk.red(nutil.format('Plugin error: %s', err.message)));
-  });
-
-  return combined;
-
+  return gulp.src(src.templates, {cwd: src.cwd})
+    .pipe(htmlmin({removeComments: true, collapseWhitespace: true}))
+    .pipe(ngtemplate({module: createModuleName}))
+    .pipe(ngmin())
+    .pipe(concat(pkg.name + '.tpl.js', {process: function(src) { return '// Source: ' + path.basename(this.path) + '\n' + (src.trim() + '\n').replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1'); }}))
+    .pipe(concat.header('(function(window, document, undefined) {\n\'use strict\';\n\n'))
+    .pipe(concat.footer('\n\n})(window, document);\n'))
+    .pipe(concat.header(banner))
+    .pipe(gulp.dest(src.dist))
+    .pipe(rename(function(path) { path.extname = '.min.js'; }))
+    .pipe(uglify())
+    .pipe(concat.header(banner))
+    .pipe(gulp.dest(src.dist)).on('error', function(err) {
+      util.log(chalk.red(nutil.format('Plugin error: %s', err.message)));
+    });
 });
-
-gulp.task('doc:view', function () {
-  return gulp.src(src.docView, {cwd: src.cwd})
-    .pipe(cheerio(function ($) {
-      var publicTags = $('public').html();
-      $(':first-child').empty();
-      $(':first-child').append(publicTags)
-    }))
-    .pipe(rename(function (path) {
-      path.basename += ".public";
-      path.extname = ".html"
-    }))
-    .pipe(gulp.dest(src.cwd));
-})
 
 // ========== STYLE ========== //
 gulp.task('less', function () {
@@ -253,7 +179,8 @@ gulp.task('dist:release', function(callback) {
 
 
 gulp.task('dist:unsafe', function(callback) {
-  return runSequence('clean:dist', ['templates:dist', 'scripts:dist', 'style:dist:live'], callback);
+  runSequence('clean:dist', ['templates:dist', 'scripts:dist', 'style:dist:live'], callback);
+  return 0;
 });
 
 gulp.task('watch', function () {

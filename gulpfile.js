@@ -18,8 +18,8 @@ var gulp = require('gulp'),
     templates: '*/*.tpl.html',
     docView: '*/docs/*.view.html',
     html: ['src/**/*.html', 'docs/**/*.html'],
-    js: ['src/**/*.js', 'docs/**/*.js'],
-    watch: ['src/**/*.*','!src/**/docs/*.*']
+    js: ['src/**/*.js', 'docs/**/*.js', '!src/**/test/*.*'],
+    watch: ['src/**/*.*','!src/**/docs/*.*', '!src/**/test/*.*']
   },
   banner,
   createModuleName;
@@ -200,7 +200,7 @@ gulp.task('style:dist:live', function() {
 
 // ========== validate ========== //
 gulp.task('htmlhint', function () {
-  gulp.src(src.html)
+  return gulp.src(src.html)
     .pipe(htmlhint({
       htmlhintrc: '.htmlhintrc'
     }))
@@ -208,7 +208,7 @@ gulp.task('htmlhint', function () {
 });
 
 gulp.task('htmlhint:fail', function () {
-  gulp.src(src.html)
+  return gulp.src(src.html)
     .pipe(htmlhint({
       htmlhintrc: '.htmlhintrc'
     }))
@@ -216,13 +216,13 @@ gulp.task('htmlhint:fail', function () {
 });
 
 gulp.task('jshint', function() {
-  gulp.src(src.js)
+  return gulp.src(src.js)
     .pipe(jshint())
     .pipe(jshint.reporter('jshint-stylish'));
 });
 
 gulp.task('jshint:fail', function() {
-  gulp.src(src.js)
+  return gulp.src(src.js)
     .pipe(jshint())
     .pipe(jshint.reporter('jshint-stylish'))
     .pipe(jshint.reporter('fail'));
@@ -233,23 +233,31 @@ gulp.task('jscs', function () {
     .pipe(jscs());
 });
 
+gulp.task('unit', function() {
+  return gulp.src('./nothing')
+    .pipe(karma({
+      configFile: 'karma.conf.js',
+      action: 'run'
+    }));
+});
+
 // ========== DEFAULT TASKS ========== //
-gulp.task('dist', function() {
-  runSequence(['jshint:fail', 'htmlhint:fail', 'jscs'],'clean:dist', ['templates:dist', 'scripts:dist', 'style:dist']);
+gulp.task('dist', function(callback) {
+  return runSequence(['jshint:fail', 'htmlhint:fail', 'jscs'],'clean:dist', ['templates:dist', 'scripts:dist', 'style:dist'], callback);
 });
 
-gulp.task('dist:release', function() {
+gulp.task('dist:release', function(callback) {
   src.dist = 'dist';
-  runSequence(['jshint:fail', 'htmlhint:fail', 'jscs'],'clean:dist', ['templates:dist', 'scripts:dist', 'style:dist']);
+  return runSequence(['jshint:fail', 'htmlhint:fail', 'jscs'],'clean:dist', ['templates:dist', 'scripts:dist', 'style:dist'], callback);
 });
 
 
-gulp.task('dist:unsafe', function() {
-  runSequence('clean:dist', ['templates:dist', 'scripts:dist', 'style:dist:live']);
+gulp.task('dist:unsafe', function(callback) {
+  return runSequence('clean:dist', ['templates:dist', 'scripts:dist', 'style:dist:live'], callback);
 });
 
 gulp.task('watch', function () {
-  gulp.watch(src.watch, ['dist:unsafe'])
+  return gulp.watch(src.watch, ['dist:unsafe'])
     .on('error', util.log);
 });
 
@@ -264,6 +272,6 @@ gulp.task('server', function () {
 gulp.task('test', ['jshint', 'jscs', 'htmlhint']);
 gulp.task('test:fail', ['jscs', 'jshint:fail', 'htmlhint:fail']);
 
-gulp.task('default', function() {
-  runSequence('server','dist:unsafe', 'watch');
+gulp.task('default', function(callback) {
+  return runSequence('server','dist:unsafe', 'watch', callback);
 });

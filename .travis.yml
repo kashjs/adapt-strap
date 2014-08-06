@@ -10,3 +10,6 @@ before_script:
 
 script:
   - gulp test:fail
+  - gulp dist:unsafe
+  - sleep 10
+  - gulp unit

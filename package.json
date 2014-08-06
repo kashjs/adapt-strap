@@ -44,7 +44,12 @@
     "gulp-jscs": "^0.6.0",
     "gulp-htmlhint": "0.0.9",
     "gulp-cssmin": "^0.1.6",
-    "gulp-connect": "^2.0.6"
+    "gulp-connect": "^2.0.6",
+    "karma": "^0.12.21",
+    "gulp-karma": "0.0.4",
+    "karma-coverage": "^0.2.5",
+    "karma-jasmine": "^0.1.5",
+    "karma-phantomjs-launcher": "^0.1.4"
   },
   "homepage": "https://github.com/Adaptv/adapt-strap"
 }

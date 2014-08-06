@@ -39,13 +39,17 @@ angular.module('adaptv.adaptStrapDocs', [
               }
               element.html(converter.makeHtml(data.data));
               element.find('pre code').each(function (i, block) {
-                hljs.highlightBlock(block);
+                if (hljs) {
+                  hljs.highlightBlock(block);
+                }
               });
             });
           } else {
             element.html(converter.makeHtml(element.html()));
             element.find('pre code').each(function (i, block) {
-              hljs.highlightBlock(block);
+              if (hljs) {
+                hljs.highlightBlock(block);
+              }
             });
           }
         }

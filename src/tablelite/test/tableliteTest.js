@@ -10,7 +10,7 @@ describe('tablelite component', function () {
   });
 
   beforeEach(inject(function (_$timeout_) {
-    // Set `$q` and `$timeout` before tests run
+    // `$timeout` before tests run
     $timeout = _$timeout_;
   }));
 
@@ -19,7 +19,7 @@ describe('tablelite component', function () {
       $scope: $rootScope
     });
 
-    var element = $compile(
+    $compile(
         '<ad-table-lite ' +
         'table-name="carsForSale"' +
         'column-definition="carsTableColumnDefinition"' +
@@ -34,7 +34,7 @@ describe('tablelite component', function () {
       expect($rootScope.carsForSale.items.paging.currentPage).toEqual(1);
       expect($rootScope.carsForSale.items.paging.totalPages).toEqual(2);
       expect($rootScope.carsForSale.items.paging.pageSize).toEqual(7);
-      expect($rootScope.carsForSale.items.list.length).toEqual(6);
+      expect($rootScope.carsForSale.items.list.length).toEqual(7);
     }, 1000);
 
     $timeout.flush();

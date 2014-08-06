@@ -61,7 +61,6 @@ gulp.task('scripts:dist', function(foo) {
     .pipe(gulp.dest(src.dist));
 });
 
-
 // ========== TEMPLATES ========== //
 createModuleName = function(src) { return 'adaptv.adaptStrap.' + src.split(path.sep)[0]; };
 gulp.task('templates:dist', function() {
@@ -196,8 +195,8 @@ gulp.task('server', function () {
   });
 });
 
-gulp.task('test', ['jshint', 'jscs', 'htmlhint']);
-gulp.task('test:fail', ['jscs', 'jshint:fail', 'htmlhint:fail']);
+gulp.task('validate', ['jshint', 'jscs', 'htmlhint']);
+gulp.task('validate:fail', ['jscs', 'jshint:fail', 'htmlhint:fail']);
 
 gulp.task('default', function(callback) {
   return runSequence('server','dist:unsafe', 'watch', callback);

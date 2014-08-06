@@ -4,7 +4,7 @@
 ### Available components/features:
 - **Table Lite** - simple table UI that renders your local data models and does local pagination/sorting
 - **Table AJAX** - advanced table UI that renders remote data models and does remote pagination/sorting
-- **Tree Browser** - simple tree UI that allows you to brows through local data models in tree structure
+- **Tree Browser** - simple tree UI that allows you to brows through local data models in a tree structure
 - **Loading Indicators** - simple directives to render overlay and inline loading indicators
 - **Global configuration** - all the components are globally configurable to use your set of icons and pagination/sorting configuration
 - **Customizable** - all the components are highly customizable.

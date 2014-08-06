@@ -7,7 +7,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
     function ($parse, $compile, $templateCache, $adConfig, adLoadPage, adDebounce, adStrapUtils) {
       'use strict';
       function _link(scope, element, attrs) {
-        // We do the name spacing so the if there are multiple adap-table-lite on the scope,
+        // We do the name spacing so the if there are multiple ad-table-ajax on the scope,
         // they don't fight with each other.
         scope[attrs.tableName] = {
           items: {

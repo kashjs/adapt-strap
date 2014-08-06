@@ -225,9 +225,9 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             'Provide the path to toggle function ' +
             '(ex: <code>toggle-callback="methods.loadChildren"</code>). If you do provide this, ' +
             'the tree item will be passed to this function every time some one toggles a tree level. ' +
-            'In this case, you need to set the _expanded' +
+            'In this case, you need to set the _ad_expanded' +
             'property to true or false. You can also set loading property to true or false on the item.' +
-            'If you set _loading to true, the ui will show the _loading icon on that tree level.'
+            'If you set _ad_loading to true, the ui will show the _ad_loading icon on that tree level.'
         },
         {
           name: 'bordered',

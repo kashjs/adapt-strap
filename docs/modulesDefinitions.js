@@ -4,6 +4,7 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
     moduleName: 'tablelite',
     displayName: 'Table Lite',
     controllerName: 'tableliteCtrl',
+    description: 'simple table UI that renders your local data models and does local pagination/sorting',
     docFiles: [
       'tablelite.view.html',
       'tablelite.ctrl.js'
@@ -65,6 +66,7 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
     moduleName: 'tableajax',
     displayName: 'Table AJAX',
     controllerName: 'tableajaxCtrl',
+    description: 'advanced table UI that renders remote data models and does remote pagination/sorting',
     docFiles: [
       'tableajax.view.html',
       'tableajax.ctrl.js',
@@ -139,6 +141,7 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
     moduleName: 'treebrowser',
     displayName: 'Tree Browser',
     controllerName: 'treebrowserCtrl',
+    description: 'simple tree UI that allows you to brows through local data models in tree structure',
     docFiles: [
       'treebrowser.view.html',
       'treebrowser.ctrl.js',
@@ -240,6 +243,7 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
     moduleName: 'loadingindicator',
     displayName: 'Loading Indicator',
     controllerName: 'loadingIndicatorCtrl',
+    description: 'simple directives to render overlay and inline loading indicators',
     docFiles: [
       'loadingindicator.view.html',
       'loadingindicator.ctrl.js'

@@ -17,3 +17,9 @@ dist_temp
 .DS_Store
 app/.DS_Store
 **/.DS_Store
+
+# ========== project files ==========
+.project
+
+# ========== Test Coverage Reports ======
+coverage/

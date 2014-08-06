@@ -9,4 +9,7 @@ before_script:
   - bower --version
 
 script:
-  - gulp test:fail
+  - gulp validate:fail
+  - gulp dist:unsafe
+  - sleep 10
+  - gulp unit

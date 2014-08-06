@@ -56,9 +56,11 @@ gulp
 
 * Make your changes under master.
 
-* run validator test before commit and fix html, and js errors.
+* run validators and tests before commit and fix html, and js errors.
 ```
-gulp test
+gulp dist
+gulp validate
+gulp unit
 ```
 
 * push your changes 

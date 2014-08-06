@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <div class="module-section" ng-repeat="module in modules" id="{{ module.moduleName }}">
         <h3>{{ module.displayName }}</h3>
-
+        <p class="text-muted">- {{ module.description }}</p>
         <div ng-controller="treebrowserCtrl">
             <div class="row">
                 <div class="col-md-6 col-sm-6">

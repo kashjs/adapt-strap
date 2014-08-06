@@ -1,5 +1,13 @@
 ## adaptStrap Ui Cmponents/utilities based on AngularJs 1.2+ & Bootstrap 3
 [![Build Status](https://travis-ci.org/Adaptv/adapt-strap.svg)](https://travis-ci.org/Adaptv/adapt-strap)
+---
+### Available components/features:
+- **Table Lite** - simple table UI that renders your local data models and does local pagination/sorting
+- **Table AJAX** - An advanced table UI that renders remote data models and remote pagination/sorting
+- **Tree Browser** - simple tree UI that allows you to brows through local data models in tree structure
+- **Loading Indicators** - simple directives to render overlay and inline loading indicators
+- **Global Configurability** - all the components are globally configurable to use your set of icon set and pagination configuration
+- **Customizable** - all the components are highly customizable.
 
 ###Usage
 * Install the library using `bower install adapt-strap --save`

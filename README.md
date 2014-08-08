@@ -54,7 +54,7 @@ gulp
 * your local dev is running at `http://localhost:9003`
 * you can force local build by `gulp dist`
 
-* Make your changes under master.
+* Make your changes under master. Also write/modify tests under src/xyz/test directory.
 
 * run validators and tests before commit and fix html, and js errors.
 ```

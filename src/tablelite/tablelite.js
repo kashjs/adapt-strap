@@ -20,9 +20,13 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
             }
           },
           localConfig: {
-            pagingArray: []
+            pagingArray: [],
+            selectable: attrs.selectedItems ? true : false
           },
-          applyFilter: adStrapUtils.applyFilter
+          selectedItems: scope.$eval(attrs.selectedItems),
+          applyFilter: adStrapUtils.applyFilter,
+          isSelected: adStrapUtils.itemExistsInList,
+          addRemove: adStrapUtils.addRemoveFromList
         };
 
         // ---------- Local data ---------- //

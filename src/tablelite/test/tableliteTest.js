@@ -1,6 +1,3 @@
-/**
- * Created by languyen14 on 7/8/14.
- */
 describe('tablelite component', function () {
   var controller,
     $timeout;
@@ -30,6 +27,7 @@ describe('tablelite component', function () {
         '</ad-table-lite>'
     )($rootScope);
 
+    // we are just making sure that table is initializing correctly.
     $timeout(function () {
       expect($rootScope.carsForSale.items.paging.currentPage).toEqual(1);
       expect($rootScope.carsForSale.items.paging.totalPages).toEqual(2);

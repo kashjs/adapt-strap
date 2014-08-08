@@ -1,8 +1,12 @@
 <div class="ad-table-lite-container">
     <table class="%=tableClasses%">
         <tr class="ad-user-select-none">
-            <th ng-if="%=tableName%.localConfig.selectable">
-
+            <th ng-if="%=tableName%.localConfig.selectable && %=tableName%.items.allItems"
+                class="ad-select-cell">
+              <input type="checkbox"
+                     class="ad-cursor-pointer"
+                     ng-click="%=tableName%.addRemoveAll(%=tableName%.items.allItems, %=tableName%.selectedItems)"
+                     ng-checked="%=tableName%.allSelected(%=tableName%.items.allItems, %=tableName%.selectedItems)">
             </th>
             <th data-ng-repeat="definition in %=columnDefinition%"
                 ng-click="%=tableName%.sortByColumn(definition)"
@@ -21,11 +25,14 @@
                       ng-bind="definition.columnHeaderDisplayName"></div>
             </th>
         </tr>
-        <tr data-ng-repeat="item in %=tableName%.items.list">
-            <td ng-if="%=tableName%.localConfig.selectable">
+        <tr data-ng-repeat="item in %=tableName%.items.list"
+            ng-class="{'ad-selected': %=tableName%.localConfig.selectable && %=tableName%.isSelected(item, %=tableName%.selectedItems)}">
+            <td ng-if="%=tableName%.localConfig.selectable"
+                class="ad-select-cell">
               <input type="checkbox"
+                     class="ad-cursor-pointer"
                      ng-checked="%=tableName%.isSelected(item, %=tableName%.selectedItems)"
-                     ng-click="%=tableName%.addRemove(item, %=tableName%.selectedItems)">
+                     ng-click="%=tableName%.addRemoveItem(item, %=tableName%.selectedItems)">
             </td>
             <td data-ng-repeat="definition in %=columnDefinition%">
                 <div ng-if="definition.templateUrl">

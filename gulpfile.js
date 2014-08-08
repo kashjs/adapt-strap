@@ -47,56 +47,61 @@ gulp.task('clean:dist', function() {
 
 // ========== SCRIPTS ========== //
 gulp.task('scripts:dist', function(foo) {
-  // Build unified package
-  return gulp.src([src.index, src.scripts], {cwd: src.cwd})
-    .pipe(ngmin())
-    .on('error', nutil.log)
-    .pipe(concat(pkg.name + '.js', {process: function(src) { return '// Source: ' + path.basename(this.path) + '\n' + (src.trim() + '\n').replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1'); }}))
-    .on('error', nutil.log)
-    .pipe(concat.header('(function(window, document, undefined) {\n\'use strict\';\n'))
-    .on('error', nutil.log)
-    .pipe(concat.footer('\n})(window, document);\n'))
-    .on('error', nutil.log)
-    .pipe(concat.header(banner))
-    .on('error', nutil.log)
-    .pipe(gulp.dest(src.dist))
-    .on('error', nutil.log)
-    .pipe(rename(function(path) { path.extname = '.min.js'; }))
-    .on('error', nutil.log)
-    .pipe(uglify())
-    .on('error', nutil.log)
-    .pipe(concat.header(banner))
-    .on('error', nutil.log)
-    .pipe(gulp.dest(src.dist))
-    .on('error', nutil.log);
+
+  var combined = combine(
+    // Build unified package
+    gulp.src([src.index, src.scripts], {cwd: src.cwd})
+      .pipe(ngmin())
+      .pipe(concat(pkg.name + '.js', {process: function(src) { return '// Source: ' + path.basename(this.path) + '\n' + (src.trim() + '\n').replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1'); }}))
+      .pipe(concat.header('(function(window, document, undefined) {\n\'use strict\';\n'))
+      .pipe(concat.footer('\n})(window, document);\n'))
+      .pipe(concat.header(banner))
+      .pipe(gulp.dest(src.dist))
+      .pipe(rename(function(path) { path.extname = '.min.js'; }))
+      .pipe(uglify())
+      .pipe(concat.header(banner))
+      .pipe(gulp.dest(src.dist))
+  );
+
+  combined.on('error', function(err) {
+    util.log(chalk.red(nutil.format('Plugin error: %s', err.message)));
+  });
+
+  return combined;
+
 });
+
 
 // ========== TEMPLATES ========== //
 createModuleName = function(src) { return 'adaptv.adaptStrap.' + src.split(path.sep)[0]; };
 gulp.task('templates:dist', function() {
-  return gulp.src(src.templates, {cwd: src.cwd})
-    .pipe(htmlmin({removeComments: true, collapseWhitespace: true}))
-    .on('error', nutil.log)
-    .pipe(ngtemplate({module: createModuleName}))
-    .on('error', nutil.log)
-    .pipe(ngmin())
-    .on('error', nutil.log)
-    .pipe(concat(pkg.name + '.tpl.js', {process: function(src) { return '// Source: ' + path.basename(this.path) + '\n' + (src.trim() + '\n').replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1'); }}))
-    .on('error', nutil.log)
-    .pipe(concat.header('(function(window, document, undefined) {\n\'use strict\';\n\n'))
-    .on('error', nutil.log)
-    .pipe(concat.footer('\n\n})(window, document);\n'))
-    .on('error', nutil.log)
-    .pipe(concat.header(banner))
-    .on('error', nutil.log)
-    .pipe(gulp.dest(src.dist))
-    .on('error', nutil.log)
-    .pipe(rename(function(path) { path.extname = '.min.js'; }))
-    .on('error', nutil.log)
-    .pipe(uglify())
-    .on('error', nutil.log)
-    .pipe(concat.header(banner))
-    .on('error', nutil.log);
+
+  var combined = combine(
+
+    // Build unified package
+    gulp.src(src.templates, {cwd: src.cwd})
+      .pipe(htmlmin({removeComments: true, collapseWhitespace: true}))
+      .pipe(ngtemplate({module: createModuleName}))
+      .pipe(ngmin())
+      .pipe(concat(pkg.name + '.tpl.js', {process: function(src) { return '// Source: ' + path.basename(this.path) + '\n' + (src.trim() + '\n').replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1'); }}))
+      .pipe(concat.header('(function(window, document, undefined) {\n\'use strict\';\n\n'))
+      .pipe(concat.footer('\n\n})(window, document);\n'))
+      .pipe(concat.header(banner))
+      .pipe(gulp.dest(src.dist))
+      .pipe(rename(function(path) { path.extname = '.min.js'; }))
+      .pipe(uglify())
+      .pipe(concat.header(banner))
+      .pipe(gulp.dest(src.dist)).on('error', function(err) {
+        util.log(chalk.red(nutil.format('Plugin error: %s', err.message)));
+      })
+  );
+
+  combined.on('error', function(err) {
+    util.log(chalk.red(nutil.format('Plugin error: %s', err.message)));
+  });
+
+  return combined;
+
 });
 
 // ========== STYLE ========== //
@@ -113,21 +118,13 @@ gulp.task('less', function () {
 gulp.task('style:dist', function() {
   return gulp.src(src.less, {cwd: src.cwd})
     .pipe(less())
-    .on('error', nutil.log)
     .pipe(concat(pkg.name + '.css', {process: function(src) { return '/* Style: ' + path.basename(this.path) + '*/\n' + (src.trim() + '\n').replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1'); }}))
-    .on('error', nutil.log)
     .pipe(concat.header(banner))
-    .on('error', nutil.log)
     .pipe(gulp.dest(src.dist))
-    .on('error', nutil.log)
     .pipe(cssmin())
-    .on('error', nutil.log)
     .pipe(concat.header(banner))
-    .on('error', nutil.log)
     .pipe(rename({suffix: '.min'}))
-    .on('error', nutil.log)
     .pipe(gulp.dest(src.dist))
-    .on('error', nutil.log)
     .on('error', function(err) {
       util.log(chalk.red(nutil.format('Plugin error: %s', err.message)));
     });
@@ -157,7 +154,7 @@ gulp.task('style:dist:live', function() {
 
 // ========== validate ========== //
 gulp.task('htmlhint', function () {
-  return gulp.src(src.html)
+  gulp.src(src.html)
     .pipe(htmlhint({
       htmlhintrc: '.htmlhintrc'
     }))
@@ -165,7 +162,7 @@ gulp.task('htmlhint', function () {
 });
 
 gulp.task('htmlhint:fail', function () {
-  return gulp.src(src.html)
+  gulp.src(src.html)
     .pipe(htmlhint({
       htmlhintrc: '.htmlhintrc'
     }))
@@ -173,13 +170,13 @@ gulp.task('htmlhint:fail', function () {
 });
 
 gulp.task('jshint', function() {
-  return gulp.src(src.js)
+  gulp.src(src.js)
     .pipe(jshint())
     .pipe(jshint.reporter('jshint-stylish'));
 });
 
 gulp.task('jshint:fail', function() {
-  return gulp.src(src.js)
+  gulp.src(src.js)
     .pipe(jshint())
     .pipe(jshint.reporter('jshint-stylish'))
     .pipe(jshint.reporter('fail'));
@@ -200,12 +197,12 @@ gulp.task('unit', function() {
 
 // ========== DEFAULT TASKS ========== //
 gulp.task('dist', function(callback) {
-  return runSequence(['jshint:fail', 'htmlhint:fail', 'jscs'],'clean:dist', ['templates:dist', 'scripts:dist', 'style:dist'], callback);
+  runSequence(['jshint:fail', 'htmlhint:fail', 'jscs'],'clean:dist', ['templates:dist', 'scripts:dist', 'style:dist'], callback);
 });
 
 gulp.task('dist:release', function(callback) {
   src.dist = 'dist';
-  return runSequence(['jshint:fail', 'htmlhint:fail', 'jscs'],'clean:dist', ['templates:dist', 'scripts:dist', 'style:dist'], callback);
+  runSequence(['jshint:fail', 'htmlhint:fail', 'jscs'],'clean:dist', ['templates:dist', 'scripts:dist', 'style:dist'], callback);
 });
 
 
@@ -215,7 +212,7 @@ gulp.task('dist:unsafe', function(callback) {
 });
 
 gulp.task('watch', function () {
-  return gulp.watch(src.watch, ['dist:unsafe'])
+  gulp.watch(src.watch, ['dist:unsafe'])
     .on('error', util.log);
 });
 

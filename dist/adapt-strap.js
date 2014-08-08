@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v0.2.2 - 2014-08-05
+ * @version v0.2.3 - 2014-08-08
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -107,7 +107,7 @@ angular.module('adaptv.adaptStrap.tableajax', [
   'adStrapUtils',
   function ($parse, $compile, $templateCache, $adConfig, adLoadPage, adDebounce, adStrapUtils) {
 function _link(scope, element, attrs) {
-      // We do the name spacing so the if there are multiple adap-table-lite on the scope,
+      // We do the name spacing so the if there are multiple ad-table-ajax on the scope,
       // they don't fight with each other.
       scope[attrs.tableName] = {
         items: {
@@ -233,11 +233,12 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils']).direc
   'adDebounce',
   function ($parse, $http, $compile, $filter, $templateCache, $adConfig, adStrapUtils, adDebounce) {
 function _link(scope, element, attrs) {
-      // We do the name spacing so the if there are multiple adap-table-lite on the scope,
+      // We do the name spacing so the if there are multiple ad-table-lite on the scope,
       // they don't fight with each other.
       scope[attrs.tableName] = {
         items: {
           list: undefined,
+          allItems: undefined,
           paging: {
             currentPage: 1,
             totalPages: undefined,
@@ -249,16 +250,25 @@ function _link(scope, element, attrs) {
             ]
           }
         },
-        localConfig: { pagingArray: [] },
-        applyFilter: adStrapUtils.applyFilter
+        localConfig: {
+          pagingArray: [],
+          selectable: attrs.selectedItems ? true : false
+        },
+        selectedItems: scope.$eval(attrs.selectedItems),
+        applyFilter: adStrapUtils.applyFilter,
+        isSelected: adStrapUtils.itemExistsInList,
+        addRemoveItem: adStrapUtils.addRemoveItemFromList,
+        addRemoveAll: adStrapUtils.addRemoveItemsFromList,
+        allSelected: adStrapUtils.itemsExistInList
       };
       // ---------- Local data ---------- //
       var tableModels = scope[attrs.tableName], mainTemplate = $templateCache.get('tablelite/tablelite.tpl.html');
       tableModels.items.paging.pageSize = tableModels.items.paging.pageSizes[0];
       // ---------- ui handlers ---------- //
       tableModels.loadPage = adDebounce(function (page) {
-        var start = (page - 1) * tableModels.items.paging.pageSize, end = start + tableModels.items.paging.pageSize, i, startPagingPage, localItems = $filter('orderBy')(scope.$eval(attrs.localDataSource), tableModels.localConfig.predicate, tableModels.localConfig.reverse);
+        var start = (page - 1) * tableModels.items.paging.pageSize, end = start + tableModels.items.paging.pageSize, i, localItems = $filter('orderBy')(scope.$eval(attrs.localDataSource), tableModels.localConfig.predicate, tableModels.localConfig.reverse);
         tableModels.items.list = localItems.slice(start, end);
+        tableModels.items.allItems = scope.$eval(attrs.localDataSource);
         tableModels.items.paging.currentPage = page;
         tableModels.items.paging.totalPages = Math.ceil(scope.$eval(attrs.localDataSource).length / tableModels.items.paging.pageSize);
         tableModels.localConfig.pagingArray = [];
@@ -339,50 +349,55 @@ angular.module('adaptv.adaptStrap.treebrowser', []).directive('adTreeBrowser', [
   '$adConfig',
   '$templateCache',
   function ($compile, $http, $adConfig, $templateCache) {
+    function _link(scope, element, attrs) {
+      // We do the name spacing so the if there are multiple ad-tree-browser on the scope,
+      // they don't fight with each other.
+      scope[attrs.treeName] = {
+        toggle: function (event, item) {
+          var toggleCallback;
+          event.stopPropagation();
+          toggleCallback = scope.$eval(attrs.toggleCallback);
+          if (toggleCallback) {
+            toggleCallback(item);
+          } else {
+            item._ad_expanded = !item._ad_expanded;
+          }
+        },
+        hasChildren: function (item) {
+          var hasChildren = scope.$eval(attrs.hasChildren), found = item[attrs.childNode] && item[attrs.childNode].length > 0;
+          if (hasChildren) {
+            found = hasChildren(item);
+          }
+          return found;
+        },
+        localConfig: { showHeader: attrs.nodeHeaderUrl !== '' ? true : false }
+      };
+      // ---------- Local data ---------- //
+      var treeName = attrs.treeName || '', nodeTemplateUrl = attrs.nodeTemplateUrl || '', nodeHeaderUrl = attrs.nodeHeaderUrl || '', childrenPadding = attrs.childrenPadding || 15, template = '', populateMainTemplate = function (nodeTemplate, nodeHeaderTemplate) {
+          var data = $templateCache.get('treebrowser/treebrowser.tpl.html');
+          template = data.replace(/%=treeName%/g, treeName).replace(/%=treeRootName%/g, attrs.treeRoot).replace(/%=bordered%/g, attrs.bordered).replace(/%=icon-expand%/g, $adConfig.iconClasses.expand).replace(/%=icon-collapse%/g, $adConfig.iconClasses.collapse).replace(/%=icon-loadingSpinner%/g, $adConfig.iconClasses.loadingSpinner).replace(/%=childNodeName%/g, attrs.childNode).replace(/%=childrenPadding%/g, childrenPadding).replace(/%=rowNgClass%/g, attrs.rowNgClass || '').replace(/%=nodeTemplate%/g, nodeTemplate).replace(/%=nodeHeaderTemplate%/g, nodeHeaderTemplate || '');
+          element.empty();
+          element.append($compile(template)(scope));
+        };
+      // ---------- initialization ---------- //
+      if (nodeTemplateUrl !== '') {
+        // Getting the template from nodeTemplateUrl
+        $http.get(nodeTemplateUrl).success(function (nodeTemplate) {
+          if (nodeHeaderUrl !== '') {
+            $http.get(nodeHeaderUrl).success(function (headerTemplate) {
+              populateMainTemplate(nodeTemplate, headerTemplate);
+            });
+          } else {
+            populateMainTemplate(nodeTemplate, '');
+          }
+        });
+      } else {
+        populateMainTemplate('<span>{{ item.name || "" }}</span>');
+      }
+    }
     return {
       restrict: 'E',
-      link: function (scope, element, attrs) {
-        var treeName = attrs.treeName || '', nodeTemplateUrl = attrs.nodeTemplateUrl || '', nodeHeaderUrl = attrs.nodeHeaderUrl || '', childrenPadding = attrs.childrenPadding || 15, template = '', populateMainTemplate = function (nodeTemplate, nodeHeaderTemplate) {
-            var data = $templateCache.get('treebrowser/treebrowser.tpl.html');
-            template = data.replace(/%=treeName%/g, treeName).replace(/%=treeRootName%/g, attrs.treeRoot).replace(/%=bordered%/g, attrs.bordered).replace(/%=icon-expand%/g, $adConfig.iconClasses.expand).replace(/%=icon-collapse%/g, $adConfig.iconClasses.collapse).replace(/%=icon-loadingSpinner%/g, $adConfig.iconClasses.loadingSpinner).replace(/%=childNodeName%/g, attrs.childNode).replace(/%=childrenPadding%/g, childrenPadding).replace(/%=rowNgClass%/g, attrs.rowNgClass || '').replace(/%=nodeTemplate%/g, nodeTemplate).replace(/%=nodeHeaderTemplate%/g, nodeHeaderTemplate || '');
-            element.empty();
-            element.append($compile(template)(scope));
-          };
-        scope[treeName + 'TreeBrowser'] = {
-          toggle: function (event, item) {
-            var toggleCallback;
-            event.stopPropagation();
-            toggleCallback = scope.$eval(attrs.toggleCallback);
-            if (toggleCallback) {
-              toggleCallback(item);
-            } else {
-              item._expanded = !item._expanded;
-            }
-          },
-          hasChildren: function (item) {
-            var hasChildren = scope.$eval(attrs.hasChildren), found = item[attrs.childNode] && item[attrs.childNode].length > 0;
-            if (hasChildren) {
-              found = hasChildren(item);
-            }
-            return found;
-          },
-          showHeader: nodeHeaderUrl !== '' ? true : false
-        };
-        if (nodeTemplateUrl !== '') {
-          // Getting the template from nodeTemplateUrl
-          $http.get(nodeTemplateUrl).success(function (nodeTemplate) {
-            if (nodeHeaderUrl !== '') {
-              $http.get(nodeHeaderUrl).success(function (headerTemplate) {
-                populateMainTemplate(nodeTemplate, headerTemplate);
-              });
-            } else {
-              populateMainTemplate(nodeTemplate, '');
-            }
-          });
-        } else {
-          populateMainTemplate('<span>{{ item.name || "" }}</span>');
-        }
-      }
+      link: _link
     };
   }
 ]);
@@ -391,8 +406,7 @@ angular.module('adaptv.adaptStrap.treebrowser', []).directive('adTreeBrowser', [
 angular.module('adaptv.adaptStrap.utils', []).factory('adStrapUtils', [
   '$filter',
   function ($filter) {
-    return {
-      evalObjectProperty: function (obj, property) {
+    var evalObjectProperty = function (obj, property) {
         var arr = property.split('.');
         if (obj) {
           while (arr.length) {
@@ -402,8 +416,7 @@ angular.module('adaptv.adaptStrap.utils', []).factory('adStrapUtils', [
           }
         }
         return obj;
-      },
-      applyFilter: function (value, filter) {
+      }, applyFilter = function (value, filter) {
         var parts, filterOptions;
         if (filter) {
           parts = filter.split(':');
@@ -415,7 +428,66 @@ angular.module('adaptv.adaptStrap.utils', []).factory('adStrapUtils', [
           }
         }
         return value;
-      }
+      }, itemExistsInList = function (compareItem, list) {
+        var exist = false;
+        list.forEach(function (item) {
+          if (angular.equals(compareItem, item)) {
+            exist = true;
+          }
+        });
+        return exist;
+      }, itemsExistInList = function (items, list) {
+        var exist = true, i;
+        for (i = 0; i < items.length; i++) {
+          if (itemExistsInList(items[i], list) === false) {
+            exist = false;
+            break;
+          }
+        }
+        return exist;
+      }, addItemToList = function (item, list) {
+        list.push(item);
+      }, removeItemFromList = function (item, list) {
+        var i;
+        for (i = list.length - 1; i > -1; i--) {
+          if (angular.equals(item, list[i])) {
+            list.splice(i, 1);
+          }
+        }
+      }, addRemoveItemFromList = function (item, list) {
+        var i, found = false;
+        for (i = list.length - 1; i > -1; i--) {
+          if (angular.equals(item, list[i])) {
+            list.splice(i, 1);
+            found = true;
+          }
+        }
+        if (found === false) {
+          list.push(item);
+        }
+      }, addItemsToList = function (items, list) {
+        items.forEach(function (item) {
+          if (!itemExistsInList(item, list)) {
+            addRemoveItemFromList(item, list);
+          }
+        });
+      }, addRemoveItemsFromList = function (items, list) {
+        if (itemsExistInList(items, list)) {
+          list.length = 0;
+        } else {
+          addItemsToList(items, list);
+        }
+      };
+    return {
+      evalObjectProperty: evalObjectProperty,
+      applyFilter: applyFilter,
+      itemExistsInList: itemExistsInList,
+      itemsExistInList: itemsExistInList,
+      addItemToList: addItemToList,
+      removeItemFromList: removeItemFromList,
+      addRemoveItemFromList: addRemoveItemFromList,
+      addItemsToList: addItemsToList,
+      addRemoveItemsFromList: addRemoveItemsFromList
     };
   }
 ]).factory('adDebounce', [

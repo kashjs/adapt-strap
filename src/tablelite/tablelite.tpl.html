@@ -1,6 +1,9 @@
 <div class="ad-table-lite-container">
     <table class="%=tableClasses%">
         <tr class="ad-user-select-none">
+            <th ng-if="%=tableName%.localConfig.selectable">
+
+            </th>
             <th data-ng-repeat="definition in %=columnDefinition%"
                 ng-click="%=tableName%.sortByColumn(definition)"
                 ng-class="{'ad-cursor-pointer': definition.sortKey}"
@@ -19,6 +22,11 @@
             </th>
         </tr>
         <tr data-ng-repeat="item in %=tableName%.items.list">
+            <td ng-if="%=tableName%.localConfig.selectable">
+              <input type="checkbox"
+                     ng-checked="%=tableName%.isSelected(item, %=tableName%.selectedItems)"
+                     ng-click="%=tableName%.addRemove(item, %=tableName%.selectedItems)">
+            </td>
             <td data-ng-repeat="definition in %=columnDefinition%">
                 <div ng-if="definition.templateUrl">
                     <ng-include src="definition.templateUrl"></ng-include>

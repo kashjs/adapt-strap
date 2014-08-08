@@ -25,6 +25,28 @@ angular.module('adaptv.adaptStrap.utils', [])
           }
         }
         return value;
+      },
+      itemExistsInList: function (compareItem, list) {
+        var found = false;
+        list.forEach(function (item) {
+          if (angular.equals(compareItem, item)) {
+            found = true;
+          }
+        });
+        return found;
+      },
+      addRemoveFromList: function (item, list) {
+        var i,
+            found = true;
+        if (i = list.length - 1, i > -1, i--) {
+          if (angular.equals(item, list[i])) {
+            list.splice(i, 1);
+            found = true;
+          }
+        }
+        if (found === false) {
+          list.push(item);
+        }
       }
     };
   }])

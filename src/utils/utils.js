@@ -1,7 +1,7 @@
 angular.module('adaptv.adaptStrap.utils', [])
   .factory('adStrapUtils', ['$filter', function ($filter) {
-    return {
-      evalObjectProperty: function (obj, property) {
+
+    var evalObjectProperty = function (obj, property) {
         var arr = property.split('.');
         if (obj) {
           while (arr.length) {
@@ -12,7 +12,7 @@ angular.module('adaptv.adaptStrap.utils', [])
         }
         return obj;
       },
-      applyFilter: function (value, filter) {
+      applyFilter = function (value, filter) {
         var parts,
           filterOptions;
         if (filter) {
@@ -26,19 +26,41 @@ angular.module('adaptv.adaptStrap.utils', [])
         }
         return value;
       },
-      itemExistsInList: function (compareItem, list) {
-        var found = false;
+      itemExistsInList = function (compareItem, list) {
+        var exist = false;
         list.forEach(function (item) {
           if (angular.equals(compareItem, item)) {
-            found = true;
+            exist = true;
           }
         });
-        return found;
+        return exist;
       },
-      addRemoveFromList: function (item, list) {
+      itemsExistInList = function (items, list) {
+        var exist = true,
+          i;
+        for (i = 0; i < items.length; i++) {
+          if (itemExistsInList(items[i], list) === false) {
+            exist = false;
+            break;
+          }
+        }
+        return exist;
+      },
+      addItemToList = function (item, list) {
+        list.push(item);
+      },
+      removeItemFromList = function (item, list) {
+        var i;
+        for (i = list.length - 1; i > -1; i--) {
+          if (angular.equals(item, list[i])) {
+            list.splice(i, 1);
+          }
+        }
+      },
+      addRemoveItemFromList = function (item, list) {
         var i,
-            found = true;
-        if (i = list.length - 1, i > -1, i--) {
+          found = false;
+        for (i = list.length - 1; i > -1; i--) {
           if (angular.equals(item, list[i])) {
             list.splice(i, 1);
             found = true;
@@ -47,8 +69,34 @@ angular.module('adaptv.adaptStrap.utils', [])
         if (found === false) {
           list.push(item);
         }
-      }
+      },
+      addItemsToList = function (items, list) {
+        items.forEach(function (item) {
+          if (!itemExistsInList(item, list)) {
+            addRemoveItemFromList(item, list);
+          }
+        });
+      },
+      addRemoveItemsFromList = function (items, list) {
+        if (itemsExistInList(items, list)) {
+          list.length = 0;
+        } else {
+          addItemsToList(items, list);
+        }
+      };
+
+    return {
+      evalObjectProperty: evalObjectProperty,
+      applyFilter: applyFilter,
+      itemExistsInList: itemExistsInList,
+      itemsExistInList: itemsExistInList,
+      addItemToList: addItemToList,
+      removeItemFromList: removeItemFromList,
+      addRemoveItemFromList: addRemoveItemFromList,
+      addItemsToList: addItemsToList,
+      addRemoveItemsFromList: addRemoveItemsFromList
     };
+
   }])
   .factory('adDebounce', ['$timeout', '$q', function ($timeout, $q) {
     'use strict';
@@ -114,7 +162,7 @@ angular.module('adaptv.adaptStrap.utils', [])
         promise = $http(ajaxConfig);
       }
 
-      return promise.then(function(result) {
+      return promise.then(function (result) {
         var response = {
           items: adStrapUtils.evalObjectProperty(result.data, pagingConfig.response.itemsLocation),
           currentPage: options.pageNumber,

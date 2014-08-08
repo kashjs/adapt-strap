@@ -58,6 +58,17 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
           type: 'String',
           description: 'these classes will be applied to the pagination btn-group tag. ' +
             'Ex (<code>pagination-btn-group-classes="btn-group btn-group-xs"</code>)'
+        },
+        {
+          name: 'selected-items',
+          required: false,
+          default: 'NA',
+          type: 'String',
+          description: 'Path to the array that will hold selected items. ' +
+            '<code>ex: selected-items="models.selectedCars"</code>. If speecified, the rows will be' +
+            ' selectable by checkbox. selected rows will have <code>ad-selected</code> class on it. ' +
+            'You can target this class in your css to apply custom styling to the selected rows.'
+
         }
       ]
     }]

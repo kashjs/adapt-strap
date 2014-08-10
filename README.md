@@ -1,4 +1,4 @@
-## adaptStrap Ui Components/utilities based on AngularJs 1.2+ & Bootstrap 3 [documentation/demo](http://adaptv.github.io/adapt-strap/)
+## adaptStrap Ui Components/utilities based on AngularJs 1.2+ & Bootstrap 3 ####[documentation/demo](http://adaptv.github.io/adapt-strap/)
 [![Build Status](https://travis-ci.org/Adaptv/adapt-strap.svg)](https://travis-ci.org/Adaptv/adapt-strap)
 ---
 ### Available components/features:

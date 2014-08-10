@@ -1,5 +1,5 @@
+###[documentation/demo/examples](http://adaptv.github.io/adapt-strap/) at http://adaptv.github.io/adapt-strap/
 ## adaptStrap Ui Components/utilities based on AngularJs 1.2+ & Bootstrap 3
-#### [documentation/demo](http://adaptv.github.io/adapt-strap/)
 [![Build Status](https://travis-ci.org/Adaptv/adapt-strap.svg)](https://travis-ci.org/Adaptv/adapt-strap)
 ---
 ### Available components/features:
@@ -9,7 +9,6 @@
 - **Loading Indicators** - simple directives to render overlay and inline loading indicators
 - **Global configuration** - all the components are globally configurable to use your set of icons and pagination/sorting configuration
 - **Customizable** - all the components are highly customizable.
-
 ###Usage
 * Install the library using `bower install adapt-strap --save`
 * Include the library files in your index.html file:

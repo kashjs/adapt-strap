@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v0.2.3 - 2014-08-08
+ * @version v0.2.4 - 2014-08-14
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -266,11 +266,19 @@ function _link(scope, element, attrs) {
       tableModels.items.paging.pageSize = tableModels.items.paging.pageSizes[0];
       // ---------- ui handlers ---------- //
       tableModels.loadPage = adDebounce(function (page) {
-        var start = (page - 1) * tableModels.items.paging.pageSize, end = start + tableModels.items.paging.pageSize, i, localItems = $filter('orderBy')(scope.$eval(attrs.localDataSource), tableModels.localConfig.predicate, tableModels.localConfig.reverse);
+        var start = (page - 1) * tableModels.items.paging.pageSize, end = start + tableModels.items.paging.pageSize, i, itemsObject = [], localItems;
+        if (angular.isArray(scope.$eval(attrs.localDataSource))) {
+          itemsObject = scope.$eval(attrs.localDataSource);
+        } else {
+          angular.forEach(scope.$eval(attrs.localDataSource), function (item) {
+            itemsObject.push(item);
+          });
+        }
+        localItems = $filter('orderBy')(itemsObject, tableModels.localConfig.predicate, tableModels.localConfig.reverse);
         tableModels.items.list = localItems.slice(start, end);
-        tableModels.items.allItems = scope.$eval(attrs.localDataSource);
+        tableModels.items.allItems = itemsObject;
         tableModels.items.paging.currentPage = page;
-        tableModels.items.paging.totalPages = Math.ceil(scope.$eval(attrs.localDataSource).length / tableModels.items.paging.pageSize);
+        tableModels.items.paging.totalPages = Math.ceil(itemsObject.length / tableModels.items.paging.pageSize);
         tableModels.localConfig.pagingArray = [];
         var TOTAL_PAGINATION_ITEMS = 5;
         var minimumBound = page - Math.floor(TOTAL_PAGINATION_ITEMS / 2);
@@ -286,7 +294,7 @@ function _link(scope, element, attrs) {
           tableModels.localConfig.pagingArray.push(i);
           i++;
         }
-      });
+      }, 100);
       tableModels.loadNextPage = function () {
         if (tableModels.items.paging.currentPage + 1 <= tableModels.items.paging.totalPages) {
           tableModels.loadPage(tableModels.items.paging.currentPage + 1);
@@ -328,7 +336,6 @@ function _link(scope, element, attrs) {
       attrs.tableClasses = attrs.tableClasses || 'table';
       attrs.paginationBtnGroupClasses = attrs.paginationBtnGroupClasses || 'btn-group btn-group-sm';
       mainTemplate = mainTemplate.replace(/%=tableName%/g, attrs.tableName).replace(/%=columnDefinition%/g, attrs.columnDefinition).replace(/%=paginationBtnGroupClasses%/g, attrs.paginationBtnGroupClasses).replace(/%=tableClasses%/g, attrs.tableClasses).replace(/%=icon-firstPage%/g, $adConfig.iconClasses.firstPage).replace(/%=icon-previousPage%/g, $adConfig.iconClasses.previousPage).replace(/%=icon-nextPage%/g, $adConfig.iconClasses.nextPage).replace(/%=icon-lastPage%/g, $adConfig.iconClasses.lastPage).replace(/%=icon-sortAscending%/g, $adConfig.iconClasses.sortAscending).replace(/%=icon-sortDescending%/g, $adConfig.iconClasses.sortDescending).replace(/%=icon-sortable%/g, $adConfig.iconClasses.sortable);
-      ;
       element.empty();
       element.append($compile(mainTemplate)(scope));
       scope.$watch(attrs.localDataSource, function () {

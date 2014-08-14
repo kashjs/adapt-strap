@@ -42,17 +42,28 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           var start = (page - 1) * tableModels.items.paging.pageSize,
             end = start + tableModels.items.paging.pageSize,
             i,
-            localItems = $filter('orderBy')(
-              scope.$eval(attrs.localDataSource),
-              tableModels.localConfig.predicate,
-              tableModels.localConfig.reverse
-            );
+            itemsObject = [],
+            localItems;
+
+          if (angular.isArray(scope.$eval(attrs.localDataSource))) {
+            itemsObject = scope.$eval(attrs.localDataSource);
+          } else {
+            angular.forEach(scope.$eval(attrs.localDataSource), function (item) {
+              itemsObject.push(item);
+            });
+          }
+
+          localItems = $filter('orderBy')(
+            itemsObject,
+            tableModels.localConfig.predicate,
+            tableModels.localConfig.reverse
+          );
 
           tableModels.items.list = localItems.slice(start, end);
-          tableModels.items.allItems = scope.$eval(attrs.localDataSource);
+          tableModels.items.allItems = itemsObject;
           tableModels.items.paging.currentPage = page;
           tableModels.items.paging.totalPages = Math.ceil(
-              scope.$eval(attrs.localDataSource).length /
+              itemsObject.length /
               tableModels.items.paging.pageSize
           );
           tableModels.localConfig.pagingArray = [];
@@ -70,7 +81,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
             tableModels.localConfig.pagingArray.push(i);
             i++;
           }
-        });
+        }, 100);
 
         tableModels.loadNextPage = function () {
           if (tableModels.items.paging.currentPage + 1 <= tableModels.items.paging.totalPages) {
@@ -128,11 +139,9 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           replace(/%=icon-lastPage%/g, $adConfig.iconClasses.lastPage).
           replace(/%=icon-sortAscending%/g, $adConfig.iconClasses.sortAscending).
           replace(/%=icon-sortDescending%/g, $adConfig.iconClasses.sortDescending).
-          replace(/%=icon-sortable%/g, $adConfig.iconClasses.sortable)
-        ;
+          replace(/%=icon-sortable%/g, $adConfig.iconClasses.sortable);
         element.empty();
         element.append($compile(mainTemplate)(scope));
-
         scope.$watch(attrs.localDataSource, function () {
           tableModels.loadPage(1);
         }, true);

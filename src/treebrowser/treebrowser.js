@@ -30,7 +30,7 @@ angular.module('adaptv.adaptStrap.treebrowser', [])
             return found;
           },
           localConfig: {
-            showHeader: (attrs.nodeHeaderUrl !== '') ? true : false
+            showHeader: (attrs.nodeHeaderUrl) ? true : false
           }
         };
 

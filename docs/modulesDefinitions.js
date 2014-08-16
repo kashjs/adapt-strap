@@ -44,6 +44,13 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
           description: 'Available page sizes'
         },
         {
+          name: 'disable-paging',
+          required: false,
+          default: 'false',
+          type: 'Boolean',
+          description: 'shows all the items in local-data-source'
+        },
+        {
           name: 'table-classes',
           required: false,
           default: '"table"',

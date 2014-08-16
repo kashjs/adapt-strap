@@ -22,7 +22,8 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           },
           localConfig: {
             pagingArray: [],
-            selectable: attrs.selectedItems ? true : false
+            selectable: attrs.selectedItems ? true : false,
+            showPaging: $parse(attrs.disablePaging)() ? false : true
           },
           selectedItems: scope.$eval(attrs.selectedItems),
           applyFilter: adStrapUtils.applyFilter,
@@ -51,6 +52,10 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
             angular.forEach(scope.$eval(attrs.localDataSource), function (item) {
               itemsObject.push(item);
             });
+          }
+
+          if (tableModels.localConfig.showPaging === false) {
+            end = itemsObject.length;
           }
 
           localItems = $filter('orderBy')(

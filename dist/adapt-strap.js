@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v0.2.4 - 2014-08-14
+ * @version v0.2.5 - 2014-08-16
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -252,7 +252,8 @@ function _link(scope, element, attrs) {
         },
         localConfig: {
           pagingArray: [],
-          selectable: attrs.selectedItems ? true : false
+          selectable: attrs.selectedItems ? true : false,
+          showPaging: $parse(attrs.disablePaging)() ? false : true
         },
         selectedItems: scope.$eval(attrs.selectedItems),
         applyFilter: adStrapUtils.applyFilter,
@@ -273,6 +274,9 @@ function _link(scope, element, attrs) {
           angular.forEach(scope.$eval(attrs.localDataSource), function (item) {
             itemsObject.push(item);
           });
+        }
+        if (tableModels.localConfig.showPaging === false) {
+          end = itemsObject.length;
         }
         localItems = $filter('orderBy')(itemsObject, tableModels.localConfig.predicate, tableModels.localConfig.reverse);
         tableModels.items.list = localItems.slice(start, end);
@@ -377,7 +381,7 @@ angular.module('adaptv.adaptStrap.treebrowser', []).directive('adTreeBrowser', [
           }
           return found;
         },
-        localConfig: { showHeader: attrs.nodeHeaderUrl !== '' ? true : false }
+        localConfig: { showHeader: attrs.nodeHeaderUrl ? true : false }
       };
       // ---------- Local data ---------- //
       var treeName = attrs.treeName || '', nodeTemplateUrl = attrs.nodeTemplateUrl || '', nodeHeaderUrl = attrs.nodeHeaderUrl || '', childrenPadding = attrs.childrenPadding || 15, template = '', populateMainTemplate = function (nodeTemplate, nodeHeaderTemplate) {

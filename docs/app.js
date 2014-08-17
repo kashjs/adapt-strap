@@ -12,16 +12,9 @@ angular.module('adaptv.adaptStrapDocs', [
   }])
 
 // ========== documentation support controllers ========== //
-  .controller('layoutCtrl', ['$scope', '$anchorScroll', '$location', '$timeout', 'adaptStrapModules',
-    function ($scope, $anchorScroll, $location, $timeout, adaptStrapModules) {
+  .controller('layoutCtrl', ['$scope', '$anchorScroll', '$location', 'adaptStrapModules',
+    function ($scope, $anchorScroll, $location, adaptStrapModules) {
       $scope.modules = adaptStrapModules;
-      $scope.indicators = {
-        iframesReady: 0
-      };
-
-      $timeout(function () {
-        $scope.indicators.iframesReady = 1;
-      }, 1300);
 
       $scope.scrollTo = function (id, $event) {
         $event.preventDefault();

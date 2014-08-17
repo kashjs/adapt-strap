@@ -60,9 +60,9 @@ angular.module('adaptv.adaptStrap.treebrowser', [])
         // ---------- initialization ---------- //
         if (nodeTemplateUrl !== '') {
           // Getting the template from nodeTemplateUrl
-          $http.get(nodeTemplateUrl).success(function (nodeTemplate) {
+          $http.get(nodeTemplateUrl, { cache: $templateCache }).success(function (nodeTemplate) {
             if (nodeHeaderUrl !== '') {
-              $http.get(nodeHeaderUrl).success(function (headerTemplate) {
+              $http.get(nodeHeaderUrl, { cache: $templateCache }).success(function (headerTemplate) {
                 populateMainTemplate(nodeTemplate, headerTemplate);
               });
             } else {

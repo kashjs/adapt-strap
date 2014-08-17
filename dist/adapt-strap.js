@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v0.2.5 - 2014-08-16
+ * @version v0.2.6 - 2014-08-17
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -393,9 +393,9 @@ angular.module('adaptv.adaptStrap.treebrowser', []).directive('adTreeBrowser', [
       // ---------- initialization ---------- //
       if (nodeTemplateUrl !== '') {
         // Getting the template from nodeTemplateUrl
-        $http.get(nodeTemplateUrl).success(function (nodeTemplate) {
+        $http.get(nodeTemplateUrl, { cache: $templateCache }).success(function (nodeTemplate) {
           if (nodeHeaderUrl !== '') {
-            $http.get(nodeHeaderUrl).success(function (headerTemplate) {
+            $http.get(nodeHeaderUrl, { cache: $templateCache }).success(function (headerTemplate) {
               populateMainTemplate(nodeTemplate, headerTemplate);
             });
           } else {

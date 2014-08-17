@@ -13,7 +13,7 @@
   "wsh": false,   // Windows Scripting Host.
 
   "jquery": true,
-
+  "unused": true,
   "predef": [  // Custom globals.
     //"exampleVar",
     //"anotherCoolGlobal",

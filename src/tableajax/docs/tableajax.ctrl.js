@@ -1,6 +1,6 @@
 angular.module('adaptv.adaptStrapDocs')
-  .controller('tableajaxCtrl', ['$scope', '$adConfig', '$http', 'adStrapUtils',
-    function ($scope, $adConfig, $http, adStrapUtils) {
+  .controller('tableajaxCtrl', ['$scope',
+    function ($scope) {
 
       // ========== Simple Table Implementation ========== //
       $scope.artistsColumnDef = [

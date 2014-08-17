@@ -86,6 +86,7 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
     displayName: 'Table AJAX',
     controllerName: 'tableajaxCtrl',
     description: 'advanced table UI that renders remote data models and does remote pagination/sorting',
+    playGroundUrl: 'http://jsfiddle.net/kashjs/1f806L2k/',
     docFiles: [
       'tableajax.view.html',
       'tableajax.ctrl.js',
@@ -160,6 +161,7 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
     moduleName: 'treebrowser',
     displayName: 'Tree Browser',
     controllerName: 'treebrowserCtrl',
+    playGroundUrl: 'http://jsfiddle.net/kashjs/056z7xtr/',
     description: 'simple tree UI that allows you to brows through local data models in tree structure',
     docFiles: [
       'treebrowser.view.html',
@@ -263,6 +265,7 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
     displayName: 'Loading Indicator',
     controllerName: 'loadingIndicatorCtrl',
     description: 'simple directives to render overlay and inline loading indicators',
+    playGroundUrl: 'http://jsfiddle.net/kashjs/n79ydkjh/',
     docFiles: [
       'loadingindicator.view.html',
       'loadingindicator.ctrl.js'

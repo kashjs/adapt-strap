@@ -17,13 +17,25 @@
     <link rel="stylesheet" href="dist_temp/adapt-strap.css"/>
     <!-- ===== Local Style Scripts ===== -->
     <link rel="stylesheet" href="docs/app.css">
+    <!-- local css for performance -->
+    <style>
+      .animate-opacity {
+        -webkit-transition: opacity 1s ease;
+        transition: opacity 1s ease;
+        -moz-transition: opacity 1s ease;
+      }
+    </style>
 </head>
 <body ng-controller="layoutCtrl" data-spy="scroll" data-target="#mainNavbar">
     <!-- ===== Layout ===== -->
-    <ng-include src="'docs/layout/navbar.html'"></ng-include>
-    <ng-include src="'docs/layout/header.html'"></ng-include>
-    <ng-include src="'docs/layout/gettingStarted.html'"></ng-include>
-    <ng-include src="'docs/layout/modules.html'"></ng-include>
+    <div  class="animate-opacity"
+          style="opacity: 0"
+          ng-style="{'opacity': indicators.iframesReady ? '1' : '0'}">
+      <ng-include src="'docs/layout/navbar.html'"></ng-include>
+      <ng-include src="'docs/layout/header.html'"></ng-include>
+      <ng-include src="'docs/layout/gettingStarted.html'"></ng-include>
+      <ng-include src="'docs/layout/modules.html'"></ng-include>
+    </div>
 
     <!-- ===== Vendor Scripts ===== -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>

@@ -5,6 +5,7 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
     displayName: 'Table Lite',
     controllerName: 'tableliteCtrl',
     description: 'simple table UI that renders your local data models and does local pagination/sorting',
+    playGroundUrl: 'http://jsfiddle.net/kashjs/gt8Ljspf/',
     docFiles: [
       'tablelite.view.html',
       'tablelite.ctrl.js'

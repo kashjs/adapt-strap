@@ -106,7 +106,7 @@ angular.module('adaptv.adaptStrapDocs')
       },
       {
         columnHeaderDisplayName: 'Buy',
-        templateUrl: 'src/tableLite/docs/buyCell.html'
+        templateUrl: 'src/tablealite/docs/buyCell.html'
       }
     ];
 

@@ -167,7 +167,8 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
       'treebrowser.view.html',
       'treebrowser.ctrl.js',
       'treeNode.html',
-      'treeHeader.html'
+      'treeHeader.html',
+      'style.css'
     ],
     directives: [{
       name: 'ad-tree-browser',

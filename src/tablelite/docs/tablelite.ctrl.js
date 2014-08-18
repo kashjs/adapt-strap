@@ -103,6 +103,15 @@ angular.module('adaptv.adaptStrapDocs')
         cellFilter: 'currency',
         sortKey: 'price',
         width: '9em'
+      },
+      {
+        columnHeaderDisplayName: 'Buy',
+        templateUrl: 'src/tableLite/docs/buyCell.html'
       }
     ];
+
+    // ========== ui handlers ========== //
+    $scope.buyCar = function (car) {
+      alert(car.name);
+    };
   }]);

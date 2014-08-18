@@ -69,3 +69,13 @@ pre {
 .margin-right-lg {
     margin-right: 10px;
 }
+
+.name-cell {
+    width: 100px;
+    text-align: left;
+}
+
+.another-cell {
+    margin-left: 10px;
+    color: lightseagreen;
+}

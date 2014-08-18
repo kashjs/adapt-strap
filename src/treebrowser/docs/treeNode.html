@@ -1,4 +1,10 @@
 <div>
-    <span class="pull-left">{{ item.name }}</span>
-    <span class="pull-right margin-right-lg">{{ item.priceRange }}</span>
+    <span class="name-cell pull-left">{{ item.name }}</span>
+    <span class="another-cell pull-left">Another Cell</span>
+    <span class="pull-right margin-right-lg">
+      <a href=""
+         ng-click="carSelected(item)">
+        {{ item.priceRange }}
+      </a>
+    </span>
 </div>

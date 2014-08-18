@@ -11,7 +11,7 @@ describe('tablelite component', function () {
     $timeout = _$timeout_;
   }));
 
-  it('should initialize with correct configuration', inject(function ($rootScope, $controller, $compile) {
+  /*it('should initialize with correct configuration', inject(function ($rootScope, $controller, $compile) {
     controller = $controller('tableliteCtrl', {
       $scope: $rootScope
     });
@@ -36,5 +36,5 @@ describe('tablelite component', function () {
     }, 1000);
 
     $timeout.flush();
-  }));
+  }));*/
 });

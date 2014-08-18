@@ -72,4 +72,9 @@ angular.module('adaptv.adaptStrapDocs')
         }
       ]
     };
+
+    // ========== ui handlers ========== //
+    $scope.carSelected = function (car) {
+      alert(car.name);
+    };
   }]);

@@ -24,7 +24,8 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
             loadingData: false
           },
           ajaxConfig: scope.$eval(attrs.ajaxConfig),
-          applyFilter: adStrapUtils.applyFilter
+          applyFilter: adStrapUtils.applyFilter,
+          readProperty: adStrapUtils.getObjectProperty
         };
 
         // ---------- Local data ---------- //

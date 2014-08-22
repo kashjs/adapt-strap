@@ -25,7 +25,7 @@
                         <ng-include src="definition.templateUrl"></ng-include>
                     </div>
                     <div ng-if="!definition.templateUrl">
-                        {{ %=tableName%.applyFilter(item[definition.displayProperty], definition.cellFilter) }}
+                        {{ %=tableName%.applyFilter(%=tableName%.readProperty(item, definition.displayProperty), definition.cellFilter) }}
                     </div>
                 </td>
             </tr>

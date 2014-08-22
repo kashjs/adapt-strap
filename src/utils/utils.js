@@ -83,6 +83,13 @@ angular.module('adaptv.adaptStrap.utils', [])
         } else {
           addItemsToList(items, list);
         }
+      },
+      getObjectProperty = function (item, property) {
+        var arr = property.split('.');
+        while (arr.length) {
+          item = item[arr.shift()];
+        }
+        return item;
       };
 
     return {
@@ -94,7 +101,8 @@ angular.module('adaptv.adaptStrap.utils', [])
       removeItemFromList: removeItemFromList,
       addRemoveItemFromList: addRemoveItemFromList,
       addItemsToList: addItemsToList,
-      addRemoveItemsFromList: addRemoveItemsFromList
+      addRemoveItemsFromList: addRemoveItemsFromList,
+      getObjectProperty: getObjectProperty
     };
 
   }])

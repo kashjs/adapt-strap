@@ -30,7 +30,8 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           isSelected: adStrapUtils.itemExistsInList,
           addRemoveItem: adStrapUtils.addRemoveItemFromList,
           addRemoveAll: adStrapUtils.addRemoveItemsFromList,
-          allSelected: adStrapUtils.itemsExistInList
+          allSelected: adStrapUtils.itemsExistInList,
+          readProperty: adStrapUtils.getObjectProperty
         };
 
         // ---------- Local data ---------- //

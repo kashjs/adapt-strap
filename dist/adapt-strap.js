@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v0.2.6 - 2014-08-17
+ * @version v0.2.7 - 2014-08-22
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -128,7 +128,8 @@ function _link(scope, element, attrs) {
           loadingData: false
         },
         ajaxConfig: scope.$eval(attrs.ajaxConfig),
-        applyFilter: adStrapUtils.applyFilter
+        applyFilter: adStrapUtils.applyFilter,
+        readProperty: adStrapUtils.getObjectProperty
       };
       // ---------- Local data ---------- //
       var tableModels = scope[attrs.tableName], mainTemplate = $templateCache.get('tableajax/tableajax.tpl.html'), lastRequestToken;
@@ -260,7 +261,8 @@ function _link(scope, element, attrs) {
         isSelected: adStrapUtils.itemExistsInList,
         addRemoveItem: adStrapUtils.addRemoveItemFromList,
         addRemoveAll: adStrapUtils.addRemoveItemsFromList,
-        allSelected: adStrapUtils.itemsExistInList
+        allSelected: adStrapUtils.itemsExistInList,
+        readProperty: adStrapUtils.getObjectProperty
       };
       // ---------- Local data ---------- //
       var tableModels = scope[attrs.tableName], mainTemplate = $templateCache.get('tablelite/tablelite.tpl.html');
@@ -488,6 +490,12 @@ angular.module('adaptv.adaptStrap.utils', []).factory('adStrapUtils', [
         } else {
           addItemsToList(items, list);
         }
+      }, getObjectProperty = function (item, property) {
+        var arr = property.split('.');
+        while (arr.length) {
+          item = item[arr.shift()];
+        }
+        return item;
       };
     return {
       evalObjectProperty: evalObjectProperty,
@@ -498,7 +506,8 @@ angular.module('adaptv.adaptStrap.utils', []).factory('adStrapUtils', [
       removeItemFromList: removeItemFromList,
       addRemoveItemFromList: addRemoveItemFromList,
       addItemsToList: addItemsToList,
-      addRemoveItemsFromList: addRemoveItemsFromList
+      addRemoveItemsFromList: addRemoveItemsFromList,
+      getObjectProperty: getObjectProperty
     };
   }
 ]).factory('adDebounce', [

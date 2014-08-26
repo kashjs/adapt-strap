@@ -8,7 +8,8 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
     playGroundUrl: 'http://jsfiddle.net/kashjs/gt8Ljspf/',
     docFiles: [
       'tablelite.view.html',
-      'tablelite.ctrl.js'
+      'tablelite.ctrl.js',
+      'buyCell'
     ],
     directives: [{
       name: 'ad-table-lite',

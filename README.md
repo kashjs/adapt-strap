@@ -65,7 +65,9 @@ gulp unit
 
 * push your changes 
 * go to your github account and under forked repo, submit the pull request
+
 ---
+
 ###The MIT License
 
 Copyright (c) 2010-2014 adap.tv, Inc. http://adap.tv

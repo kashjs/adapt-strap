@@ -9,7 +9,7 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
     docFiles: [
       'tablelite.view.html',
       'tablelite.ctrl.js',
-      'buyCell'
+      'buyCell.html'
     ],
     directives: [{
       name: 'ad-table-lite',

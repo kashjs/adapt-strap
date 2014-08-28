@@ -3,7 +3,8 @@ angular.module('adaptv.adaptStrap', [
   'adaptv.adaptStrap.treebrowser',
   'adaptv.adaptStrap.tablelite',
   'adaptv.adaptStrap.tableajax',
-  'adaptv.adaptStrap.loadingindicator'
+  'adaptv.adaptStrap.loadingindicator',
+  'adaptv.adaptStrap.infinitelist'
 ])
   .provider('$adConfig', function () {
     var iconClasses = this.iconClasses = {

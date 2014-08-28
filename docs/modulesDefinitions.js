@@ -354,5 +354,41 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
         ]
       }
     ]
+  },
+  {
+    moduleName: 'infinitelist',
+    displayName: 'Infinite List',
+    controllerName: 'infiniteListCtrl',
+    description: 'simple directives to render overlay and inline loading indicators',
+    playGroundUrl: 'http://jsfiddle.net/kashjs/n79ydkjh/',
+    docFiles: [
+      'infinitelist.view.html',
+      'infinitelist.ctrl.js'
+    ],
+    directives: [
+      {
+        name: 'ad-loading-icon',
+        options: [
+          {
+            name: 'loading-icon-class',
+            required: false,
+            globalConfig: true,
+            default: '"glyphicon glyphicon-refresh ad-spin"',
+            type: 'String',
+            description: 'This property is globally configurable. ' +
+              'But you can always pass in the value to override global configuration'
+          },
+          {
+            name: 'loading-icon-size',
+            required: false,
+            globalConfig: false,
+            default: 'font-size inherited from parent elements',
+            type: 'String',
+            description: 'You can pass in the size of spinner icon. ' +
+              'Ex: <code>loading-icon-size="16px"</code>'
+          }
+        ]
+      }
+    ]
   }
 ]);

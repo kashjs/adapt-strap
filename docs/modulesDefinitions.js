@@ -360,7 +360,6 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
     displayName: 'Infinite Dropdowns',
     controllerName: 'infiniteDropdownCtrl',
     description: 'simple directives to render overlay and inline loading indicators',
-    playGroundUrl: 'http://jsfiddle.net/kashjs/n79ydkjh/',
     docFiles: [
       'infinitedropdown.view.html',
       'infinitedropdown.ctrl.js',
@@ -368,25 +367,117 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
     ],
     directives: [
       {
-        name: 'ad-loading-icon',
+        name: 'ad-infinite-dropdown',
         options: [
           {
-            name: 'loading-icon-class',
-            required: false,
-            globalConfig: true,
-            default: '"glyphicon glyphicon-refresh ad-spin"',
+            name: 'dropdown-name',
+            required: true,
             type: 'String',
-            description: 'This property is globally configurable. ' +
-              'But you can always pass in the value to override global configuration'
+            default: 'NA',
+            description: 'Name of the dropdown. Name has to be so that it' +
+              ' can be a valid javascript variable name. Make sure that your scope does not have' +
+              'a property with the same name as the tree-name'
           },
           {
-            name: 'loading-icon-size',
+            name: 'display-property',
             required: false,
-            globalConfig: false,
-            default: 'font-size inherited from parent elements',
             type: 'String',
-            description: 'You can pass in the size of spinner icon. ' +
-              'Ex: <code>loading-icon-size="16px"</code>'
+            default: 'NA',
+            description: 'property on the object to be displayed (ex: name)'
+          },
+          {
+            name: 'template',
+            required: false,
+            type: 'String',
+            default: 'NA',
+            description: 'Name of the variable on the scope that contains template. ' +
+              'This template will be used to render the items'
+          },
+          {
+            name: 'template-url',
+            required: false,
+            type: 'String',
+            default: 'NA',
+            description: 'Url to load the template. This template will be used to render the items'
+          },
+          {
+            name: 'initial-label',
+            required: false,
+            type: 'String',
+            default: 'Select',
+            description: 'Default to text to show on the dropdown button.' +
+              '<code>Ex: initial-label="Select an artist"</code>'
+          },
+          {
+            name: 'selected-items',
+            required: false,
+            type: 'String',
+            default: 'NA',
+            description: 'Selected Item/Items will be places into this object'
+          },
+          {
+            name: 'ajax-config',
+            required: true,
+            default: 'NA',
+            type: 'String',
+            description:  'Not required if local-data-source is defined. ' +
+              'Path to the object that has ajax configuration. ' +
+              'Look at more info for details on how to build ajaxConfig object'
+          },
+          {
+            name: 'local-data-source',
+            required: true,
+            default: 'NA',
+            type: 'String',
+            description:  'Not required if ajax-config is defined. ' +
+              'Name of the object/array that contains local data items.'
+          },
+          {
+            name: 'max-height',
+            required: false,
+            default: '200px',
+            type: 'String',
+            description:  'Css property for max-height of the dropdown. ' +
+              'The max height has to be smaller than page-size otherwise the infinite scroll' +
+              'will not work'
+          },
+          {
+            name: 'max-width',
+            required: false,
+            default: 'auto',
+            type: 'String',
+            description:  'Css property for max-width of the dropdown'
+          },
+          {
+            name: 'single-selection-mode',
+            required: false,
+            default: 'false',
+            type: 'Boolean',
+            description:  'If true, only one item will be selected at a time. ' +
+              'Therefore, selected items array will only have one item at any given time'
+          },
+          {
+            name: 'on-item-click',
+            required: false,
+            default: 'NA',
+            type: 'String',
+            description:  'Name of the function to be called when an item is clicked' +
+              '<code>on-item-click="artistClicked"</code>'
+          },
+          {
+            name: 'label-display-property',
+            required: false,
+            default: 'NA',
+            type: 'String',
+            description:  'The default dropdown button label will be relaced with selected item\'s property' +
+              'This will generally be used in single selection mode'
+          },
+          {
+            name: 'page-size',
+            required: false,
+            default: '10',
+            type: 'String',
+            description:  'Number of items to load per page (infinite scroll)'
           }
         ]
       }

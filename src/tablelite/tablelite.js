@@ -57,7 +57,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
             sortKey: tableModels.localConfig.predicate,
             sortDirection: tableModels.localConfig.reverse,
             localData: itemsObject
-          }
+          };
 
           var response = adLoadLocalPage(params);
           tableModels.items.list = response.items;

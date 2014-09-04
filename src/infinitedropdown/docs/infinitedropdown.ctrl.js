@@ -29,21 +29,21 @@ angular.module('adaptv.adaptStrapDocs')
       $scope.artistListTemplate = '<em>{{ item.name }}</em>';
       $scope.localSelectedArtists = [];
       $scope.localArtistsData = [
-        { "name": "50 Cent" },
-        { "name": "50 Cent Feat. Justin Timberlake" },
-        { "name": "Jeremih feat. 50 Cent" },
-        { "name": "50 Cent, Eminem, Ca$his & Lloyd Banks" },
-        { "name": "Mann Feat. 50 Cent" },
-        { "name": "50 Cent feat. Mobb Deep" },
-        { "name": "50 Cent F. Justin Timberlake and Timbaland" },
-        { "name": "Mobb Deep Feat. 50 Cent & Nate Dogg" },
-        { "name": "50 Cent feat. Justin Timberlake & Timbaland" },
-        { "name": "50 Cent Feat. Young Buck" },
-        { "name": "50 Cent Feat. Akon" },
-        { "name": "Mobb Deep feat. 50 Cent" },
-        { "name": "50 Cent feat. Fergie" },
-        { "name": "50 Cent vs. Beyonce vs. Mary J. Blige" },
-        { "name": "50 Cent feat. Ne-Yo" },
-        { "name": "50 Cent ft Justin Timberlake" }
+        { 'name': '50 Cent' },
+        { 'name': '50 Cent Feat. Justin Timberlake' },
+        { 'name': 'Jeremih feat. 50 Cent' },
+        { 'name': '50 Cent, Eminem, Ca$his & Lloyd Banks' },
+        { 'name': 'Mann Feat. 50 Cent' },
+        { 'name': '50 Cent feat. Mobb Deep' },
+        { 'name': '50 Cent F. Justin Timberlake and Timbaland' },
+        { 'name': 'Mobb Deep Feat. 50 Cent & Nate Dogg' },
+        { 'name': '50 Cent feat. Justin Timberlake & Timbaland' },
+        { 'name': '50 Cent Feat. Young Buck' },
+        { 'name': '50 Cent Feat. Akon' },
+        { 'name': 'Mobb Deep feat. 50 Cent' },
+        { 'name': '50 Cent feat. Fergie' },
+        { 'name': '50 Cent vs. Beyonce vs. Mary J. Blige' },
+        { 'name': '50 Cent feat. Ne-Yo' },
+        { 'name': '50 Cent ft Justin Timberlake' }
       ];
     }]);

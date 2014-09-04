@@ -9,7 +9,7 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
       function _link(scope, element, attrs) {
         // We do the name spacing so the if there are multiple ad-table-ajax on the scope,
         // they don't fight with each other.
-        scope[attrs.listName] = {
+        scope[attrs.dropdownName] = {
           items: {
             list: [],
             paging: {
@@ -31,7 +31,7 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
               'max-width': attrs.maxWidth || 'auto'
             }
           },
-          selectedItems: scope.$eval(attrs.selectedItems),
+          selectedItems: scope.$eval(attrs.selectedItems) || [],
           ajaxConfig: scope.$eval(attrs.ajaxConfig),
           applyFilter: adStrapUtils.applyFilter,
           readProperty: adStrapUtils.getObjectProperty,
@@ -39,7 +39,7 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
         };
 
         // ---------- Local data ---------- //
-        var listModels = scope[attrs.listName],
+        var listModels = scope[attrs.dropdownName],
           mainTemplate = $templateCache.get('infinitedropdown/infinitedropdown.tpl.html'),
           lastRequestToken;
 
@@ -53,8 +53,8 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
           }
           var callback = scope.$eval(attrs.onItemClick);
           if (callback) {
-            callback(item)
-          };
+            callback(item);
+          }
         };
 
         listModels.loadPage = adDebounce(function (page) {
@@ -105,11 +105,18 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
         //We do the compile after injecting the name spacing into the template.
         listModels.loadPage(1);
         // reset on parameter change
-        scope.$watch(attrs.ajaxConfig, function () {
-          listModels.loadPage(1);
-        }, true);
+        if (attrs.ajaxConfig) {
+          scope.$watch(attrs.ajaxConfig, function () {
+            listModels.loadPage(1);
+          }, true);
+        }
+        if (attrs.localDataSource) {
+          scope.$watch(attrs.localDataSource, function () {
+            listModels.loadPage(1);
+          }, true);
+        }
 
-        mainTemplate = mainTemplate.replace(/%=listName%/g, attrs.listName).
+        mainTemplate = mainTemplate.replace(/%=dropdownName%/g, attrs.dropdownName).
           replace(/%=displayProperty%/g, attrs.displayProperty).
           replace(/%=templateUrl%/g, attrs.templateUrl).
           replace(/%=template%/g, attrs.template).

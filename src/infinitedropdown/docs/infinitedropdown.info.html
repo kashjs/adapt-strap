@@ -1,0 +1,54 @@
+<div>
+    <div class="alert alert-info">
+        <p>You can always globally configure the pagination</p>
+        <p>
+            Look at
+            <a href="#gettingStarted"
+               ng-click="scrollTo('gettingStarted', $event)">
+                Getting Started (Configure Pagination)
+            </a>
+            to see how to configure it.
+        </p>
+    </div>
+
+    <markdown>
+        ### The ajaxConfig Object is required. There are three major fields required url, method and params:
+        {
+            url: 'http://ws.audioscrobbler.com/2.0/', // api url
+            method: 'JSONP', // calling method 'GET', 'POST' or 'JSONP'
+            params: {
+                api_key: '9b0cdcf446cc96dea3e747787ad23575',
+                artist: 'cher',
+                method: 'artist.search',
+                format: 'json'
+            }, // any other params should go here. table will watch this object for changes and refresh
+            paginationConfig: { // this configuration will override $adPagingProvider.defaults
+                response: {
+                    totalItems: 'results.opensearch:totalResults',
+                    itemsLocation: 'results.artistmatches.artist'
+                }
+            }
+        }
+    </markdown>
+    <markdown>
+        ### You can pass in your own page-loader. If you pass your own page loader, it is your responsibility to load models from the api.
+
+        ### Page loader function will be called with following parameters object:
+        {
+            pageNumber: // - Number - page number to be loaded,
+            pageSize: // - Number - number of items to be loaded,
+            sortKey: // - String - key to sort by,
+            sortDirection: // - Boolean - true for descending and false for ascending,
+            token: // - Number - the token that you need to return.
+        }
+
+        the page loader should return a promise that resolves with following object or rejects in case of error:
+        {
+          items: // - Array - array of models (Objects)
+          currentPage: // - Number - current page number,
+          totalPages: // - Number - total number of pages in the result set,
+          pagingArray: // - Array - this is the pagination array that will show up in pagination. Ex: if current page is 5, this array would look like [3,4,5,6,7],
+          token: options.token // - Number - simply return the token that was passed in to you in the options parameter.
+        }
+    </markdown>
+</div>

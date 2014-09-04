@@ -1,10 +1,10 @@
 <div ng-controller="infiniteDropdownCtrl">
 
-    <!-- ========== Simple Table Implementation ========== -->
     <div class="panel panel-default">
         <div class="panel-body">
             <h4 class="text-muted">Multi Selection Mode</h4>
-            <ad-infinite-dropdown list-name="artistsList"
+            <!-- ========== Usage Multi Select ========== -->
+            <ad-infinite-dropdown dropdown-name="artistsList"
                               display-property="name"
                               initial-label="Select an artist"
                               selected-items="selectedArtists"
@@ -17,7 +17,8 @@
                 {{ selectedArtists }}
             </span>
             <h4 class="text-muted">Single Selection Mode</h4>
-            <ad-infinite-dropdown list-name="artistList"
+            <!-- ========== Usage Single Select ========== -->
+            <ad-infinite-dropdown dropdown-name="artistList"
                                   template-url="src/infinitedropdown/docs/artist.html"
                                   initial-label="Select an artist"
                                   label-display-property="name"
@@ -31,12 +32,13 @@
                 {{ selectedArtist }}
             </span>
             <h4 class="text-muted">Local Data Source Mode</h4>
-            <ad-infinite-dropdown list-name="artistListLocal"
+            <!-- ========== Usage Local Data Source ========== -->
+            <ad-infinite-dropdown dropdown-name="artistListLocal"
                                   template="artistListTemplate"
                                   initial-label="Select an artist"
                                   selected-items="localSelectedArtists"
                                   single-selection-mode="false"
-                                  max-height="100px"
+                                  max-height="200px"
                                   local-data-source="localArtistsData">
             </ad-infinite-dropdown>
             <p>Selected Items:</p>

@@ -222,7 +222,7 @@ angular.module('adaptv.adaptStrap.utils', [])
         totalPages: undefined,
         pagingArray: [],
         token: options.token
-      }
+      };
       var start = (options.pageNumber - 1) * options.pageSize,
         end = start + options.pageSize,
         i,
@@ -263,5 +263,5 @@ angular.module('adaptv.adaptStrap.utils', [])
         i++;
       }
       return response;
-    }
+    };
   }]);

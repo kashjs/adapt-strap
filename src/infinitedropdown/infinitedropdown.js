@@ -1,15 +1,15 @@
-angular.module('adaptv.adaptStrap.infinitelist', ['adaptv.adaptStrap.utils', 'adaptv.adaptStrap.loadingindicator'])
+angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils', 'adaptv.adaptStrap.loadingindicator'])
 /**
  * Use this directive if you need to render a table that loads data from ajax.
  */
-  .directive('adInfiniteList',
+  .directive('adInfiniteDropdown',
   ['$parse', '$compile', '$templateCache', '$adConfig', 'adLoadPage', 'adDebounce', 'adStrapUtils',
     function ($parse, $compile, $templateCache, $adConfig, adLoadPage, adDebounce, adStrapUtils) {
       'use strict';
       function _link(scope, element, attrs) {
         // We do the name spacing so the if there are multiple ad-table-ajax on the scope,
         // they don't fight with each other.
-        scope[attrs.tableName] = {
+        scope[attrs.listName] = {
           items: {
             list: [],
             paging: {
@@ -19,19 +19,40 @@ angular.module('adaptv.adaptStrap.infinitelist', ['adaptv.adaptStrap.utils', 'ad
             }
           },
           localConfig: {
-            loadingData: false
+            loadingData: false,
+            showDisplayProperty: attrs.displayProperty ? true : false,
+            showTemplate: attrs.template ? true : false,
+            loadTemplate: attrs.templateUrl ? true : false,
+            initialLabel: attrs.initialLabel || 'Select',
+            singleSelectionMode: $parse(attrs.singleSelectionMode)() ? true : false,
+            dynamicLabel: attrs.labelDisplayProperty ? true : false,
+            dimensions: {
+              'max-height': '200px',
+              'max-width': '220px'
+            }
           },
+          selectedItems: scope.$eval(attrs.selectedItems),
           ajaxConfig: scope.$eval(attrs.ajaxConfig),
           applyFilter: adStrapUtils.applyFilter,
-          readProperty: adStrapUtils.getObjectProperty
+          readProperty: adStrapUtils.getObjectProperty,
+          isSelected: adStrapUtils.itemExistsInList
         };
 
         // ---------- Local data ---------- //
-        var listModels = scope[attrs.tableName],
-          mainTemplate = $templateCache.get('infinitelist/infinitelist.tpl.html'),
+        var listModels = scope[attrs.listName],
+          mainTemplate = $templateCache.get('infinitedropdown/infinitedropdown.tpl.html'),
           lastRequestToken;
 
         // ---------- ui handlers ---------- //
+        listModels.addRemoveItem = function(event, item, items) {
+          event.stopPropagation();
+          if (listModels.localConfig.singleSelectionMode) {
+            listModels.selectedItems[0] = item;
+          } else {
+            adStrapUtils.addRemoveItemFromList(item, items);
+          }
+        };
+
         listModels.loadPage = adDebounce(function (page) {
           lastRequestToken = Math.random();
           listModels.localConfig.loadingData = true;
@@ -46,7 +67,12 @@ angular.module('adaptv.adaptStrap.infinitelist', ['adaptv.adaptStrap.utils', 'ad
             },
             successHandler = function (response) {
               if (response.token === lastRequestToken) {
-                listModels.items.list = listModels.items.list.concat(response.items);
+                if (page === 1) {
+                  listModels.items.list = response.items;
+                } else {
+                  listModels.items.list = listModels.items.list.concat(response.items);
+                }
+
                 listModels.items.paging.totalPages = response.totalPages;
                 listModels.items.paging.currentPage = response.currentPage;
                 listModels.localConfig.loadingData = false;
@@ -74,7 +100,14 @@ angular.module('adaptv.adaptStrap.infinitelist', ['adaptv.adaptStrap.utils', 'ad
         scope.$watch(attrs.ajaxConfig, function () {
           listModels.loadPage(1);
         }, true);
-        mainTemplate = mainTemplate.replace(/%=tableName%/g, attrs.tableName);
+
+        mainTemplate = mainTemplate.replace(/%=listName%/g, attrs.listName).
+          replace(/%=displayProperty%/g, attrs.displayProperty).
+          replace(/%=templateUrl%/g, attrs.templateUrl).
+          replace(/%=template%/g, attrs.template).
+          replace(/%=labelDisplayProperty%/g, attrs.labelDisplayProperty).
+          replace(/%=icon-selectedItem%/g, $adConfig.iconClasses.selectedItem);
+
         element.empty();
         element.append($compile(mainTemplate)(scope));
         var listContainer = angular.element(element).find('ul')[0];
@@ -90,6 +123,8 @@ angular.module('adaptv.adaptStrap.infinitelist', ['adaptv.adaptStrap.utils', 'ad
           event.stopPropagation();
           loadFunction();
         });
+
+        scope.template = '{{ item.name }}';
       }
 
       return {

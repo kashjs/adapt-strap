@@ -136,6 +136,19 @@ angular.module('adaptv.adaptStrap.utils', [])
 
     return deb;
   }])
+  .directive('adCompileTemplate', ['$compile', function ($compile) {
+    return function (scope, element, attrs) {
+      scope.$watch(
+        function (scope) {
+          return scope.$eval(attrs.adCompileTemplate);
+        },
+        function (value) {
+          element.html(value);
+          $compile(element.contents())(scope);
+        }
+      );
+    };
+  }])
   .factory('adLoadPage', ['$adConfig', '$http', 'adStrapUtils', function ($adConfig, $http, adStrapUtils) {
     return function (options) {
       var start = (options.pageNumber - 1) * options.pageSize,

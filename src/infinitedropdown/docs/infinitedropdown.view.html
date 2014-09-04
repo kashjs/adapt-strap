@@ -1,0 +1,32 @@
+<div ng-controller="infiniteDropdownCtrl">
+
+    <!-- ========== Simple Table Implementation ========== -->
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <h4 class="text-muted">Multi Selection Mode</h4>
+            <ad-infinite-dropdown list-name="artistsList"
+                              display-property="name"
+                              initial-label="Select an artist"
+                              selected-items="selectedArtists"
+                              ajax-config="artistsAjaxConfig">
+            </ad-infinite-dropdown>
+            <p>Selected Items:</p>
+            <p>
+                {{ selectedArtists }}
+            </p>
+            <h4 class="text-muted">Single Selection Mode</h4>
+            <ad-infinite-dropdown list-name="artistList"
+                                  template="artistListTemplate"
+                                  initial-label="Select an artist"
+                                  selected-items="selectedArtist"
+                                  single-selection-mode="true"
+                                  label-display-property="name"
+                                  ajax-config="artistsAjaxConfig">
+            </ad-infinite-dropdown>
+            <p>Selected Items:</p>
+            <span>
+                {{ selectedArtist }}
+            </span>
+        </div>
+    </div>
+</div>

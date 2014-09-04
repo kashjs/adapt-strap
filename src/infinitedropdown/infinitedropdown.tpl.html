@@ -1,0 +1,31 @@
+<div class="ad-infinite-list-container">
+    <div class="dropdown">
+        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+            <span ng-if="!%=listName%.localConfig.dynamicLabel || !%=listName%.selectedItems.length">{{ %=listName%.localConfig.initialLabel }}</span>
+            <span ng-if="%=listName%.localConfig.dynamicLabel && %=listName%.selectedItems.length">
+                {{ %=listName%.readProperty(%=listName%.selectedItems[%=listName%.selectedItems.length - 1], '%=labelDisplayProperty%') }}
+            </span>
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" ng-style="%=listName%.localConfig.dimensions" role="menu" aria-labelledby="dropdownMenu1">
+            <li class="text-overflow" data-ng-repeat="item in %=listName%.items.list"
+                ng-class="{'active': %=listName%.isSelected(item, %=listName%.selectedItems)}"
+                ng-click="%=listName%.addRemoveItem($event, item, %=listName%.selectedItems)">
+                <a role="menuitem" tabindex="-1" href="">
+                    <span ng-if="%=listName%.localConfig.showDisplayProperty">
+                        {{ %=listName%.readProperty(item, '%=displayProperty%') }}
+                    </span>
+                    <span ng-if="%=listName%.localConfig.showTemplate"
+                          ad-compile-template="%=template%"></span>
+                    <span ng-if="%=listName%.localConfig.loadTemplate"
+                          ng-include="'%=templateUrl%'"></span>
+                </a>
+            </li>
+            <li ng-if="%=listName%.localConfig.loadingData" class="text-overflow text-center" style="display: block">
+                <a role="menuitem" tabindex="-1" href="">
+                    <ad-loading-icon></ad-loading-icon>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

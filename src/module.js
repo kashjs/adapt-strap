@@ -4,7 +4,7 @@ angular.module('adaptv.adaptStrap', [
   'adaptv.adaptStrap.tablelite',
   'adaptv.adaptStrap.tableajax',
   'adaptv.adaptStrap.loadingindicator',
-  'adaptv.adaptStrap.infinitelist'
+  'adaptv.adaptStrap.infinitedropdown'
 ])
   .provider('$adConfig', function () {
     var iconClasses = this.iconClasses = {
@@ -17,7 +17,8 @@ angular.module('adaptv.adaptStrap', [
         lastPage: 'glyphicon glyphicon-fast-forward',
         sortAscending: 'glyphicon glyphicon-chevron-up',
         sortDescending: 'glyphicon glyphicon-chevron-down',
-        sortable: 'glyphicon glyphicon-resize-vertical'
+        sortable: 'glyphicon glyphicon-resize-vertical',
+        selectedItem: 'glyphicon glyphicon-ok'
       },
       paging = this.paging = {
         request: {

@@ -356,14 +356,14 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
     ]
   },
   {
-    moduleName: 'infinitelist',
-    displayName: 'Infinite List',
-    controllerName: 'infiniteListCtrl',
+    moduleName: 'infinitedropdown',
+    displayName: 'Infinite Dropdowns',
+    controllerName: 'infiniteDropdownCtrl',
     description: 'simple directives to render overlay and inline loading indicators',
     playGroundUrl: 'http://jsfiddle.net/kashjs/n79ydkjh/',
     docFiles: [
-      'infinitelist.view.html',
-      'infinitelist.ctrl.js'
+      'infinitedropdown.view.html',
+      'infinitedropdown.ctrl.js'
     ],
     directives: [
       {

@@ -8,24 +8,40 @@
                               display-property="name"
                               initial-label="Select an artist"
                               selected-items="selectedArtists"
+                              max-height="150px"
+                              max-width="100px"
                               ajax-config="artistsAjaxConfig">
             </ad-infinite-dropdown>
             <p>Selected Items:</p>
-            <p>
+            <span>
                 {{ selectedArtists }}
-            </p>
+            </span>
             <h4 class="text-muted">Single Selection Mode</h4>
             <ad-infinite-dropdown list-name="artistList"
-                                  template="artistListTemplate"
+                                  template-url="src/infinitedropdown/docs/artist.html"
                                   initial-label="Select an artist"
+                                  label-display-property="name"
                                   selected-items="selectedArtist"
                                   single-selection-mode="true"
-                                  label-display-property="name"
+                                  on-item-click="artistClicked"
                                   ajax-config="artistsAjaxConfig">
             </ad-infinite-dropdown>
             <p>Selected Items:</p>
             <span>
                 {{ selectedArtist }}
+            </span>
+            <h4 class="text-muted">Local Data Source Mode</h4>
+            <ad-infinite-dropdown list-name="artistListLocal"
+                                  template="artistListTemplate"
+                                  initial-label="Select an artist"
+                                  selected-items="localSelectedArtists"
+                                  single-selection-mode="false"
+                                  max-height="100px"
+                                  local-data-source="localArtistsData">
+            </ad-infinite-dropdown>
+            <p>Selected Items:</p>
+            <span>
+                {{ localSelectedArtists }}
             </span>
         </div>
     </div>

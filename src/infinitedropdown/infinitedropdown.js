@@ -3,8 +3,8 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
  * Use this directive if you need to render a table that loads data from ajax.
  */
   .directive('adInfiniteDropdown',
-  ['$parse', '$compile', '$templateCache', '$adConfig', 'adLoadPage', 'adDebounce', 'adStrapUtils',
-    function ($parse, $compile, $templateCache, $adConfig, adLoadPage, adDebounce, adStrapUtils) {
+  ['$parse', '$compile', '$templateCache', '$adConfig', 'adLoadPage', 'adDebounce', 'adStrapUtils', 'adLoadLocalPage',
+    function ($parse, $compile, $templateCache, $adConfig, adLoadPage, adDebounce, adStrapUtils, adLoadLocalPage) {
       'use strict';
       function _link(scope, element, attrs) {
         // We do the name spacing so the if there are multiple ad-table-ajax on the scope,
@@ -27,8 +27,8 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
             singleSelectionMode: $parse(attrs.singleSelectionMode)() ? true : false,
             dynamicLabel: attrs.labelDisplayProperty ? true : false,
             dimensions: {
-              'max-height': '200px',
-              'max-width': '220px'
+              'max-height': attrs.maxHeight || '200px',
+              'max-width': attrs.maxWidth || 'auto'
             }
           },
           selectedItems: scope.$eval(attrs.selectedItems),
@@ -51,6 +51,10 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
           } else {
             adStrapUtils.addRemoveItemFromList(item, items);
           }
+          var callback = scope.$eval(attrs.onItemClick);
+          if (callback) {
+            callback(item)
+          };
         };
 
         listModels.loadPage = adDebounce(function (page) {
@@ -81,8 +85,12 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
             errorHandler = function () {
               listModels.localConfig.loadingData = false;
             };
-
-          pageLoader(params).then(successHandler, errorHandler);
+          if (attrs.localDataSource) {
+            params.localData = scope.$eval(attrs.localDataSource);
+            successHandler(adLoadLocalPage(params));
+          } else {
+            pageLoader(params).then(successHandler, errorHandler);
+          }
         });
 
         listModels.loadNextPage = function () {

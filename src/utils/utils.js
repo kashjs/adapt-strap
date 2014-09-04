@@ -213,4 +213,55 @@ angular.module('adaptv.adaptStrap.utils', [])
         return response;
       });
     };
+  }])
+  .factory('adLoadLocalPage', ['$filter', function ($filter) {
+    return function (options) {
+      var response = {
+        items: undefined,
+        currentPage: options.pageNumber,
+        totalPages: undefined,
+        pagingArray: [],
+        token: options.token
+      }
+      var start = (options.pageNumber - 1) * options.pageSize,
+        end = start + options.pageSize,
+        i,
+        itemsObject = [],
+        localItems;
+
+      if (angular.isArray(options.localData)) {
+        itemsObject = options.localData;
+      } else {
+        angular.forEach(options.localData, function (item) {
+          itemsObject.push(item);
+        });
+      }
+      localItems = $filter('orderBy')(
+        itemsObject,
+        options.sortKey,
+        options.sortDirection
+      );
+      response.items = localItems.slice(start, end);
+      response.allItems = itemsObject;
+      response.currentPage = options.pageNumber;
+      response.totalPages = Math.ceil(
+          itemsObject.length /
+          options.pageSize
+      );
+      var TOTAL_PAGINATION_ITEMS = 5;
+      var minimumBound = options.pageNumber - Math.floor(TOTAL_PAGINATION_ITEMS / 2);
+      for (i = minimumBound; i <= options.pageNumber; i++) {
+        if (i > 0) {
+          response.pagingArray.push(i);
+        }
+      }
+      while (response.pagingArray.length < TOTAL_PAGINATION_ITEMS) {
+        if (i > response.totalPages) {
+          break;
+        }
+        response.pagingArray.push(i);
+        i++;
+      }
+      return response;
+    }
   }]);

@@ -363,7 +363,8 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
     playGroundUrl: 'http://jsfiddle.net/kashjs/n79ydkjh/',
     docFiles: [
       'infinitedropdown.view.html',
-      'infinitedropdown.ctrl.js'
+      'infinitedropdown.ctrl.js',
+      'artist.html'
     ],
     directives: [
       {

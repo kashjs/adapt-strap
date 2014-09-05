@@ -38,7 +38,10 @@
                 <div ng-if="definition.templateUrl">
                     <ng-include src="definition.templateUrl"></ng-include>
                 </div>
-                <div ng-if="!definition.templateUrl">
+                <div ng-if="definition.template">
+                    <span ad-compile-template="definition.template"></span>
+                </div>
+                <div ng-if="!definition.templateUrl && !definition.template">
                     {{ %=tableName%.applyFilter(%=tableName%.readProperty(item, definition.displayProperty), definition.cellFilter) }}
                 </div>
             </td>

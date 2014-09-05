@@ -5,7 +5,12 @@ angular.module('adaptv.adaptStrapDocs')
       // ========== Simple Table Implementation ========== //
       $scope.artistsColumnDef = [
         {
-          columnHeaderDisplayName: 'Name',
+          columnHeaderDisplayName: 'Image',
+          template: '<img class="thumbnail ad-margin-bottom-none" ng-src="{{item.image[1][\'#text\']}}">',
+          width: '7em'
+        },
+        {
+          columnHeaderTemplate: '<em>Name</em>',
           displayProperty: 'name'
         }
       ];
@@ -36,6 +41,10 @@ angular.module('adaptv.adaptStrapDocs')
         {
           columnHeaderDisplayName: 'Name',
           displayProperty: 'name'
+        },
+        {
+          columnHeaderDisplayName: 'Profile',
+          template: '<a href="{{ item.url }}" target="_blank">url</a>'
         }
       ];
       $scope.artistsAjaxConfigSearch = {

@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v0.2.8 - 2014-09-05
+ * @version v0.2.9 - 2014-09-05
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -163,7 +163,7 @@ function _link(scope, element, attrs) {
           listModels.loadPage(1);
         }, true);
       }
-      mainTemplate = mainTemplate.replace(/%=dropdownName%/g, attrs.dropdownName).replace(/%=displayProperty%/g, attrs.displayProperty).replace(/%=templateUrl%/g, attrs.templateUrl).replace(/%=template%/g, attrs.template).replace(/%=labelDisplayProperty%/g, attrs.labelDisplayProperty).replace(/%=icon-selectedItem%/g, $adConfig.iconClasses.selectedItem);
+      mainTemplate = mainTemplate.replace(/%=dropdownName%/g, attrs.dropdownName).replace(/%=displayProperty%/g, attrs.displayProperty).replace(/%=templateUrl%/g, attrs.templateUrl).replace(/%=template%/g, attrs.template).replace(/%=labelDisplayProperty%/g, attrs.labelDisplayProperty).replace(/%=btnClasses%/g, attrs.btnClasses || 'btn btn-default').replace(/%=icon-selectedItem%/g, $adConfig.iconClasses.selectedItem);
       element.empty();
       element.append($compile(mainTemplate)(scope));
       var listContainer = angular.element(element).find('ul')[0];
@@ -485,6 +485,66 @@ function _link(scope, element, attrs) {
   }
 ]);
 
+// Source: treebrowser.js
+angular.module('adaptv.adaptStrap.treebrowser', []).directive('adTreeBrowser', [
+  '$compile',
+  '$http',
+  '$adConfig',
+  '$templateCache',
+  function ($compile, $http, $adConfig, $templateCache) {
+    function _link(scope, element, attrs) {
+      // We do the name spacing so the if there are multiple ad-tree-browser on the scope,
+      // they don't fight with each other.
+      scope[attrs.treeName] = {
+        toggle: function (event, item) {
+          var toggleCallback;
+          event.stopPropagation();
+          toggleCallback = scope.$eval(attrs.toggleCallback);
+          if (toggleCallback) {
+            toggleCallback(item);
+          } else {
+            item._ad_expanded = !item._ad_expanded;
+          }
+        },
+        hasChildren: function (item) {
+          var hasChildren = scope.$eval(attrs.hasChildren), found = item[attrs.childNode] && item[attrs.childNode].length > 0;
+          if (hasChildren) {
+            found = hasChildren(item);
+          }
+          return found;
+        },
+        localConfig: { showHeader: attrs.nodeHeaderUrl ? true : false }
+      };
+      // ---------- Local data ---------- //
+      var treeName = attrs.treeName || '', nodeTemplateUrl = attrs.nodeTemplateUrl || '', nodeHeaderUrl = attrs.nodeHeaderUrl || '', childrenPadding = attrs.childrenPadding || 15, template = '', populateMainTemplate = function (nodeTemplate, nodeHeaderTemplate) {
+          var data = $templateCache.get('treebrowser/treebrowser.tpl.html');
+          template = data.replace(/%=treeName%/g, treeName).replace(/%=treeRootName%/g, attrs.treeRoot).replace(/%=bordered%/g, attrs.bordered).replace(/%=icon-expand%/g, $adConfig.iconClasses.expand).replace(/%=icon-collapse%/g, $adConfig.iconClasses.collapse).replace(/%=icon-loadingSpinner%/g, $adConfig.iconClasses.loadingSpinner).replace(/%=childNodeName%/g, attrs.childNode).replace(/%=childrenPadding%/g, childrenPadding).replace(/%=rowNgClass%/g, attrs.rowNgClass || '').replace(/%=nodeTemplate%/g, nodeTemplate).replace(/%=nodeHeaderTemplate%/g, nodeHeaderTemplate || '');
+          element.empty();
+          element.append($compile(template)(scope));
+        };
+      // ---------- initialization ---------- //
+      if (nodeTemplateUrl !== '') {
+        // Getting the template from nodeTemplateUrl
+        $http.get(nodeTemplateUrl, { cache: $templateCache }).success(function (nodeTemplate) {
+          if (nodeHeaderUrl !== '') {
+            $http.get(nodeHeaderUrl, { cache: $templateCache }).success(function (headerTemplate) {
+              populateMainTemplate(nodeTemplate, headerTemplate);
+            });
+          } else {
+            populateMainTemplate(nodeTemplate, '');
+          }
+        });
+      } else {
+        populateMainTemplate('<span>{{ item.name || "" }}</span>');
+      }
+    }
+    return {
+      restrict: 'E',
+      link: _link
+    };
+  }
+]);
+
 // Source: utils.js
 angular.module('adaptv.adaptStrap.utils', []).factory('adStrapUtils', [
   '$filter',
@@ -713,66 +773,6 @@ var deb = function (func, delay, immediate, ctx) {
         i++;
       }
       return response;
-    };
-  }
-]);
-
-// Source: treebrowser.js
-angular.module('adaptv.adaptStrap.treebrowser', []).directive('adTreeBrowser', [
-  '$compile',
-  '$http',
-  '$adConfig',
-  '$templateCache',
-  function ($compile, $http, $adConfig, $templateCache) {
-    function _link(scope, element, attrs) {
-      // We do the name spacing so the if there are multiple ad-tree-browser on the scope,
-      // they don't fight with each other.
-      scope[attrs.treeName] = {
-        toggle: function (event, item) {
-          var toggleCallback;
-          event.stopPropagation();
-          toggleCallback = scope.$eval(attrs.toggleCallback);
-          if (toggleCallback) {
-            toggleCallback(item);
-          } else {
-            item._ad_expanded = !item._ad_expanded;
-          }
-        },
-        hasChildren: function (item) {
-          var hasChildren = scope.$eval(attrs.hasChildren), found = item[attrs.childNode] && item[attrs.childNode].length > 0;
-          if (hasChildren) {
-            found = hasChildren(item);
-          }
-          return found;
-        },
-        localConfig: { showHeader: attrs.nodeHeaderUrl ? true : false }
-      };
-      // ---------- Local data ---------- //
-      var treeName = attrs.treeName || '', nodeTemplateUrl = attrs.nodeTemplateUrl || '', nodeHeaderUrl = attrs.nodeHeaderUrl || '', childrenPadding = attrs.childrenPadding || 15, template = '', populateMainTemplate = function (nodeTemplate, nodeHeaderTemplate) {
-          var data = $templateCache.get('treebrowser/treebrowser.tpl.html');
-          template = data.replace(/%=treeName%/g, treeName).replace(/%=treeRootName%/g, attrs.treeRoot).replace(/%=bordered%/g, attrs.bordered).replace(/%=icon-expand%/g, $adConfig.iconClasses.expand).replace(/%=icon-collapse%/g, $adConfig.iconClasses.collapse).replace(/%=icon-loadingSpinner%/g, $adConfig.iconClasses.loadingSpinner).replace(/%=childNodeName%/g, attrs.childNode).replace(/%=childrenPadding%/g, childrenPadding).replace(/%=rowNgClass%/g, attrs.rowNgClass || '').replace(/%=nodeTemplate%/g, nodeTemplate).replace(/%=nodeHeaderTemplate%/g, nodeHeaderTemplate || '');
-          element.empty();
-          element.append($compile(template)(scope));
-        };
-      // ---------- initialization ---------- //
-      if (nodeTemplateUrl !== '') {
-        // Getting the template from nodeTemplateUrl
-        $http.get(nodeTemplateUrl, { cache: $templateCache }).success(function (nodeTemplate) {
-          if (nodeHeaderUrl !== '') {
-            $http.get(nodeHeaderUrl, { cache: $templateCache }).success(function (headerTemplate) {
-              populateMainTemplate(nodeTemplate, headerTemplate);
-            });
-          } else {
-            populateMainTemplate(nodeTemplate, '');
-          }
-        });
-      } else {
-        populateMainTemplate('<span>{{ item.name || "" }}</span>');
-      }
-    }
-    return {
-      restrict: 'E',
-      link: _link
     };
   }
 ]);

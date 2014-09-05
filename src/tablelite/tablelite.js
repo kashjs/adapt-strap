@@ -38,7 +38,11 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
 
         // ---------- Local data ---------- //
         var tableModels = scope[attrs.tableName],
-          mainTemplate = $templateCache.get('tablelite/tablelite.tpl.html');
+          mainTemplate = $templateCache.get('tablelite/tablelite.tpl.html'),
+          placeHolder = null,
+          pageButtonElement = null,
+          validDrop = false;
+
         tableModels.items.paging.pageSize = tableModels.items.paging.pageSizes[0];
 
         // ---------- ui handlers ---------- //
@@ -108,6 +112,62 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           }
         };
 
+        tableModels.onDragStart = function(data, dragElement, evt) {
+          var parent = dragElement.parent()
+          placeHolder = $("<tr><td colspan=" + dragElement.find("td").length + ">&nbsp;</td></tr>");
+
+          if (dragElement[0] !== parent.children().last()[0]) {
+            dragElement.next().before(placeHolder);
+          } else {
+            parent.append(placeHolder);
+          }
+          $('body').append(dragElement);
+        };
+
+        tableModels.onDragEnd = function(data, dragElement, evt) {
+          if (!validDrop) {
+            // If the dragElement is dropped on an invalid drop target
+            // restore the dragElement back to its original position
+            tableModels.onDropEnd(data, dragElement, null, evt);
+          }
+        };
+        
+        tableModels.onDragOver = function(data, dragElement, dropElement, evt) {
+          if (dropElement.next()[0] == placeHolder[0]) {
+            dropElement.before(placeHolder);
+          } else if (dropElement.prev()[0] == placeHolder[0]){
+            dropElement.after(placeHolder);
+          }
+        };
+
+        tableModels.onDropEnd = function(data, dragElement, dropElement, evt) {
+          if (placeHolder.next()[0]) {
+            placeHolder.next().before(dragElement);
+          } else if (placeHolder.prev()[0]) {
+            placeHolder.prev().after(dragElement);
+          }
+          placeHolder.remove();
+          if (pageButtonElement) {
+            pageButtonElement.removeClass('over');
+            pageButtonElement = null;
+          }
+        };
+
+        tableModels.onNextPageButtonOver = function(data, dragElement, dropElement, evt) {
+          pageButtonElement = dropElement;
+          pageButtonElement.addClass('over');
+        };
+
+        tableModels.onNextPageButtonDrop = function(data, dragElement, dropElement, evt) {
+          if (pageButtonElement) {
+            pageButtonElement.removeClass('over');
+            pageButtonElement = null;
+          }
+          // Code to transfer the drag element to the next page
+        };
+ 
+
+
         // ---------- initialization and event listeners ---------- //
         //We do the compile after injecting the name spacing into the template.
         tableModels.loadPage(1);
@@ -134,64 +194,6 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
 
       return {
         restrict: 'E',
-        link: _link,
-        controller: 'TableLiteCtrl'
+        link: _link
       };
-    }])
-    .controller('TableLiteCtrl', ['$scope', function($scope) {
-        var placeHolder = null;
-        var nextPageElement = null;
-        var validDrop = false;
-
-        $scope.dragStart = function(data, dragElement, evt) {
-          var parent = dragElement.parent()
-          placeHolder = $("<tr><td colspan=" + dragElement.find("td").length + ">&nbsp;</td></tr>");
-
-          if (dragElement[0] !== parent.children().last()[0]) {
-            dragElement.next().before(placeHolder);
-          } else {
-            parent.append(placeHolder);
-          }
-          $('body').append(dragElement);
-        };
-
-        $scope.dragEnd = function(data, dragElement, evt) {
-          if (!validDrop) {
-            // If the dragElement is dropped on an invalid drop target
-            // restore the dragElement back to its original position
-            $scope.dropEnd(data, dragElement, null, evt);
-          }
-        };
-        
-        $scope.dropOver = function(data, dragElement, dropElement, evt) {
-          if (dropElement.next()[0] == placeHolder[0]) {
-            dropElement.before(placeHolder);
-          } else if (dropElement.prev()[0] == placeHolder[0]){
-            dropElement.after(placeHolder);
-          }
-        };
-
-        $scope.dropEnd = function(data, dragElement, dropElement, evt) {
-          if (placeHolder.next()[0]) {
-            placeHolder.next().before(dragElement);
-          } else if (placeHolder.prev()[0]) {
-            placeHolder.prev().after(dragElement);
-          }
-          placeHolder.remove();
-          if (nextPageElement) {
-            nextPageElement.removeClass('over');
-            nextPageElement= null;
-          }
-        };
-
-        $scope.onNextPageButtonOver = function(data, dragElement, dropElement, evt) {
-          nextPageElement = dropElement;
-          nextPageElement.addClass('over');
-        };
-
-        $scope.onNextPageButtonDrop = function(data, dragElement, dropElement, evt) {
-          nextPageElement.removeClass('over');
-          nextPageElement = null;
-          // Code to transfer the drag element to the next page
-        };
     }]);

@@ -22,7 +22,8 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           },
           localConfig: {
             pagingArray: [],
-            selectable: attrs.selectedItems ? true : false
+            selectable: attrs.selectedItems ? true : false,
+            draggable: attrs.draggable ? true : false
           },
           selectedItems: scope.$eval(attrs.selectedItems),
           applyFilter: adStrapUtils.applyFilter,
@@ -140,6 +141,64 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
 
       return {
         restrict: 'E',
-        link: _link
+        link: _link,
+        controller: 'TableLiteCtrl'
       };
+    }])
+    .controller('TableLiteCtrl', ['$scope', function($scope) {
+        var placeHolder = null;
+        var nextPageElement = null;
+        var validDrop = false;
+
+        $scope.dragStart = function(data, dragElement, evt) {
+          var parent = dragElement.parent()
+          placeHolder = $("<tr><td colspan=" + dragElement.find("td").length + ">&nbsp;</td></tr>");
+
+          if (dragElement[0] !== parent.children().last()[0]) {
+            dragElement.next().before(placeHolder);
+          } else {
+            parent.append(placeHolder);
+          }
+          $('body').append(dragElement);
+        };
+
+        $scope.dragEnd = function(data, dragElement, evt) {
+          if (!validDrop) {
+            // If the dragElement is dropped on an invalid drop target
+            // restore the dragElement back to its original position
+            $scope.dropEnd(data, dragElement, null, evt);
+          }
+        };
+        
+        $scope.dropOver = function(data, dragElement, dropElement, evt) {
+          if (dropElement.next()[0] == placeHolder[0]) {
+            dropElement.before(placeHolder);
+          } else if (dropElement.prev()[0] == placeHolder[0]){
+            dropElement.after(placeHolder);
+          }
+        };
+
+        $scope.dropEnd = function(data, dragElement, dropElement, evt) {
+          if (placeHolder.next()[0]) {
+            placeHolder.next().before(dragElement);
+          } else if (placeHolder.prev()[0]) {
+            placeHolder.prev().after(dragElement);
+          }
+          placeHolder.remove();
+          if (nextPageElement) {
+            nextPageElement.removeClass('over');
+            nextPageElement= null;
+          }
+        };
+
+        $scope.onNextPageButtonOver = function(data, dragElement, dropElement, evt) {
+          nextPageElement = dropElement;
+          nextPageElement.addClass('over');
+        };
+
+        $scope.onNextPageButtonDrop = function(data, dragElement, dropElement, evt) {
+          nextPageElement.removeClass('over');
+          nextPageElement = null;
+          // Code to transfer the drag element to the next page
+        };
     }]);

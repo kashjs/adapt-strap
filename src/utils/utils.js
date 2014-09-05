@@ -192,4 +192,98 @@ angular.module('adaptv.adaptStrap.utils', [])
         return response;
       });
     };
-  }]);
+  }])
+  .factory('adDragDrop', ['$document', function($document) {
+    var base = null;
+    var draggables = null;
+    var options = null;
+    var ATTRIBUTE = 'draggable';
+    var dragObject = null; // current drag object
+    var drag = false;
+
+    /* allows dragging using any element within the draggable*/
+    function findParentTagByAttribute(elem, attr, attrVal) {
+    while((!!attr && (!elem.getAttribute(attr) || (elem.getAttribute(attr) !== attrVal)))) {
+        if (!elem.parentNode) {
+          return null;
+        }
+        elem = elem.parentNode;
+      }
+      return elem;
+    }
+
+    function findEventElementByAttribute(e, attr, attrVal) {
+      var elem = e.target || e.srcElement;
+      return findParentTagByAttribute(elem, attr, attrVal);
+    }
+      
+    // --- class manipulation --
+    function hasClass(el, className) {
+      return !!el.className.match(new RegExp(className.replace(' ', '')));
+    }
+
+    function addClass(el, className) {
+      if (!hasClass(el, className)) {
+        el.className += ' ' + className;
+      }
+    }
+
+      function removeClass(el, className) {
+        if (hasClass(el, className)) {
+          el.className = el.className.replace(className, '');
+        }
+      }
+      
+      function addEvent(el, evt, hndlr) {
+        if (el.attachEvent) {
+          el.attachEvent('on' + evt, hndlr);
+        } else if(el.addEventListener) {
+          el.addEventListener(evt, hndlr, false);
+        } else {
+          el['on' + evt] = hndlr;
+        }
+      }
+      
+      function rmEvent(el, evt, hndlr) {
+        if (el.detachEvent) {
+          el.detachEvent('on' + evt, hndlr);
+        } else if (el.removeEventListener) {
+          el.removeEventListener(evt, hndlr, false);
+        } else {
+          el['on' + evt] = hndlr;
+        }
+      }
+
+      function getDraggables() {
+        if (base.querySelectorAll) {
+          draggables = base.querySelectorAll('[' + ATTRIBUTE + '=true]');
+        }
+      }
+
+      function initDraggables() {
+        for (var i = 0; i < draggables.length; i++) {
+          addClass(draggables[i], 'ad-draggable');
+          addEvent(draggables[i], 'mousedown', onMousedown);
+        }
+      }
+     
+    function onMousedown(e) {
+      var src = findEventElementByAttribute(e, ATTRIBUTE, 'true');  
+    }
+
+      function onMouseover(e) {
+      
+      }
+
+      function onMouseout(e) {
+      
+      }
+
+      return function(baseEl, opts) {
+        base = baseEl;
+        options = opts;
+        getDraggables();
+        initDraggables();
+      };
+    }
+  ]);

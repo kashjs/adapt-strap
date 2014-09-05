@@ -266,7 +266,8 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
     moduleName: 'infinitedropdown',
     displayName: 'Infinite Dropdowns',
     controllerName: 'infiniteDropdownCtrl',
-    description: 'simple directives to render overlay and inline loading indicators',
+    description: 'simple directives to implement infinite scroll dropdowns/multi selectors',
+    playgroundUrl: 'http://jsfiddle.net/kashjs/2n7znx2u/',
     docFiles: [
       'infinitedropdown.view.html',
       'infinitedropdown.ctrl.js',

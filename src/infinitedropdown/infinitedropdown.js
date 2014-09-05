@@ -121,6 +121,7 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
           replace(/%=templateUrl%/g, attrs.templateUrl).
           replace(/%=template%/g, attrs.template).
           replace(/%=labelDisplayProperty%/g, attrs.labelDisplayProperty).
+          replace(/%=btnClasses%/g, attrs.btnClasses || 'btn btn-default').
           replace(/%=icon-selectedItem%/g, $adConfig.iconClasses.selectedItem);
 
         element.empty();

@@ -78,6 +78,15 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             ' selectable by checkbox. selected rows will have <code>ad-selected</code> class on it. ' +
             'You can target this class in your css to apply custom styling to the selected rows.'
 
+        },
+        {
+          name: 'btn-classes',
+          required: false,
+          default: 'btn btn-default',
+          type: 'String',
+          description: 'classes to be applied to dropdown button. ' +
+            '<code>Ex: btn-classes="btn btn-primary btn-sm"</code>'
+
         }
       ]
     }]

@@ -1,6 +1,6 @@
 <div class="ad-infinite-list-container">
     <div class="dropdown">
-        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+        <button class="%=btnClasses% dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
             <span ng-if="!%=dropdownName%.localConfig.dynamicLabel || !%=dropdownName%.selectedItems.length">{{ %=dropdownName%.localConfig.initialLabel }}</span>
             <span ng-if="%=dropdownName%.localConfig.dynamicLabel && %=dropdownName%.selectedItems.length">
                 {{ %=dropdownName%.readProperty(%=dropdownName%.selectedItems[%=dropdownName%.selectedItems.length - 1], '%=labelDisplayProperty%') }}

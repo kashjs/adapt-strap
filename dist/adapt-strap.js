@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v0.2.7 - 2014-08-22
+ * @version v0.2.8 - 2014-09-05
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -13,7 +13,8 @@ angular.module('adaptv.adaptStrap', [
   'adaptv.adaptStrap.treebrowser',
   'adaptv.adaptStrap.tablelite',
   'adaptv.adaptStrap.tableajax',
-  'adaptv.adaptStrap.loadingindicator'
+  'adaptv.adaptStrap.loadingindicator',
+  'adaptv.adaptStrap.infinitedropdown'
 ]).provider('$adConfig', function () {
   var iconClasses = this.iconClasses = {
       expand: 'glyphicon glyphicon-plus-sign',
@@ -25,7 +26,8 @@ angular.module('adaptv.adaptStrap', [
       lastPage: 'glyphicon glyphicon-fast-forward',
       sortAscending: 'glyphicon glyphicon-chevron-up',
       sortDescending: 'glyphicon glyphicon-chevron-down',
-      sortable: 'glyphicon glyphicon-resize-vertical'
+      sortable: 'glyphicon glyphicon-resize-vertical',
+      selectedItem: 'glyphicon glyphicon-ok'
     }, paging = this.paging = {
       request: {
         start: 'skip',
@@ -48,6 +50,143 @@ angular.module('adaptv.adaptStrap', [
     };
   };
 });
+
+// Source: infinitedropdown.js
+angular.module('adaptv.adaptStrap.infinitedropdown', [
+  'adaptv.adaptStrap.utils',
+  'adaptv.adaptStrap.loadingindicator'
+]).directive('adInfiniteDropdown', [
+  '$parse',
+  '$compile',
+  '$templateCache',
+  '$adConfig',
+  'adLoadPage',
+  'adDebounce',
+  'adStrapUtils',
+  'adLoadLocalPage',
+  function ($parse, $compile, $templateCache, $adConfig, adLoadPage, adDebounce, adStrapUtils, adLoadLocalPage) {
+function _link(scope, element, attrs) {
+      // We do the name spacing so the if there are multiple ad-table-ajax on the scope,
+      // they don't fight with each other.
+      scope[attrs.dropdownName] = {
+        items: {
+          list: [],
+          paging: {
+            currentPage: 1,
+            totalPages: undefined,
+            pageSize: Number(attrs.pageSize) || 10
+          }
+        },
+        localConfig: {
+          loadingData: false,
+          showDisplayProperty: attrs.displayProperty ? true : false,
+          showTemplate: attrs.template ? true : false,
+          loadTemplate: attrs.templateUrl ? true : false,
+          initialLabel: attrs.initialLabel || 'Select',
+          singleSelectionMode: $parse(attrs.singleSelectionMode)() ? true : false,
+          dynamicLabel: attrs.labelDisplayProperty ? true : false,
+          dimensions: {
+            'max-height': attrs.maxHeight || '200px',
+            'max-width': attrs.maxWidth || 'auto'
+          }
+        },
+        selectedItems: scope.$eval(attrs.selectedItems) || [],
+        ajaxConfig: scope.$eval(attrs.ajaxConfig),
+        applyFilter: adStrapUtils.applyFilter,
+        readProperty: adStrapUtils.getObjectProperty,
+        isSelected: adStrapUtils.itemExistsInList
+      };
+      // ---------- Local data ---------- //
+      var listModels = scope[attrs.dropdownName], mainTemplate = $templateCache.get('infinitedropdown/infinitedropdown.tpl.html'), lastRequestToken;
+      // ---------- ui handlers ---------- //
+      listModels.addRemoveItem = function (event, item, items) {
+        event.stopPropagation();
+        if (listModels.localConfig.singleSelectionMode) {
+          listModels.selectedItems[0] = item;
+        } else {
+          adStrapUtils.addRemoveItemFromList(item, items);
+        }
+        var callback = scope.$eval(attrs.onItemClick);
+        if (callback) {
+          callback(item);
+        }
+      };
+      listModels.loadPage = adDebounce(function (page) {
+        lastRequestToken = Math.random();
+        listModels.localConfig.loadingData = true;
+        var pageLoader = scope.$eval(attrs.pageLoader) || adLoadPage, params = {
+            pageNumber: page,
+            pageSize: listModels.items.paging.pageSize,
+            sortKey: listModels.localConfig.predicate,
+            sortDirection: listModels.localConfig.reverse,
+            ajaxConfig: listModels.ajaxConfig,
+            token: lastRequestToken
+          }, successHandler = function (response) {
+            if (response.token === lastRequestToken) {
+              if (page === 1) {
+                listModels.items.list = response.items;
+              } else {
+                listModels.items.list = listModels.items.list.concat(response.items);
+              }
+              listModels.items.paging.totalPages = response.totalPages;
+              listModels.items.paging.currentPage = response.currentPage;
+              listModels.localConfig.loadingData = false;
+            }
+          }, errorHandler = function () {
+            listModels.localConfig.loadingData = false;
+          };
+        if (attrs.localDataSource) {
+          params.localData = scope.$eval(attrs.localDataSource);
+          successHandler(adLoadLocalPage(params));
+        } else {
+          pageLoader(params).then(successHandler, errorHandler);
+        }
+      });
+      listModels.loadNextPage = function () {
+        if (!listModels.localConfig.loadingData) {
+          if (listModels.items.paging.currentPage + 1 <= listModels.items.paging.totalPages) {
+            listModels.loadPage(listModels.items.paging.currentPage + 1);
+          }
+        }
+      };
+      // ---------- initialization and event listeners ---------- //
+      //We do the compile after injecting the name spacing into the template.
+      listModels.loadPage(1);
+      // reset on parameter change
+      if (attrs.ajaxConfig) {
+        scope.$watch(attrs.ajaxConfig, function () {
+          listModels.loadPage(1);
+        }, true);
+      }
+      if (attrs.localDataSource) {
+        scope.$watch(attrs.localDataSource, function () {
+          listModels.loadPage(1);
+        }, true);
+      }
+      mainTemplate = mainTemplate.replace(/%=dropdownName%/g, attrs.dropdownName).replace(/%=displayProperty%/g, attrs.displayProperty).replace(/%=templateUrl%/g, attrs.templateUrl).replace(/%=template%/g, attrs.template).replace(/%=labelDisplayProperty%/g, attrs.labelDisplayProperty).replace(/%=icon-selectedItem%/g, $adConfig.iconClasses.selectedItem);
+      element.empty();
+      element.append($compile(mainTemplate)(scope));
+      var listContainer = angular.element(element).find('ul')[0];
+      // infinite scroll handler
+      var loadFunction = adDebounce(function () {
+          // This is for infinite scrolling.
+          // When the scroll gets closer to the bottom, load more items.
+          if (listContainer.scrollTop + listContainer.offsetHeight >= listContainer.scrollHeight - 300) {
+            listModels.loadNextPage();
+          }
+        }, 50);
+      angular.element(listContainer).on('scroll', function (event) {
+        event.stopPropagation();
+        loadFunction();
+      });
+      scope.template = '{{ item.name }}';
+    }
+    return {
+      restrict: 'E',
+      link: _link
+    };
+  }
+]);
 
 // Source: loadingindicator.js
 angular.module('adaptv.adaptStrap.loadingindicator', []).directive('adLoadingIcon', [
@@ -232,7 +371,8 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils']).direc
   '$adConfig',
   'adStrapUtils',
   'adDebounce',
-  function ($parse, $http, $compile, $filter, $templateCache, $adConfig, adStrapUtils, adDebounce) {
+  'adLoadLocalPage',
+  function ($parse, $http, $compile, $filter, $templateCache, $adConfig, adStrapUtils, adDebounce, adLoadLocalPage) {
 function _link(scope, element, attrs) {
       // We do the name spacing so the if there are multiple ad-table-lite on the scope,
       // they don't fight with each other.
@@ -269,7 +409,7 @@ function _link(scope, element, attrs) {
       tableModels.items.paging.pageSize = tableModels.items.paging.pageSizes[0];
       // ---------- ui handlers ---------- //
       tableModels.loadPage = adDebounce(function (page) {
-        var start = (page - 1) * tableModels.items.paging.pageSize, end = start + tableModels.items.paging.pageSize, i, itemsObject = [], localItems;
+        var itemsObject = [], params;
         if (angular.isArray(scope.$eval(attrs.localDataSource))) {
           itemsObject = scope.$eval(attrs.localDataSource);
         } else {
@@ -277,29 +417,19 @@ function _link(scope, element, attrs) {
             itemsObject.push(item);
           });
         }
-        if (tableModels.localConfig.showPaging === false) {
-          end = itemsObject.length;
-        }
-        localItems = $filter('orderBy')(itemsObject, tableModels.localConfig.predicate, tableModels.localConfig.reverse);
-        tableModels.items.list = localItems.slice(start, end);
-        tableModels.items.allItems = itemsObject;
-        tableModels.items.paging.currentPage = page;
-        tableModels.items.paging.totalPages = Math.ceil(itemsObject.length / tableModels.items.paging.pageSize);
-        tableModels.localConfig.pagingArray = [];
-        var TOTAL_PAGINATION_ITEMS = 5;
-        var minimumBound = page - Math.floor(TOTAL_PAGINATION_ITEMS / 2);
-        for (i = minimumBound; i <= page; i++) {
-          if (i > 0) {
-            tableModels.localConfig.pagingArray.push(i);
-          }
-        }
-        while (tableModels.localConfig.pagingArray.length < TOTAL_PAGINATION_ITEMS) {
-          if (i > tableModels.items.paging.totalPages) {
-            break;
-          }
-          tableModels.localConfig.pagingArray.push(i);
-          i++;
-        }
+        params = {
+          pageNumber: page,
+          pageSize: tableModels.localConfig.showPaging ? tableModels.items.paging.pageSize : itemsObject.length,
+          sortKey: tableModels.localConfig.predicate,
+          sortDirection: tableModels.localConfig.reverse,
+          localData: itemsObject
+        };
+        var response = adLoadLocalPage(params);
+        tableModels.items.list = response.items;
+        tableModels.items.allItems = response.allItems;
+        tableModels.items.paging.currentPage = response.currentPage;
+        tableModels.items.paging.totalPages = response.totalPages;
+        tableModels.localConfig.pagingArray = response.pagingArray;
       }, 100);
       tableModels.loadNextPage = function () {
         if (tableModels.items.paging.currentPage + 1 <= tableModels.items.paging.totalPages) {
@@ -347,66 +477,6 @@ function _link(scope, element, attrs) {
       scope.$watch(attrs.localDataSource, function () {
         tableModels.loadPage(1);
       }, true);
-    }
-    return {
-      restrict: 'E',
-      link: _link
-    };
-  }
-]);
-
-// Source: treebrowser.js
-angular.module('adaptv.adaptStrap.treebrowser', []).directive('adTreeBrowser', [
-  '$compile',
-  '$http',
-  '$adConfig',
-  '$templateCache',
-  function ($compile, $http, $adConfig, $templateCache) {
-    function _link(scope, element, attrs) {
-      // We do the name spacing so the if there are multiple ad-tree-browser on the scope,
-      // they don't fight with each other.
-      scope[attrs.treeName] = {
-        toggle: function (event, item) {
-          var toggleCallback;
-          event.stopPropagation();
-          toggleCallback = scope.$eval(attrs.toggleCallback);
-          if (toggleCallback) {
-            toggleCallback(item);
-          } else {
-            item._ad_expanded = !item._ad_expanded;
-          }
-        },
-        hasChildren: function (item) {
-          var hasChildren = scope.$eval(attrs.hasChildren), found = item[attrs.childNode] && item[attrs.childNode].length > 0;
-          if (hasChildren) {
-            found = hasChildren(item);
-          }
-          return found;
-        },
-        localConfig: { showHeader: attrs.nodeHeaderUrl ? true : false }
-      };
-      // ---------- Local data ---------- //
-      var treeName = attrs.treeName || '', nodeTemplateUrl = attrs.nodeTemplateUrl || '', nodeHeaderUrl = attrs.nodeHeaderUrl || '', childrenPadding = attrs.childrenPadding || 15, template = '', populateMainTemplate = function (nodeTemplate, nodeHeaderTemplate) {
-          var data = $templateCache.get('treebrowser/treebrowser.tpl.html');
-          template = data.replace(/%=treeName%/g, treeName).replace(/%=treeRootName%/g, attrs.treeRoot).replace(/%=bordered%/g, attrs.bordered).replace(/%=icon-expand%/g, $adConfig.iconClasses.expand).replace(/%=icon-collapse%/g, $adConfig.iconClasses.collapse).replace(/%=icon-loadingSpinner%/g, $adConfig.iconClasses.loadingSpinner).replace(/%=childNodeName%/g, attrs.childNode).replace(/%=childrenPadding%/g, childrenPadding).replace(/%=rowNgClass%/g, attrs.rowNgClass || '').replace(/%=nodeTemplate%/g, nodeTemplate).replace(/%=nodeHeaderTemplate%/g, nodeHeaderTemplate || '');
-          element.empty();
-          element.append($compile(template)(scope));
-        };
-      // ---------- initialization ---------- //
-      if (nodeTemplateUrl !== '') {
-        // Getting the template from nodeTemplateUrl
-        $http.get(nodeTemplateUrl, { cache: $templateCache }).success(function (nodeTemplate) {
-          if (nodeHeaderUrl !== '') {
-            $http.get(nodeHeaderUrl, { cache: $templateCache }).success(function (headerTemplate) {
-              populateMainTemplate(nodeTemplate, headerTemplate);
-            });
-          } else {
-            populateMainTemplate(nodeTemplate, '');
-          }
-        });
-      } else {
-        populateMainTemplate('<span>{{ item.name || "" }}</span>');
-      }
     }
     return {
       restrict: 'E',
@@ -536,6 +606,18 @@ var deb = function (func, delay, immediate, ctx) {
     };
     return deb;
   }
+]).directive('adCompileTemplate', [
+  '$compile',
+  function ($compile) {
+    return function (scope, element, attrs) {
+      scope.$watch(function (scope) {
+        return scope.$eval(attrs.adCompileTemplate);
+      }, function (value) {
+        element.html(value);
+        $compile(element.contents())(scope);
+      });
+    };
+  }
 ]).factory('adLoadPage', [
   '$adConfig',
   '$http',
@@ -590,6 +672,107 @@ var deb = function (func, delay, immediate, ctx) {
         }
         return response;
       });
+    };
+  }
+]).factory('adLoadLocalPage', [
+  '$filter',
+  function ($filter) {
+    return function (options) {
+      var response = {
+          items: undefined,
+          currentPage: options.pageNumber,
+          totalPages: undefined,
+          pagingArray: [],
+          token: options.token
+        };
+      var start = (options.pageNumber - 1) * options.pageSize, end = start + options.pageSize, i, itemsObject = [], localItems;
+      if (angular.isArray(options.localData)) {
+        itemsObject = options.localData;
+      } else {
+        angular.forEach(options.localData, function (item) {
+          itemsObject.push(item);
+        });
+      }
+      localItems = $filter('orderBy')(itemsObject, options.sortKey, options.sortDirection);
+      response.items = localItems.slice(start, end);
+      response.allItems = itemsObject;
+      response.currentPage = options.pageNumber;
+      response.totalPages = Math.ceil(itemsObject.length / options.pageSize);
+      var TOTAL_PAGINATION_ITEMS = 5;
+      var minimumBound = options.pageNumber - Math.floor(TOTAL_PAGINATION_ITEMS / 2);
+      for (i = minimumBound; i <= options.pageNumber; i++) {
+        if (i > 0) {
+          response.pagingArray.push(i);
+        }
+      }
+      while (response.pagingArray.length < TOTAL_PAGINATION_ITEMS) {
+        if (i > response.totalPages) {
+          break;
+        }
+        response.pagingArray.push(i);
+        i++;
+      }
+      return response;
+    };
+  }
+]);
+
+// Source: treebrowser.js
+angular.module('adaptv.adaptStrap.treebrowser', []).directive('adTreeBrowser', [
+  '$compile',
+  '$http',
+  '$adConfig',
+  '$templateCache',
+  function ($compile, $http, $adConfig, $templateCache) {
+    function _link(scope, element, attrs) {
+      // We do the name spacing so the if there are multiple ad-tree-browser on the scope,
+      // they don't fight with each other.
+      scope[attrs.treeName] = {
+        toggle: function (event, item) {
+          var toggleCallback;
+          event.stopPropagation();
+          toggleCallback = scope.$eval(attrs.toggleCallback);
+          if (toggleCallback) {
+            toggleCallback(item);
+          } else {
+            item._ad_expanded = !item._ad_expanded;
+          }
+        },
+        hasChildren: function (item) {
+          var hasChildren = scope.$eval(attrs.hasChildren), found = item[attrs.childNode] && item[attrs.childNode].length > 0;
+          if (hasChildren) {
+            found = hasChildren(item);
+          }
+          return found;
+        },
+        localConfig: { showHeader: attrs.nodeHeaderUrl ? true : false }
+      };
+      // ---------- Local data ---------- //
+      var treeName = attrs.treeName || '', nodeTemplateUrl = attrs.nodeTemplateUrl || '', nodeHeaderUrl = attrs.nodeHeaderUrl || '', childrenPadding = attrs.childrenPadding || 15, template = '', populateMainTemplate = function (nodeTemplate, nodeHeaderTemplate) {
+          var data = $templateCache.get('treebrowser/treebrowser.tpl.html');
+          template = data.replace(/%=treeName%/g, treeName).replace(/%=treeRootName%/g, attrs.treeRoot).replace(/%=bordered%/g, attrs.bordered).replace(/%=icon-expand%/g, $adConfig.iconClasses.expand).replace(/%=icon-collapse%/g, $adConfig.iconClasses.collapse).replace(/%=icon-loadingSpinner%/g, $adConfig.iconClasses.loadingSpinner).replace(/%=childNodeName%/g, attrs.childNode).replace(/%=childrenPadding%/g, childrenPadding).replace(/%=rowNgClass%/g, attrs.rowNgClass || '').replace(/%=nodeTemplate%/g, nodeTemplate).replace(/%=nodeHeaderTemplate%/g, nodeHeaderTemplate || '');
+          element.empty();
+          element.append($compile(template)(scope));
+        };
+      // ---------- initialization ---------- //
+      if (nodeTemplateUrl !== '') {
+        // Getting the template from nodeTemplateUrl
+        $http.get(nodeTemplateUrl, { cache: $templateCache }).success(function (nodeTemplate) {
+          if (nodeHeaderUrl !== '') {
+            $http.get(nodeHeaderUrl, { cache: $templateCache }).success(function (headerTemplate) {
+              populateMainTemplate(nodeTemplate, headerTemplate);
+            });
+          } else {
+            populateMainTemplate(nodeTemplate, '');
+          }
+        });
+      } else {
+        populateMainTemplate('<span>{{ item.name || "" }}</span>');
+      }
+    }
+    return {
+      restrict: 'E',
+      link: _link
     };
   }
 ]);

@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v0.2.3 - 2014-08-08
+ * @version v0.2.9 - 2014-09-05
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -13,7 +13,8 @@ angular.module('adaptv.adaptStrap', [
   'adaptv.adaptStrap.treebrowser',
   'adaptv.adaptStrap.tablelite',
   'adaptv.adaptStrap.tableajax',
-  'adaptv.adaptStrap.loadingindicator'
+  'adaptv.adaptStrap.loadingindicator',
+  'adaptv.adaptStrap.infinitedropdown'
 ]).provider('$adConfig', function () {
   var iconClasses = this.iconClasses = {
       expand: 'glyphicon glyphicon-plus-sign',
@@ -25,7 +26,8 @@ angular.module('adaptv.adaptStrap', [
       lastPage: 'glyphicon glyphicon-fast-forward',
       sortAscending: 'glyphicon glyphicon-chevron-up',
       sortDescending: 'glyphicon glyphicon-chevron-down',
-      sortable: 'glyphicon glyphicon-resize-vertical'
+      sortable: 'glyphicon glyphicon-resize-vertical',
+      selectedItem: 'glyphicon glyphicon-ok'
     }, paging = this.paging = {
       request: {
         start: 'skip',
@@ -48,6 +50,143 @@ angular.module('adaptv.adaptStrap', [
     };
   };
 });
+
+// Source: infinitedropdown.js
+angular.module('adaptv.adaptStrap.infinitedropdown', [
+  'adaptv.adaptStrap.utils',
+  'adaptv.adaptStrap.loadingindicator'
+]).directive('adInfiniteDropdown', [
+  '$parse',
+  '$compile',
+  '$templateCache',
+  '$adConfig',
+  'adLoadPage',
+  'adDebounce',
+  'adStrapUtils',
+  'adLoadLocalPage',
+  function ($parse, $compile, $templateCache, $adConfig, adLoadPage, adDebounce, adStrapUtils, adLoadLocalPage) {
+function _link(scope, element, attrs) {
+      // We do the name spacing so the if there are multiple ad-table-ajax on the scope,
+      // they don't fight with each other.
+      scope[attrs.dropdownName] = {
+        items: {
+          list: [],
+          paging: {
+            currentPage: 1,
+            totalPages: undefined,
+            pageSize: Number(attrs.pageSize) || 10
+          }
+        },
+        localConfig: {
+          loadingData: false,
+          showDisplayProperty: attrs.displayProperty ? true : false,
+          showTemplate: attrs.template ? true : false,
+          loadTemplate: attrs.templateUrl ? true : false,
+          initialLabel: attrs.initialLabel || 'Select',
+          singleSelectionMode: $parse(attrs.singleSelectionMode)() ? true : false,
+          dynamicLabel: attrs.labelDisplayProperty ? true : false,
+          dimensions: {
+            'max-height': attrs.maxHeight || '200px',
+            'max-width': attrs.maxWidth || 'auto'
+          }
+        },
+        selectedItems: scope.$eval(attrs.selectedItems) || [],
+        ajaxConfig: scope.$eval(attrs.ajaxConfig),
+        applyFilter: adStrapUtils.applyFilter,
+        readProperty: adStrapUtils.getObjectProperty,
+        isSelected: adStrapUtils.itemExistsInList
+      };
+      // ---------- Local data ---------- //
+      var listModels = scope[attrs.dropdownName], mainTemplate = $templateCache.get('infinitedropdown/infinitedropdown.tpl.html'), lastRequestToken;
+      // ---------- ui handlers ---------- //
+      listModels.addRemoveItem = function (event, item, items) {
+        event.stopPropagation();
+        if (listModels.localConfig.singleSelectionMode) {
+          listModels.selectedItems[0] = item;
+        } else {
+          adStrapUtils.addRemoveItemFromList(item, items);
+        }
+        var callback = scope.$eval(attrs.onItemClick);
+        if (callback) {
+          callback(item);
+        }
+      };
+      listModels.loadPage = adDebounce(function (page) {
+        lastRequestToken = Math.random();
+        listModels.localConfig.loadingData = true;
+        var pageLoader = scope.$eval(attrs.pageLoader) || adLoadPage, params = {
+            pageNumber: page,
+            pageSize: listModels.items.paging.pageSize,
+            sortKey: listModels.localConfig.predicate,
+            sortDirection: listModels.localConfig.reverse,
+            ajaxConfig: listModels.ajaxConfig,
+            token: lastRequestToken
+          }, successHandler = function (response) {
+            if (response.token === lastRequestToken) {
+              if (page === 1) {
+                listModels.items.list = response.items;
+              } else {
+                listModels.items.list = listModels.items.list.concat(response.items);
+              }
+              listModels.items.paging.totalPages = response.totalPages;
+              listModels.items.paging.currentPage = response.currentPage;
+              listModels.localConfig.loadingData = false;
+            }
+          }, errorHandler = function () {
+            listModels.localConfig.loadingData = false;
+          };
+        if (attrs.localDataSource) {
+          params.localData = scope.$eval(attrs.localDataSource);
+          successHandler(adLoadLocalPage(params));
+        } else {
+          pageLoader(params).then(successHandler, errorHandler);
+        }
+      });
+      listModels.loadNextPage = function () {
+        if (!listModels.localConfig.loadingData) {
+          if (listModels.items.paging.currentPage + 1 <= listModels.items.paging.totalPages) {
+            listModels.loadPage(listModels.items.paging.currentPage + 1);
+          }
+        }
+      };
+      // ---------- initialization and event listeners ---------- //
+      //We do the compile after injecting the name spacing into the template.
+      listModels.loadPage(1);
+      // reset on parameter change
+      if (attrs.ajaxConfig) {
+        scope.$watch(attrs.ajaxConfig, function () {
+          listModels.loadPage(1);
+        }, true);
+      }
+      if (attrs.localDataSource) {
+        scope.$watch(attrs.localDataSource, function () {
+          listModels.loadPage(1);
+        }, true);
+      }
+      mainTemplate = mainTemplate.replace(/%=dropdownName%/g, attrs.dropdownName).replace(/%=displayProperty%/g, attrs.displayProperty).replace(/%=templateUrl%/g, attrs.templateUrl).replace(/%=template%/g, attrs.template).replace(/%=labelDisplayProperty%/g, attrs.labelDisplayProperty).replace(/%=btnClasses%/g, attrs.btnClasses || 'btn btn-default').replace(/%=icon-selectedItem%/g, $adConfig.iconClasses.selectedItem);
+      element.empty();
+      element.append($compile(mainTemplate)(scope));
+      var listContainer = angular.element(element).find('ul')[0];
+      // infinite scroll handler
+      var loadFunction = adDebounce(function () {
+          // This is for infinite scrolling.
+          // When the scroll gets closer to the bottom, load more items.
+          if (listContainer.scrollTop + listContainer.offsetHeight >= listContainer.scrollHeight - 300) {
+            listModels.loadNextPage();
+          }
+        }, 50);
+      angular.element(listContainer).on('scroll', function (event) {
+        event.stopPropagation();
+        loadFunction();
+      });
+      scope.template = '{{ item.name }}';
+    }
+    return {
+      restrict: 'E',
+      link: _link
+    };
+  }
+]);
 
 // Source: loadingindicator.js
 angular.module('adaptv.adaptStrap.loadingindicator', []).directive('adLoadingIcon', [
@@ -128,7 +267,8 @@ function _link(scope, element, attrs) {
           loadingData: false
         },
         ajaxConfig: scope.$eval(attrs.ajaxConfig),
-        applyFilter: adStrapUtils.applyFilter
+        applyFilter: adStrapUtils.applyFilter,
+        readProperty: adStrapUtils.getObjectProperty
       };
       // ---------- Local data ---------- //
       var tableModels = scope[attrs.tableName], mainTemplate = $templateCache.get('tableajax/tableajax.tpl.html'), lastRequestToken;
@@ -231,7 +371,8 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils']).direc
   '$adConfig',
   'adStrapUtils',
   'adDebounce',
-  function ($parse, $http, $compile, $filter, $templateCache, $adConfig, adStrapUtils, adDebounce) {
+  'adLoadLocalPage',
+  function ($parse, $http, $compile, $filter, $templateCache, $adConfig, adStrapUtils, adDebounce, adLoadLocalPage) {
 function _link(scope, element, attrs) {
       // We do the name spacing so the if there are multiple ad-table-lite on the scope,
       // they don't fight with each other.
@@ -252,41 +393,44 @@ function _link(scope, element, attrs) {
         },
         localConfig: {
           pagingArray: [],
-          selectable: attrs.selectedItems ? true : false
+          selectable: attrs.selectedItems ? true : false,
+          showPaging: $parse(attrs.disablePaging)() ? false : true
         },
         selectedItems: scope.$eval(attrs.selectedItems),
         applyFilter: adStrapUtils.applyFilter,
         isSelected: adStrapUtils.itemExistsInList,
         addRemoveItem: adStrapUtils.addRemoveItemFromList,
         addRemoveAll: adStrapUtils.addRemoveItemsFromList,
-        allSelected: adStrapUtils.itemsExistInList
+        allSelected: adStrapUtils.itemsExistInList,
+        readProperty: adStrapUtils.getObjectProperty
       };
       // ---------- Local data ---------- //
       var tableModels = scope[attrs.tableName], mainTemplate = $templateCache.get('tablelite/tablelite.tpl.html');
       tableModels.items.paging.pageSize = tableModels.items.paging.pageSizes[0];
       // ---------- ui handlers ---------- //
       tableModels.loadPage = adDebounce(function (page) {
-        var start = (page - 1) * tableModels.items.paging.pageSize, end = start + tableModels.items.paging.pageSize, i, localItems = $filter('orderBy')(scope.$eval(attrs.localDataSource), tableModels.localConfig.predicate, tableModels.localConfig.reverse);
-        tableModels.items.list = localItems.slice(start, end);
-        tableModels.items.allItems = scope.$eval(attrs.localDataSource);
-        tableModels.items.paging.currentPage = page;
-        tableModels.items.paging.totalPages = Math.ceil(scope.$eval(attrs.localDataSource).length / tableModels.items.paging.pageSize);
-        tableModels.localConfig.pagingArray = [];
-        var TOTAL_PAGINATION_ITEMS = 5;
-        var minimumBound = page - Math.floor(TOTAL_PAGINATION_ITEMS / 2);
-        for (i = minimumBound; i <= page; i++) {
-          if (i > 0) {
-            tableModels.localConfig.pagingArray.push(i);
-          }
+        var itemsObject = [], params;
+        if (angular.isArray(scope.$eval(attrs.localDataSource))) {
+          itemsObject = scope.$eval(attrs.localDataSource);
+        } else {
+          angular.forEach(scope.$eval(attrs.localDataSource), function (item) {
+            itemsObject.push(item);
+          });
         }
-        while (tableModels.localConfig.pagingArray.length < TOTAL_PAGINATION_ITEMS) {
-          if (i > tableModels.items.paging.totalPages) {
-            break;
-          }
-          tableModels.localConfig.pagingArray.push(i);
-          i++;
-        }
-      });
+        params = {
+          pageNumber: page,
+          pageSize: tableModels.localConfig.showPaging ? tableModels.items.paging.pageSize : itemsObject.length,
+          sortKey: tableModels.localConfig.predicate,
+          sortDirection: tableModels.localConfig.reverse,
+          localData: itemsObject
+        };
+        var response = adLoadLocalPage(params);
+        tableModels.items.list = response.items;
+        tableModels.items.allItems = response.allItems;
+        tableModels.items.paging.currentPage = response.currentPage;
+        tableModels.items.paging.totalPages = response.totalPages;
+        tableModels.localConfig.pagingArray = response.pagingArray;
+      }, 100);
       tableModels.loadNextPage = function () {
         if (tableModels.items.paging.currentPage + 1 <= tableModels.items.paging.totalPages) {
           tableModels.loadPage(tableModels.items.paging.currentPage + 1);
@@ -328,7 +472,6 @@ function _link(scope, element, attrs) {
       attrs.tableClasses = attrs.tableClasses || 'table';
       attrs.paginationBtnGroupClasses = attrs.paginationBtnGroupClasses || 'btn-group btn-group-sm';
       mainTemplate = mainTemplate.replace(/%=tableName%/g, attrs.tableName).replace(/%=columnDefinition%/g, attrs.columnDefinition).replace(/%=paginationBtnGroupClasses%/g, attrs.paginationBtnGroupClasses).replace(/%=tableClasses%/g, attrs.tableClasses).replace(/%=icon-firstPage%/g, $adConfig.iconClasses.firstPage).replace(/%=icon-previousPage%/g, $adConfig.iconClasses.previousPage).replace(/%=icon-nextPage%/g, $adConfig.iconClasses.nextPage).replace(/%=icon-lastPage%/g, $adConfig.iconClasses.lastPage).replace(/%=icon-sortAscending%/g, $adConfig.iconClasses.sortAscending).replace(/%=icon-sortDescending%/g, $adConfig.iconClasses.sortDescending).replace(/%=icon-sortable%/g, $adConfig.iconClasses.sortable);
-      ;
       element.empty();
       element.append($compile(mainTemplate)(scope));
       scope.$watch(attrs.localDataSource, function () {
@@ -370,7 +513,7 @@ angular.module('adaptv.adaptStrap.treebrowser', []).directive('adTreeBrowser', [
           }
           return found;
         },
-        localConfig: { showHeader: attrs.nodeHeaderUrl !== '' ? true : false }
+        localConfig: { showHeader: attrs.nodeHeaderUrl ? true : false }
       };
       // ---------- Local data ---------- //
       var treeName = attrs.treeName || '', nodeTemplateUrl = attrs.nodeTemplateUrl || '', nodeHeaderUrl = attrs.nodeHeaderUrl || '', childrenPadding = attrs.childrenPadding || 15, template = '', populateMainTemplate = function (nodeTemplate, nodeHeaderTemplate) {
@@ -382,9 +525,9 @@ angular.module('adaptv.adaptStrap.treebrowser', []).directive('adTreeBrowser', [
       // ---------- initialization ---------- //
       if (nodeTemplateUrl !== '') {
         // Getting the template from nodeTemplateUrl
-        $http.get(nodeTemplateUrl).success(function (nodeTemplate) {
+        $http.get(nodeTemplateUrl, { cache: $templateCache }).success(function (nodeTemplate) {
           if (nodeHeaderUrl !== '') {
-            $http.get(nodeHeaderUrl).success(function (headerTemplate) {
+            $http.get(nodeHeaderUrl, { cache: $templateCache }).success(function (headerTemplate) {
               populateMainTemplate(nodeTemplate, headerTemplate);
             });
           } else {
@@ -477,6 +620,12 @@ angular.module('adaptv.adaptStrap.utils', []).factory('adStrapUtils', [
         } else {
           addItemsToList(items, list);
         }
+      }, getObjectProperty = function (item, property) {
+        var arr = property.split('.');
+        while (arr.length) {
+          item = item[arr.shift()];
+        }
+        return item;
       };
     return {
       evalObjectProperty: evalObjectProperty,
@@ -487,7 +636,8 @@ angular.module('adaptv.adaptStrap.utils', []).factory('adStrapUtils', [
       removeItemFromList: removeItemFromList,
       addRemoveItemFromList: addRemoveItemFromList,
       addItemsToList: addItemsToList,
-      addRemoveItemsFromList: addRemoveItemsFromList
+      addRemoveItemsFromList: addRemoveItemsFromList,
+      getObjectProperty: getObjectProperty
     };
   }
 ]).factory('adDebounce', [
@@ -515,6 +665,18 @@ var deb = function (func, delay, immediate, ctx) {
       };
     };
     return deb;
+  }
+]).directive('adCompileTemplate', [
+  '$compile',
+  function ($compile) {
+    return function (scope, element, attrs) {
+      scope.$watch(function (scope) {
+        return scope.$eval(attrs.adCompileTemplate);
+      }, function (value) {
+        element.html(value);
+        $compile(element.contents())(scope);
+      });
+    };
   }
 ]).factory('adLoadPage', [
   '$adConfig',
@@ -570,6 +732,47 @@ var deb = function (func, delay, immediate, ctx) {
         }
         return response;
       });
+    };
+  }
+]).factory('adLoadLocalPage', [
+  '$filter',
+  function ($filter) {
+    return function (options) {
+      var response = {
+          items: undefined,
+          currentPage: options.pageNumber,
+          totalPages: undefined,
+          pagingArray: [],
+          token: options.token
+        };
+      var start = (options.pageNumber - 1) * options.pageSize, end = start + options.pageSize, i, itemsObject = [], localItems;
+      if (angular.isArray(options.localData)) {
+        itemsObject = options.localData;
+      } else {
+        angular.forEach(options.localData, function (item) {
+          itemsObject.push(item);
+        });
+      }
+      localItems = $filter('orderBy')(itemsObject, options.sortKey, options.sortDirection);
+      response.items = localItems.slice(start, end);
+      response.allItems = itemsObject;
+      response.currentPage = options.pageNumber;
+      response.totalPages = Math.ceil(itemsObject.length / options.pageSize);
+      var TOTAL_PAGINATION_ITEMS = 5;
+      var minimumBound = options.pageNumber - Math.floor(TOTAL_PAGINATION_ITEMS / 2);
+      for (i = minimumBound; i <= options.pageNumber; i++) {
+        if (i > 0) {
+          response.pagingArray.push(i);
+        }
+      }
+      while (response.pagingArray.length < TOTAL_PAGINATION_ITEMS) {
+        if (i > response.totalPages) {
+          break;
+        }
+        response.pagingArray.push(i);
+        i++;
+      }
+      return response;
     };
   }
 ]);

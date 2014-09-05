@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v0.2.3 - 2014-08-08
+ * @version v0.2.9 - 2014-09-05
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -44,6 +44,11 @@
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+.ad-text-overflow {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .ad-spin {
   -webkit-animation: spin 2s infinite linear;
@@ -178,4 +183,12 @@
   display: table-cell;
   vertical-align: middle;
   text-align: center;
+}
+.ad-infinite-list-container .dropdown-menu {
+  overflow: auto;
+}
+.ad-infinite-list-container .dropdown-menu li a[role="menuitem"] {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

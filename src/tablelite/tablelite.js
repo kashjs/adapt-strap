@@ -3,8 +3,9 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
  * Use this directive if you need to render a simple table with local data source.
  */
   .directive('adTableLite', [
-    '$parse', '$http', '$compile', '$filter', '$templateCache', '$adConfig', 'adStrapUtils', 'adDebounce',
-    function ($parse, $http, $compile, $filter, $templateCache, $adConfig, adStrapUtils, adDebounce) {
+    '$parse', '$http', '$compile', '$filter', '$templateCache',
+    '$adConfig', 'adStrapUtils', 'adDebounce', 'adLoadLocalPage',
+    function ($parse, $http, $compile, $filter, $templateCache, $adConfig, adStrapUtils, adDebounce, adLoadLocalPage) {
       'use strict';
       function _link(scope, element, attrs) {
         // We do the name spacing so the if there are multiple ad-table-lite on the scope,
@@ -23,14 +24,16 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           localConfig: {
             pagingArray: [],
             selectable: attrs.selectedItems ? true : false,
-            draggable: attrs.draggable ? true : false
+            draggable: attrs.draggable ? true : false,
+            showPaging: $parse(attrs.disablePaging)() ? false : true
           },
           selectedItems: scope.$eval(attrs.selectedItems),
           applyFilter: adStrapUtils.applyFilter,
           isSelected: adStrapUtils.itemExistsInList,
           addRemoveItem: adStrapUtils.addRemoveItemFromList,
           addRemoveAll: adStrapUtils.addRemoveItemsFromList,
-          allSelected: adStrapUtils.itemsExistInList
+          allSelected: adStrapUtils.itemsExistInList,
+          readProperty: adStrapUtils.getObjectProperty
         };
 
         // ---------- Local data ---------- //
@@ -40,38 +43,30 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
 
         // ---------- ui handlers ---------- //
         tableModels.loadPage = adDebounce(function (page) {
-          var start = (page - 1) * tableModels.items.paging.pageSize,
-            end = start + tableModels.items.paging.pageSize,
-            i,
-            localItems = $filter('orderBy')(
-              scope.$eval(attrs.localDataSource),
-              tableModels.localConfig.predicate,
-              tableModels.localConfig.reverse
-            );
+          var itemsObject = [],
+              params;
+          if (angular.isArray(scope.$eval(attrs.localDataSource))) {
+            itemsObject = scope.$eval(attrs.localDataSource);
+          } else {
+            angular.forEach(scope.$eval(attrs.localDataSource), function (item) {
+              itemsObject.push(item);
+            });
+          }
+          params = {
+            pageNumber: page,
+            pageSize: (tableModels.localConfig.showPaging) ? tableModels.items.paging.pageSize : itemsObject.length,
+            sortKey: tableModels.localConfig.predicate,
+            sortDirection: tableModels.localConfig.reverse,
+            localData: itemsObject
+          };
 
-          tableModels.items.list = localItems.slice(start, end);
-          tableModels.items.allItems = scope.$eval(attrs.localDataSource);
-          tableModels.items.paging.currentPage = page;
-          tableModels.items.paging.totalPages = Math.ceil(
-              scope.$eval(attrs.localDataSource).length /
-              tableModels.items.paging.pageSize
-          );
-          tableModels.localConfig.pagingArray = [];
-          var TOTAL_PAGINATION_ITEMS = 5;
-          var minimumBound = page - Math.floor(TOTAL_PAGINATION_ITEMS / 2);
-          for (i = minimumBound; i <= page; i++) {
-            if (i > 0) {
-              tableModels.localConfig.pagingArray.push(i);
-            }
-          }
-          while (tableModels.localConfig.pagingArray.length < TOTAL_PAGINATION_ITEMS) {
-            if (i > tableModels.items.paging.totalPages) {
-              break;
-            }
-            tableModels.localConfig.pagingArray.push(i);
-            i++;
-          }
-        });
+          var response = adLoadLocalPage(params);
+          tableModels.items.list = response.items;
+          tableModels.items.allItems = response.allItems;
+          tableModels.items.paging.currentPage = response.currentPage;
+          tableModels.items.paging.totalPages = response.totalPages;
+          tableModels.localConfig.pagingArray = response.pagingArray;
+        }, 100);
 
         tableModels.loadNextPage = function () {
           if (tableModels.items.paging.currentPage + 1 <= tableModels.items.paging.totalPages) {
@@ -129,11 +124,9 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           replace(/%=icon-lastPage%/g, $adConfig.iconClasses.lastPage).
           replace(/%=icon-sortAscending%/g, $adConfig.iconClasses.sortAscending).
           replace(/%=icon-sortDescending%/g, $adConfig.iconClasses.sortDescending).
-          replace(/%=icon-sortable%/g, $adConfig.iconClasses.sortable)
-        ;
+          replace(/%=icon-sortable%/g, $adConfig.iconClasses.sortable);
         element.empty();
         element.append($compile(mainTemplate)(scope));
-
         scope.$watch(attrs.localDataSource, function () {
           tableModels.loadPage(1);
         }, true);

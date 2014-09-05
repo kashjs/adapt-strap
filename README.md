@@ -5,6 +5,7 @@
 - **Table Lite** - simple table UI that renders your local data models and does local pagination/sorting
 - **Table AJAX** - advanced table UI that renders remote data models and does remote pagination/sorting
 - **Tree Browser** - simple tree UI that allows you to brows through local data models in a tree structure
+- **Infinite Dropdown** - simple directives to implement infinite scroll dropdowns/multi selectors
 - **Loading Indicators** - simple directives to render overlay and inline loading indicators
 - **Global configuration** - all the components are globally configurable to use your set of icons and pagination/sorting configuration
 - **Customizable** - all the components are highly customizable.
@@ -65,3 +66,27 @@ gulp unit
 
 * push your changes 
 * go to your github account and under forked repo, submit the pull request
+
+---
+
+###The MIT License
+
+Copyright (c) 2010-2014 adap.tv, Inc. http://adap.tv
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.

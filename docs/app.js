@@ -15,6 +15,7 @@ angular.module('adaptv.adaptStrapDocs', [
   .controller('layoutCtrl', ['$scope', '$anchorScroll', '$location', 'adaptStrapModules',
     function ($scope, $anchorScroll, $location, adaptStrapModules) {
       $scope.modules = adaptStrapModules;
+
       $scope.scrollTo = function (id, $event) {
         $event.preventDefault();
         $location.hash(id);
@@ -34,7 +35,8 @@ angular.module('adaptv.adaptStrapDocs', [
           if ('src' in attrs) {
             $http.get(attrs.src).then(function (data) {
               var format = attrs.src.split('.');
-              if (format[format.length - 1] === 'js' || format[format.length - 1] === 'html') {
+              if (format[format.length - 1] === 'js' || format[format.length - 1] === 'html' ||
+                format[format.length - 1] === 'css') {
                 data.data = '```\n' + data.data + '\n```';
               }
               element.html(converter.makeHtml(data.data));

@@ -56,14 +56,17 @@
                 <div ng-if="definition.templateUrl">
                     <ng-include src="definition.templateUrl"></ng-include>
                 </div>
-                <div ng-if="!definition.templateUrl">
-                    {{ %=tableName%.applyFilter(item[definition.displayProperty], definition.cellFilter) }}
+                <div ng-if="definition.template">
+                    <span ad-compile-template="definition.template"></span>
+                </div>
+                <div ng-if="!definition.templateUrl && !definition.template">
+                    {{ %=tableName%.applyFilter(%=tableName%.readProperty(item, definition.displayProperty), definition.cellFilter) }}
                 </div>
             </td>
         </tr>
  
     </table>
-    <div class="row">
+    <div class="row" ng-if="%=tableName%.items.allItems.length > %=tableName%.items.paging.pageSizes[0] && %=tableName%.localConfig.showPaging">
         <div class="col-md-8 col-sm-8">
             <div class="%=paginationBtnGroupClasses% pull-left">
                 <button type="button"

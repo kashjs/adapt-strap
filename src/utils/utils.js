@@ -83,6 +83,13 @@ angular.module('adaptv.adaptStrap.utils', [])
         } else {
           addItemsToList(items, list);
         }
+      },
+      getObjectProperty = function (item, property) {
+        var arr = property.split('.');
+        while (arr.length) {
+          item = item[arr.shift()];
+        }
+        return item;
       };
 
     return {
@@ -94,7 +101,8 @@ angular.module('adaptv.adaptStrap.utils', [])
       removeItemFromList: removeItemFromList,
       addRemoveItemFromList: addRemoveItemFromList,
       addItemsToList: addItemsToList,
-      addRemoveItemsFromList: addRemoveItemsFromList
+      addRemoveItemsFromList: addRemoveItemsFromList,
+      getObjectProperty: getObjectProperty
     };
 
   }])
@@ -127,6 +135,19 @@ angular.module('adaptv.adaptStrap.utils', [])
     };
 
     return deb;
+  }])
+  .directive('adCompileTemplate', ['$compile', function ($compile) {
+    return function (scope, element, attrs) {
+      scope.$watch(
+        function (scope) {
+          return scope.$eval(attrs.adCompileTemplate);
+        },
+        function (value) {
+          element.html(value);
+          $compile(element.contents())(scope);
+        }
+      );
+    };
   }])
   .factory('adLoadPage', ['$adConfig', '$http', 'adStrapUtils', function ($adConfig, $http, adStrapUtils) {
     return function (options) {
@@ -193,97 +214,54 @@ angular.module('adaptv.adaptStrap.utils', [])
       });
     };
   }])
-  .factory('adDragDrop', ['$document', function($document) {
-    var base = null;
-    var draggables = null;
-    var options = null;
-    var ATTRIBUTE = 'draggable';
-    var dragObject = null; // current drag object
-    var drag = false;
-
-    /* allows dragging using any element within the draggable*/
-    function findParentTagByAttribute(elem, attr, attrVal) {
-    while((!!attr && (!elem.getAttribute(attr) || (elem.getAttribute(attr) !== attrVal)))) {
-        if (!elem.parentNode) {
-          return null;
-        }
-        elem = elem.parentNode;
-      }
-      return elem;
-    }
-
-    function findEventElementByAttribute(e, attr, attrVal) {
-      var elem = e.target || e.srcElement;
-      return findParentTagByAttribute(elem, attr, attrVal);
-    }
-      
-    // --- class manipulation --
-    function hasClass(el, className) {
-      return !!el.className.match(new RegExp(className.replace(' ', '')));
-    }
-
-    function addClass(el, className) {
-      if (!hasClass(el, className)) {
-        el.className += ' ' + className;
-      }
-    }
-
-      function removeClass(el, className) {
-        if (hasClass(el, className)) {
-          el.className = el.className.replace(className, '');
-        }
-      }
-      
-      function addEvent(el, evt, hndlr) {
-        if (el.attachEvent) {
-          el.attachEvent('on' + evt, hndlr);
-        } else if(el.addEventListener) {
-          el.addEventListener(evt, hndlr, false);
-        } else {
-          el['on' + evt] = hndlr;
-        }
-      }
-      
-      function rmEvent(el, evt, hndlr) {
-        if (el.detachEvent) {
-          el.detachEvent('on' + evt, hndlr);
-        } else if (el.removeEventListener) {
-          el.removeEventListener(evt, hndlr, false);
-        } else {
-          el['on' + evt] = hndlr;
-        }
-      }
-
-      function getDraggables() {
-        if (base.querySelectorAll) {
-          draggables = base.querySelectorAll('[' + ATTRIBUTE + '=true]');
-        }
-      }
-
-      function initDraggables() {
-        for (var i = 0; i < draggables.length; i++) {
-          addClass(draggables[i], 'ad-draggable');
-          addEvent(draggables[i], 'mousedown', onMousedown);
-        }
-      }
-     
-    function onMousedown(e) {
-      var src = findEventElementByAttribute(e, ATTRIBUTE, 'true');  
-    }
-
-      function onMouseover(e) {
-      
-      }
-
-      function onMouseout(e) {
-      
-      }
-
-      return function(baseEl, opts) {
-        base = baseEl;
-        options = opts;
-        getDraggables();
-        initDraggables();
+  .factory('adLoadLocalPage', ['$filter', function ($filter) {
+    return function (options) {
+      var response = {
+        items: undefined,
+        currentPage: options.pageNumber,
+        totalPages: undefined,
+        pagingArray: [],
+        token: options.token
       };
-    }
-  ]);
+      var start = (options.pageNumber - 1) * options.pageSize,
+        end = start + options.pageSize,
+        i,
+        itemsObject = [],
+        localItems;
+
+      if (angular.isArray(options.localData)) {
+        itemsObject = options.localData;
+      } else {
+        angular.forEach(options.localData, function (item) {
+          itemsObject.push(item);
+        });
+      }
+      localItems = $filter('orderBy')(
+        itemsObject,
+        options.sortKey,
+        options.sortDirection
+      );
+      response.items = localItems.slice(start, end);
+      response.allItems = itemsObject;
+      response.currentPage = options.pageNumber;
+      response.totalPages = Math.ceil(
+          itemsObject.length /
+          options.pageSize
+      );
+      var TOTAL_PAGINATION_ITEMS = 5;
+      var minimumBound = options.pageNumber - Math.floor(TOTAL_PAGINATION_ITEMS / 2);
+      for (i = minimumBound; i <= options.pageNumber; i++) {
+        if (i > 0) {
+          response.pagingArray.push(i);
+        }
+      }
+      while (response.pagingArray.length < TOTAL_PAGINATION_ITEMS) {
+        if (i > response.totalPages) {
+          break;
+        }
+        response.pagingArray.push(i);
+        i++;
+      }
+      return response;
+    };
+  }]);

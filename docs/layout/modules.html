@@ -10,7 +10,15 @@
                                     base-path="src/{{module.moduleName}}/docs/"></code-navigator>
                 </div>
                 <div class="col-md-6 col-sm-6">
-                    <h4 class="text-muted">Demo</h4>
+                    <h4 class="text-muted">
+                      Demo
+                      <a class="btn btn-link btn-sm"
+                         target="_blank"
+                         ng-if="module.playGroundUrl"
+                         ng-href="{{ module.playGroundUrl }}">
+                        <i class="glyphicon glyphicon-edit"></i> jsFiddle
+                      </a>
+                    </h4>
                     <ng-include src="'src/' + module.moduleName + '/docs/' + module.moduleName + '.view.html'"></ng-include>
                 </div>
             </div>

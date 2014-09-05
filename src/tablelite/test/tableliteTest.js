@@ -6,9 +6,10 @@ describe('tablelite component', function () {
     module('adaptv.adaptStrapDocs');
   });
 
-  beforeEach(inject(function (_$timeout_) {
+  beforeEach(inject(function (_$timeout_, $httpBackend) {
     // `$timeout` before tests run
     $timeout = _$timeout_;
+    $httpBackend.when('GET', 'src/tablelite/docs/buyCell.html').respond('');
   }));
 
   it('should initialize with correct configuration', inject(function ($rootScope, $controller, $compile) {

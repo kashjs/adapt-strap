@@ -263,99 +263,6 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
     }]
   },
   {
-    moduleName: 'loadingindicator',
-    displayName: 'Loading Indicator',
-    controllerName: 'loadingIndicatorCtrl',
-    description: 'simple directives to render overlay and inline loading indicators',
-    playGroundUrl: 'http://jsfiddle.net/kashjs/n79ydkjh/',
-    docFiles: [
-      'loadingindicator.view.html',
-      'loadingindicator.ctrl.js'
-    ],
-    directives: [
-      {
-        name: 'ad-loading-overlay',
-        options: [
-          {
-            name: 'loading',
-            required: true,
-            globalConfig: false,
-            default: 'NA',
-            type: 'Boolean',
-            description: 'model to show or hide the loading overlay'
-          },
-          {
-            name: 'zIndex',
-            required: false,
-            globalConfig: false,
-            default: '2000',
-            type: 'String',
-            description: 'z-index of the overlay'
-          },
-          {
-            name: 'position',
-            required: false,
-            globalConfig: false,
-            default: 'absolute',
-            type: 'String',
-            description: 'This can be either "absolute" or "fixed", ' +
-              'in case of "absolute", the parent container need to have none static positioning (Ex: "relative")'
-          },
-          {
-            name: 'container-classes',
-            required: false,
-            globalConfig: false,
-            default: 'NA',
-            type: 'String',
-            description: 'you may want to add custom class to your ' +
-              'overlay container. pass it into this attribute'
-          },
-          {
-            name: 'loading-icon-class',
-            required: false,
-            globalConfig: true,
-            default: '"glyphicon glyphicon-refresh ad-spin"',
-            type: 'String',
-            description: 'This property is globally configurable. ' +
-              'But you can always pass in the value to override global configuration'
-          },
-          {
-            name: 'loading-icon-size',
-            required: false,
-            globalConfig: false,
-            default: '3em',
-            type: 'String',
-            description: 'You can pass in the size of spinner icon. ' +
-              'Ex: <code>loading-icon-size="30px"</code>'
-          }
-        ]
-      },
-      {
-        name: 'ad-loading-icon',
-        options: [
-          {
-            name: 'loading-icon-class',
-            required: false,
-            globalConfig: true,
-            default: '"glyphicon glyphicon-refresh ad-spin"',
-            type: 'String',
-            description: 'This property is globally configurable. ' +
-              'But you can always pass in the value to override global configuration'
-          },
-          {
-            name: 'loading-icon-size',
-            required: false,
-            globalConfig: false,
-            default: 'font-size inherited from parent elements',
-            type: 'String',
-            description: 'You can pass in the size of spinner icon. ' +
-              'Ex: <code>loading-icon-size="16px"</code>'
-          }
-        ]
-      }
-    ]
-  },
-  {
     moduleName: 'infinitedropdown',
     displayName: 'Infinite Dropdowns',
     controllerName: 'infiniteDropdownCtrl',
@@ -478,6 +385,99 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             default: '10',
             type: 'String',
             description:  'Number of items to load per page (infinite scroll)'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    moduleName: 'loadingindicator',
+    displayName: 'Loading Indicator',
+    controllerName: 'loadingIndicatorCtrl',
+    description: 'simple directives to render overlay and inline loading indicators',
+    playGroundUrl: 'http://jsfiddle.net/kashjs/n79ydkjh/',
+    docFiles: [
+      'loadingindicator.view.html',
+      'loadingindicator.ctrl.js'
+    ],
+    directives: [
+      {
+        name: 'ad-loading-overlay',
+        options: [
+          {
+            name: 'loading',
+            required: true,
+            globalConfig: false,
+            default: 'NA',
+            type: 'Boolean',
+            description: 'model to show or hide the loading overlay'
+          },
+          {
+            name: 'zIndex',
+            required: false,
+            globalConfig: false,
+            default: '2000',
+            type: 'String',
+            description: 'z-index of the overlay'
+          },
+          {
+            name: 'position',
+            required: false,
+            globalConfig: false,
+            default: 'absolute',
+            type: 'String',
+            description: 'This can be either "absolute" or "fixed", ' +
+              'in case of "absolute", the parent container need to have none static positioning (Ex: "relative")'
+          },
+          {
+            name: 'container-classes',
+            required: false,
+            globalConfig: false,
+            default: 'NA',
+            type: 'String',
+            description: 'you may want to add custom class to your ' +
+              'overlay container. pass it into this attribute'
+          },
+          {
+            name: 'loading-icon-class',
+            required: false,
+            globalConfig: true,
+            default: '"glyphicon glyphicon-refresh ad-spin"',
+            type: 'String',
+            description: 'This property is globally configurable. ' +
+              'But you can always pass in the value to override global configuration'
+          },
+          {
+            name: 'loading-icon-size',
+            required: false,
+            globalConfig: false,
+            default: '3em',
+            type: 'String',
+            description: 'You can pass in the size of spinner icon. ' +
+              'Ex: <code>loading-icon-size="30px"</code>'
+          }
+        ]
+      },
+      {
+        name: 'ad-loading-icon',
+        options: [
+          {
+            name: 'loading-icon-class',
+            required: false,
+            globalConfig: true,
+            default: '"glyphicon glyphicon-refresh ad-spin"',
+            type: 'String',
+            description: 'This property is globally configurable. ' +
+              'But you can always pass in the value to override global configuration'
+          },
+          {
+            name: 'loading-icon-size',
+            required: false,
+            globalConfig: false,
+            default: 'font-size inherited from parent elements',
+            type: 'String',
+            description: 'You can pass in the size of spinner icon. ' +
+              'Ex: <code>loading-icon-size="16px"</code>'
           }
         ]
       }

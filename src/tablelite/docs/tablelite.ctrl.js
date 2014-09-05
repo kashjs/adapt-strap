@@ -93,7 +93,7 @@ angular.module('adaptv.adaptStrapDocs')
       },
       {
         columnHeaderTemplate: '<span><i class="glyphicon glyphicon-calendar"></i> Model Year</span>',
-        displayProperty: 'modelYear',
+        template: '<strong>{{ item.modelYear }}</strong>',
         sortKey: 'modelYear',
         width: '12em'
       },
@@ -106,7 +106,8 @@ angular.module('adaptv.adaptStrapDocs')
       },
       {
         columnHeaderDisplayName: 'Buy',
-        templateUrl: 'src/tablelite/docs/buyCell.html'
+        templateUrl: 'src/tablelite/docs/buyCell.html',
+        width: '4em'
       }
     ];
 

@@ -8,8 +8,7 @@ angular.module("adaptv.adaptStrap.draggable", [])
                 restrict: 'A',
                 link: function (scope, element, attrs) {
                     scope.value = attrs.adDrag;
-                  //  return;
-                    console.log('drags');
+
                     var offset, _mx, _my, _tx, _ty;
                     var _hasTouch = ('ontouchstart' in document.documentElement);
                     var _pressEvents = 'touchstart mousedown';

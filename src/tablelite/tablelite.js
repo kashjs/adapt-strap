@@ -41,7 +41,8 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           mainTemplate = $templateCache.get('tablelite/tablelite.tpl.html'),
           placeHolder = null,
           pageButtonElement = null,
-          validDrop = false;
+          validDrop = false,
+          initialPos;
 
         tableModels.items.paging.pageSize = tableModels.items.paging.pageSizes[0];
 
@@ -116,6 +117,8 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           var parent = dragElement.parent()
           placeHolder = $("<tr><td colspan=" + dragElement.find("td").length + ">&nbsp;</td></tr>");
 
+          initialPos = dragElement.index() + ((tableModels.items.paging.currentPage - 1) * tableModels.items.paging.pageSize);
+
           if (dragElement[0] !== parent.children().last()[0]) {
             dragElement.next().before(placeHolder);
           } else {
@@ -147,6 +150,13 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
             placeHolder.prev().after(dragElement);
           }
           placeHolder.remove();
+          validDrop = true;
+          var endPos = dragElement.index() + ((tableModels.items.paging.currentPage - 1) * tableModels.items.paging.pageSize);
+
+          console.log('startpos: ' + (initialPos - 1));
+          console.log('endpos: ' + (endPos - 1));
+
+          // Incase pageButtonElement was selected
           if (pageButtonElement) {
             pageButtonElement.removeClass('over');
             pageButtonElement = null;
@@ -154,16 +164,30 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
         };
 
         tableModels.onNextPageButtonOver = function(data, dragElement, dropElement, evt) {
+          if (pageButtonElement) {
+            pageButtonElement.removeClass('over');
+            pageButtonElement = null;
+          }
           pageButtonElement = dropElement;
           pageButtonElement.addClass('over');
         };
 
         tableModels.onNextPageButtonDrop = function(data, dragElement, dropElement, evt) {
+          // 1. Check if pageButtonElement is previousPageButton or nextPageButton
+          // 2. Update localDataSource accordingly
+          // 3. Call loadPage to update details
           if (pageButtonElement) {
+            validDrop = true;
+            if (pageButtonElement.attr('id') == 'previousPage') {
+              console.log('prevPage');
+            }
+            if (pageButtonElement.attr('id') === 'nextPage') {
+              console.log('nextPage');
+            }
+
             pageButtonElement.removeClass('over');
             pageButtonElement = null;
           }
-          // Code to transfer the drag element to the next page
         };
  
 

@@ -26,7 +26,7 @@
             </th>
         </tr>
         <tr ng-if="!%=tableName%.localConfig.draggable" data-ng-repeat="item in %=tableName%.items.list"
-            ng-class="{'ad-selected': %=tableName%.localConfig.selectable && %=tableName%.isSelected(item, %=tableName%.selectedItems)">
+          ng-class="{'ad-selected': %=tableName%.localConfig.selectable && %=tableName%.isSelected(item, %=tableName%.selectedItems)}">
             <td ng-if="%=tableName%.localConfig.selectable"
                 class="ad-select-cell">
               <input type="checkbox"
@@ -43,10 +43,12 @@
                 </div>
             </td>
           </tr>
-          <tr ng-if="%=tableName%.localConfig.draggable"  ad-drag-data="" 
-            ad-drop-over="%=tableName%.onDragOver($data, $dragElement, $dropElement, $event)" ad-drop-end="%=tableName%.onDropEnd($data, $dragElement, $dropElement, $event)" 
-            ad-drag-begin="%=tableName%.onDragStart($data, $dragElement, $event)" ad-drag-end="%=tableName%.onDragEnd($data, $dragElement, $event)" ng-repeat="item in %=tableName%.items.list"
-            ng-class="{'ad-selected': %=tableName%.localConfig.selectable && %=tableName%.isSelected(item, %=tableName%.selectedItems)">
+          <tr ng-if="%=tableName%.localConfig.draggable" ad-drag="true" ad-drop="true" ad-drag-data="" 
+            ad-drop-over="%=tableName%.onDragOver($data, $dragElement, $dropElement, $event)" 
+            ad-drop-end="%=tableName%.onDropEnd($data, $dragElement, $dropElement, $event)" 
+            ad-drag-begin="%=tableName%.onDragStart($data, $dragElement, $event)" 
+            ad-drag-end="%=tableName%.onDragEnd($data, $dragElement, $event)" data-ng-repeat="item in %=tableName%.items.list"
+            ng-class="{'ad-selected': %=tableName%.localConfig.selectable && %=tableName%.isSelected(item, %=tableName%.selectedItems)}">
             <td ng-if="%=tableName%.localConfig.selectable" class="ad-select-cell">
               <input type="checkbox"
                      class="ad-cursor-pointer"

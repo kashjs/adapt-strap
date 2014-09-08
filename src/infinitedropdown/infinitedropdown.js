@@ -91,7 +91,7 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
           } else {
             pageLoader(params).then(successHandler, errorHandler);
           }
-        });
+        }, 10);
 
         listModels.loadNextPage = function () {
           if (!listModels.localConfig.loadingData) {
@@ -134,7 +134,7 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
           if (listContainer.scrollTop + listContainer.offsetHeight >= listContainer.scrollHeight - 300) {
             listModels.loadNextPage();
           }
-        }, 50);
+        }, 40);
         angular.element(listContainer).on('scroll', function (event) {
           event.stopPropagation();
           loadFunction();

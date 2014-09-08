@@ -134,15 +134,16 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
           if (listContainer.scrollTop + listContainer.offsetHeight >= listContainer.scrollHeight - 300) {
             listModels.loadNextPage();
           }
-        }, 40);
-        angular.element(listContainer).on('scroll', function (event) {
-          event.stopPropagation();
+        }, 50);
+        angular.element(listContainer).bind('mousewheel', function (event) {
+          if (event.originalEvent && event.originalEvent.deltaY) {
+            listContainer.scrollTop += event.originalEvent.deltaY;
+            event.preventDefault();
+            event.stopPropagation();
+          }
           loadFunction();
         });
-
-        scope.template = '{{ item.name }}';
       }
-
       return {
         restrict: 'E',
         link: _link

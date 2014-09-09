@@ -67,6 +67,12 @@ gulp unit
 * push your changes 
 * go to your github account and under forked repo, submit the pull request
 
+###Author
+---
+####Kash Patel
+
+*[https://github.com/kashyap02004](https://github.com/kashyap02004)
+*[https://twitter.com/kashjs](https://twitter.com/kashjs)
 ---
 
 ###The MIT License

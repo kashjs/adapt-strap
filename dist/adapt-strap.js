@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v0.2.9 - 2014-09-05
+ * @version v0.2.9 - 2014-09-09
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -141,7 +141,7 @@ function _link(scope, element, attrs) {
         } else {
           pageLoader(params).then(successHandler, errorHandler);
         }
-      });
+      }, 10);
       listModels.loadNextPage = function () {
         if (!listModels.localConfig.loadingData) {
           if (listModels.items.paging.currentPage + 1 <= listModels.items.paging.totalPages) {
@@ -175,11 +175,14 @@ function _link(scope, element, attrs) {
             listModels.loadNextPage();
           }
         }, 50);
-      angular.element(listContainer).on('scroll', function (event) {
-        event.stopPropagation();
+      angular.element(listContainer).bind('mousewheel', function (event) {
+        if (event.originalEvent && event.originalEvent.deltaY) {
+          listContainer.scrollTop += event.originalEvent.deltaY;
+          event.preventDefault();
+          event.stopPropagation();
+        }
         loadFunction();
       });
-      scope.template = '{{ item.name }}';
     }
     return {
       restrict: 'E',

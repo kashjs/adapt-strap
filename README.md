@@ -71,8 +71,9 @@ gulp unit
 ---
 ####Kash Patel
 
-*[https://github.com/kashyap02004](https://github.com/kashyap02004)
-*[https://twitter.com/kashjs](https://twitter.com/kashjs)
+- [https://github.com/kashyap02004](https://github.com/kashyap02004)
+- [https://twitter.com/kashjs](https://twitter.com/kashjs)
+
 ---
 
 ###The MIT License

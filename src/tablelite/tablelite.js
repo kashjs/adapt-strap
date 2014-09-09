@@ -22,6 +22,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
             }
           },
           localConfig: {
+            localData: adStrapUtils.parse(scope.$eval(attrs.localDataSource)),
             pagingArray: [],
             selectable: attrs.selectedItems ? true : false,
             draggable: attrs.draggable ? true : false,
@@ -43,20 +44,14 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           pageButtonElement = null,
           validDrop = false,
           initialPos;
-
+        
         tableModels.items.paging.pageSize = tableModels.items.paging.pageSizes[0];
 
         // ---------- ui handlers ---------- //
         tableModels.loadPage = adDebounce(function (page) {
-          var itemsObject = [],
+          var itemsObject = tableModels.localConfig.localData,
               params;
-          if (angular.isArray(scope.$eval(attrs.localDataSource))) {
-            itemsObject = scope.$eval(attrs.localDataSource);
-          } else {
-            angular.forEach(scope.$eval(attrs.localDataSource), function (item) {
-              itemsObject.push(item);
-            });
-          }
+         
           params = {
             pageNumber: page,
             pageSize: (tableModels.localConfig.showPaging) ? tableModels.items.paging.pageSize : itemsObject.length,
@@ -117,7 +112,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           var parent = dragElement.parent()
           placeHolder = $("<tr><td colspan=" + dragElement.find("td").length + ">&nbsp;</td></tr>");
 
-          initialPos = dragElement.index() + ((tableModels.items.paging.currentPage - 1) * tableModels.items.paging.pageSize);
+          initialPos = dragElement.index() + ((tableModels.items.paging.currentPage - 1) * tableModels.items.paging.pageSize) - 1;
 
           if (dragElement[0] !== parent.children().last()[0]) {
             dragElement.next().before(placeHolder);
@@ -144,6 +139,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
         };
 
         tableModels.onDropEnd = function(data, dragElement, dropElement, evt) {
+          var endPos;
           if (placeHolder.next()[0]) {
             placeHolder.next().before(dragElement);
           } else if (placeHolder.prev()[0]) {
@@ -151,41 +147,47 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           }
           placeHolder.remove();
           validDrop = true;
-          var endPos = dragElement.index() + ((tableModels.items.paging.currentPage - 1) * tableModels.items.paging.pageSize);
+          endPos = dragElement.index() + ((tableModels.items.paging.currentPage - 1) * tableModels.items.paging.pageSize) - 1;
 
-          console.log('startpos: ' + (initialPos - 1));
-          console.log('endpos: ' + (endPos - 1));
+          adStrapUtils.moveItemInList(initialPos, endPos, tableModels.localConfig.localData);
 
-          // Incase pageButtonElement was selected
+          tableModels.loadPage(tableModels.items.paging.currentPage);
+
+          // Incase pageButtonElement was highlighted
           if (pageButtonElement) {
-            pageButtonElement.removeClass('over');
+            pageButtonElement.removeClass('btn-primary');
             pageButtonElement = null;
           }
         };
 
         tableModels.onNextPageButtonOver = function(data, dragElement, dropElement, evt) {
           if (pageButtonElement) {
-            pageButtonElement.removeClass('over');
+            pageButtonElement.removeClass('btn-primary');
             pageButtonElement = null;
           }
           pageButtonElement = dropElement;
-          pageButtonElement.addClass('over');
+          pageButtonElement.addClass('btn-primary');
         };
 
         tableModels.onNextPageButtonDrop = function(data, dragElement, dropElement, evt) {
-          // 1. Check if pageButtonElement is previousPageButton or nextPageButton
-          // 2. Update localDataSource accordingly
-          // 3. Call loadPage to update details
+          var endPos;
           if (pageButtonElement) {
             validDrop = true;
-            if (pageButtonElement.attr('id') == 'previousPage') {
-              console.log('prevPage');
-            }
-            if (pageButtonElement.attr('id') === 'nextPage') {
-              console.log('nextPage');
+            if (pageButtonElement.attr('id') == 'btnPrev') {
+              endPos = (tableModels.items.paging.pageSize * (tableModels.items.paging.currentPage - 1));
             }
 
-            pageButtonElement.removeClass('over');
+            if (pageButtonElement.attr('id') === 'btnNext') {
+              endPos = tableModels.items.paging.pageSize + 1;
+            }
+
+            adStrapUtils.moveItemInList(initialPos, endPos, tableModels.localConfig.localData);
+
+            placeHolder.remove();
+            
+            tableModels.loadPage(tableModels.items.paging.currentPage);
+
+            pageButtonElement.removeClass('btn-primary');
             pageButtonElement = null;
           }
         };
@@ -208,7 +210,8 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           replace(/%=icon-lastPage%/g, $adConfig.iconClasses.lastPage).
           replace(/%=icon-sortAscending%/g, $adConfig.iconClasses.sortAscending).
           replace(/%=icon-sortDescending%/g, $adConfig.iconClasses.sortDescending).
-          replace(/%=icon-sortable%/g, $adConfig.iconClasses.sortable);
+          replace(/%=icon-sortable%/g, $adConfig.iconClasses.sortable).
+          replace(/%=icon-draggable%/g, $adConfig.iconClasses.draggable);
         element.empty();
         element.append($compile(mainTemplate)(scope));
         scope.$watch(attrs.localDataSource, function () {

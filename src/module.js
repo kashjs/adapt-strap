@@ -19,6 +19,7 @@ angular.module('adaptv.adaptStrap', [
         sortAscending: 'glyphicon glyphicon-chevron-up',
         sortDescending: 'glyphicon glyphicon-chevron-down',
         sortable: 'glyphicon glyphicon-resize-vertical',
+        draggable: 'glyphicon glyphicon-align-justify',
         selectedItem: 'glyphicon glyphicon-ok'
       },
       paging = this.paging = {

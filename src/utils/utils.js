@@ -89,6 +89,17 @@ angular.module('adaptv.adaptStrap.utils', [])
           list.splice(endPos, 0, list.splice(startPos, 1)[0]);
         }
       },
+      parse = function(items) {
+        var itemsObject = []
+        if (angular.isArray(items)) {
+          itemsObject = items;
+        } else {
+          angular.forEach(items, function (item) {
+            itemsObject.push(item);
+          });
+        }
+        return itemsObject;
+      },
       getObjectProperty = function (item, property) {
         var arr = property.split('.');
         while (arr.length) {
@@ -108,6 +119,7 @@ angular.module('adaptv.adaptStrap.utils', [])
       addItemsToList: addItemsToList,
       addRemoveItemsFromList: addRemoveItemsFromList,
       moveItemInList: moveItemInList,
+      parse: parse,
       getObjectProperty: getObjectProperty
     };
 
@@ -232,16 +244,9 @@ angular.module('adaptv.adaptStrap.utils', [])
       var start = (options.pageNumber - 1) * options.pageSize,
         end = start + options.pageSize,
         i,
-        itemsObject = [],
+        itemsObject = options.localData,
         localItems;
 
-      if (angular.isArray(options.localData)) {
-        itemsObject = options.localData;
-      } else {
-        angular.forEach(options.localData, function (item) {
-          itemsObject.push(item);
-        });
-      }
       localItems = $filter('orderBy')(
         itemsObject,
         options.sortKey,

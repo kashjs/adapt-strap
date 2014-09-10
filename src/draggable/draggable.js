@@ -47,6 +47,9 @@ angular.module("adaptv.adaptStrap.draggable", [])
         }
 
         if (!hasTouch) {
+          element.on('mousedown', '.ad-drag-handle', function() {
+            return false;
+          });
           element.on('mousedown', function() { 
             return false;
           }); // prevent native drag
@@ -280,7 +283,7 @@ angular.module("adaptv.adaptStrap.draggable", [])
         dropEnabled = scope.$eval(newVal);
       }
 
-      function onDropChange(evt , obj) {
+      function onDropChange(evt, obj) {
         if (elem !== obj.el) {
           elem = null;
         }
@@ -291,7 +294,7 @@ angular.module("adaptv.adaptStrap.draggable", [])
           return;
         }
         // If the dropElement and the drag element are the same
-        if (element == obj.element) {
+        if (element == obj.el) {
             return;
         }
 
@@ -346,7 +349,7 @@ angular.module("adaptv.adaptStrap.draggable", [])
           && (x >= (bounds.left) && x <= (bounds.left + element.outerWidth()))) || ((yh >= (bounds.top + vthold) && yh <= (bounds.top + element.outerHeight() - vthold)) 
             && (x >= (bounds.left) && x <= (bounds.left + element.outerWidth()))) ? element : null;
       }
-        init();
+      init();
     }
     return {
       restrict: 'A',

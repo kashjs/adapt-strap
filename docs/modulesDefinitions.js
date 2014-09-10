@@ -69,6 +69,13 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             'Ex (<code>pagination-btn-group-classes="btn-group btn-group-xs"</code>)'
         },
         {
+          name: 'draggable',
+          required: false,
+          default: 'NA',
+          type: 'Boolean',
+          description: 'enables drag & drop on the table rows within and across pages'
+        },
+        {
           name: 'selected-items',
           required: false,
           default: 'NA',
@@ -270,6 +277,84 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
         }
       ]
     }]
+  },
+  {
+    moduleName: 'draggable',
+    displayName: 'Drag and drop',
+    controllerName: '',
+    description: 'simple directives to enable drag and drop functionalities',
+    playGroundUrl: '',
+    docFiles: [
+      
+    ],
+    directives: [
+      {
+        name: 'ad-drag',
+        options: [
+          {
+            name: 'ad-drag',
+            required: 'true',
+            default: 'NA',
+            type: 'String',
+            description: 'if true enables drag functionalities'
+          },
+          {
+            name: 'ad-drag-handle',
+            required: 'false',
+            default: 'NA',
+            type: 'String',
+            description: 'if true uses a drag handle'
+          },
+          {
+            name: 'ad-drag-data',
+            required: 'false',
+            default: 'NA',
+            type: 'String',
+            description: 'drag to be used during drag'
+          },
+          {
+            name: 'ad-drag-begin',
+            required: 'true',
+            default: 'NA',
+            type: 'Function',
+            description: 'handler for drag begin event'
+          },
+          {
+            name: 'ad-drag-end',
+            required: 'true',
+            default: 'NA',
+            type: 'Function',
+            description: 'handler for drag end event'
+          }
+        ]
+      },
+      {
+        name: 'ad-drop',
+        options: [
+          {
+            name: 'ad-drop',
+            required: 'true',
+            default: 'NA',
+            type: 'String',
+            description: 'enable drop functionality'
+          },
+          {
+            name: 'ad-drop-over',
+            required: 'true',
+            default: 'NA',
+            type: 'Function',
+            description: 'handler for the drop over event'
+          },
+          {
+            name: 'ad-drop-end',
+            required: 'true',
+            default: 'NA',
+            type: 'Function',
+            description: 'handler for the dropend event'
+          }
+        ]
+      }
+    ]
   },
   {
     moduleName: 'infinitedropdown',

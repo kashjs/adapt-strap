@@ -11,7 +11,8 @@ $adConfigProvider.iconClasses = {
     lastPage: 'glyphicon glyphicon-fast-forward',
     sortAscending: 'glyphicon glyphicon-chevron-up',
     sortDescending: 'glyphicon glyphicon-chevron-down',
-    sortable: 'glyphicon glyphicon-resize-vertical'
+    sortable: 'glyphicon glyphicon-resize-vertical',
+    draggable: 'glyphicon glyphicon-align-justify'
 }
 
 ### You can globally configure the pagination configuration like this during the app initialization:
@@ -26,6 +27,7 @@ angular.module('myApp').config(['$adConfigProvider', function ($adConfigProvider
     $adConfigProvider.iconClasses.sortAscending = 'glyphicon glyphicon-chevron-up';
     $adConfigProvider.iconClasses.sortDescending = 'glyphicon glyphicon-chevron-down';
     $adConfigProvider.iconClasses.sortable = 'glyphicon glyphicon-resize-vertical';
+    $adConfigProvider.iconClasses.draggable = 'glyphicon glyphicon-align-justify';
 }])
 
 ### You can override global configuration at the directive usage level too.

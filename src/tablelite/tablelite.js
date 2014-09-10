@@ -50,8 +50,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
         // ---------- ui handlers ---------- //
         tableModels.loadPage = adDebounce(function (page) {
           var itemsObject = tableModels.localConfig.localData,
-              params;
-         
+              params; 
           params = {
             pageNumber: page,
             pageSize: (tableModels.localConfig.showPaging) ? tableModels.items.paging.pageSize : itemsObject.length,
@@ -109,11 +108,9 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
         };
 
         tableModels.onDragStart = function(data, dragElement, evt) {
-          var parent = dragElement.parent()
+          var parent = dragElement.parent();
           placeHolder = $("<tr><td colspan=" + dragElement.find("td").length + ">&nbsp;</td></tr>");
-
           initialPos = dragElement.index() + ((tableModels.items.paging.currentPage - 1) * tableModels.items.paging.pageSize) - 1;
-
           if (dragElement[0] !== parent.children().last()[0]) {
             dragElement.next().before(placeHolder);
           } else {
@@ -123,11 +120,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
         };
 
         tableModels.onDragEnd = function(data, dragElement, evt) {
-          if (!validDrop) {
-            // If the dragElement is dropped on an invalid drop target
-            // restore the dragElement back to its original position
-            tableModels.onDropEnd(data, dragElement, null, evt);
-          }
+
         };
         
         tableModels.onDragOver = function(data, dragElement, dropElement, evt) {
@@ -148,12 +141,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           placeHolder.remove();
           validDrop = true;
           endPos = dragElement.index() + ((tableModels.items.paging.currentPage - 1) * tableModels.items.paging.pageSize) - 1;
-
           adStrapUtils.moveItemInList(initialPos, endPos, tableModels.localConfig.localData);
-
-          tableModels.loadPage(tableModels.items.paging.currentPage);
-
-          // Incase pageButtonElement was highlighted
           if (pageButtonElement) {
             pageButtonElement.removeClass('btn-primary');
             pageButtonElement = null;
@@ -165,8 +153,10 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
             pageButtonElement.removeClass('btn-primary');
             pageButtonElement = null;
           }
-          pageButtonElement = dropElement;
-          pageButtonElement.addClass('btn-primary');
+          if (dropElement.attr('disabled') !== 'disabled') {
+            pageButtonElement = dropElement;
+            pageButtonElement.addClass('btn-primary');
+          }
         };
 
         tableModels.onNextPageButtonDrop = function(data, dragElement, dropElement, evt) {
@@ -174,19 +164,14 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           if (pageButtonElement) {
             validDrop = true;
             if (pageButtonElement.attr('id') == 'btnPrev') {
-              endPos = (tableModels.items.paging.pageSize * (tableModels.items.paging.currentPage - 1));
+              endPos = (tableModels.items.paging.pageSize * (tableModels.items.paging.currentPage - 1)) - 1;
             }
-
             if (pageButtonElement.attr('id') === 'btnNext') {
-              endPos = tableModels.items.paging.pageSize + 1;
+              endPos = tableModels.items.paging.pageSize * tableModels.items.paging.currentPage;
             }
-
             adStrapUtils.moveItemInList(initialPos, endPos, tableModels.localConfig.localData);
-
             placeHolder.remove();
-            
-            tableModels.loadPage(tableModels.items.paging.currentPage);
-
+            dragElement.remove();
             pageButtonElement.removeClass('btn-primary');
             pageButtonElement = null;
           }
@@ -215,7 +200,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
         element.empty();
         element.append($compile(mainTemplate)(scope));
         scope.$watch(attrs.localDataSource, function () {
-          tableModels.loadPage(1);
+          tableModels.loadPage(tableModels.items.paging.currentPage);
         }, true);
       }
 

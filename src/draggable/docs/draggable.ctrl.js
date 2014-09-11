@@ -3,7 +3,7 @@ angular.module('adaptv.adaptStrapDocs')
     $scope.models = {
       basket: [],
       cars: [
-         {
+        {
           id: 1,
           name: 'Audi A4',
           modelYear: 2009,
@@ -32,7 +32,7 @@ angular.module('adaptv.adaptStrapDocs')
           name: 'Audi A4',
           modelYear: 2009,
           price: 34000
-        }     
+        }
       ]
     };
 
@@ -42,21 +42,21 @@ angular.module('adaptv.adaptStrapDocs')
     };
 
     $scope.onDragStart = function(data, dragElement, event) {
-    
+
     };
 
     $scope.onDragEnd = function(data, dragElement, event) {
-    
+
     };
 
     $scope.onDragOver = function(data, dragElement, dropElement, event) {
-      
+
     };
 
     $scope.onDrop = function(data, dragElement, dropElement, event) {
       if (dropElement.attr('id') === 'my-basket') {
         $scope.models.basket.push(data);
         $scope.remove($scope.models.cars, data);
-      }  
+      }
     };
   }]);

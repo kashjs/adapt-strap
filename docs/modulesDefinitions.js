@@ -304,7 +304,8 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             required: 'false',
             default: 'NA',
             type: 'String',
-            description: 'If <code>true</code>, a direct childnode with a class of <code>.ad-drag-handle</code> should be created. '
+            description: 'If <code>true</code>, a direct childnode with a class of <code>.ad-drag-handle' +
+              '</code> should be created. '
           },
           {
             name: 'ad-drag-data',
@@ -318,16 +319,16 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             required: 'false',
             default: 'NA',
             type: 'Function',
-            description: 'Callback for drag begin event. It fires when a drag starts. it should take 3 parameters <code>$data, ' +
-              '$dragElement, $event</code>.'
+            description: 'Callback for drag begin event. It fires when a drag starts. it should take 3' +
+              'parameters <code>$data, $dragElement, $event</code>.'
           },
           {
             name: 'ad-drag-end',
             required: 'false',
             default: 'NA',
             type: 'Function',
-            description: 'Callback for drag end event. It fires when a drag has ended, always after the drop end. It should ' +
-              'take 3 parameters <code>$data, $dragElement, $event</code>.'
+            description: 'Callback for drag end event. It fires when a drag has ended, always after the' +
+              'drop end. It should take 3 parameters <code>$data, $dragElement, $event</code>.'
           }
         ]
       },
@@ -346,16 +347,16 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             required: 'false',
             default: 'NA',
             type: 'Function',
-            description: 'Callback for the drop over event. It fires on drag over a valid drop element. It takes 4 parameters' +
-              '<code>$data, $dragElement, $dropElement, $event</code>.'
+            description: 'Callback for the drop over event. It fires on drag over a valid drop element. ' +
+              'It takes 4 parameters <code>$data, $dragElement, $dropElement, $event</code>.'
           },
           {
             name: 'ad-drop-end',
             required: 'false',
             default: 'NA',
             type: 'Function',
-            description: 'Callback for the drop end event. It fires on a valid drop. It takes 4 parameters <code>$data,' +
-              '$dragElement, $dropElement, $event</code>.'
+            description: 'Callback for the drop end event. It fires on a valid drop. It takes 4 parameters' +
+              '<code>$data, $dragElement, $dropElement, $event</code>.'
           }
         ]
       }

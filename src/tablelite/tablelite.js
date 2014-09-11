@@ -44,13 +44,13 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           pageButtonElement = null,
           validDrop = false,
           initialPos;
-        
+
         tableModels.items.paging.pageSize = tableModels.items.paging.pageSizes[0];
 
         // ---------- ui handlers ---------- //
         tableModels.loadPage = adDebounce(function (page) {
           var itemsObject = tableModels.localConfig.localData,
-              params; 
+              params;
           params = {
             pageNumber: page,
             pageSize: (tableModels.localConfig.showPaging) ? tableModels.items.paging.pageSize : itemsObject.length,
@@ -109,8 +109,9 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
 
         tableModels.onDragStart = function(data, dragElement, evt) {
           var parent = dragElement.parent();
-          placeHolder = $("<tr><td colspan=" + dragElement.find("td").length + ">&nbsp;</td></tr>");
-          initialPos = dragElement.index() + ((tableModels.items.paging.currentPage - 1) * tableModels.items.paging.pageSize) - 1;
+          placeHolder = $('<tr><td colspan=' + dragElement.find('td').length + '>&nbsp;</td></tr>');
+          initialPos = dragElement.index() + ((tableModels.items.paging.currentPage - 1) *
+              tableModels.items.paging.pageSize) - 1;
           if (dragElement[0] !== parent.children().last()[0]) {
             dragElement.next().before(placeHolder);
           } else {
@@ -122,11 +123,11 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
         tableModels.onDragEnd = function(data, dragElement, evt) {
 
         };
-        
+
         tableModels.onDragOver = function(data, dragElement, dropElement, evt) {
-          if (dropElement.next()[0] == placeHolder[0]) {
+          if (dropElement.next()[0] === placeHolder[0]) {
             dropElement.before(placeHolder);
-          } else if (dropElement.prev()[0] == placeHolder[0]){
+          } else if (dropElement.prev()[0] === placeHolder[0]) {
             dropElement.after(placeHolder);
           }
         };
@@ -140,7 +141,8 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           }
           placeHolder.remove();
           validDrop = true;
-          endPos = dragElement.index() + ((tableModels.items.paging.currentPage - 1) * tableModels.items.paging.pageSize) - 1;
+          endPos = dragElement.index() + ((tableModels.items.paging.currentPage - 1) *
+              tableModels.items.paging.pageSize) - 1;
           adStrapUtils.moveItemInList(initialPos, endPos, tableModels.localConfig.localData);
           if (pageButtonElement) {
             pageButtonElement.removeClass('btn-primary');
@@ -163,7 +165,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           var endPos;
           if (pageButtonElement) {
             validDrop = true;
-            if (pageButtonElement.attr('id') == 'btnPrev') {
+            if (pageButtonElement.attr('id') === 'btnPrev') {
               endPos = (tableModels.items.paging.pageSize * (tableModels.items.paging.currentPage - 1)) - 1;
             }
             if (pageButtonElement.attr('id') === 'btnNext') {
@@ -176,8 +178,6 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
             pageButtonElement = null;
           }
         };
- 
-
 
         // ---------- initialization and event listeners ---------- //
         //We do the compile after injecting the name spacing into the template.

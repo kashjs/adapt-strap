@@ -90,7 +90,7 @@ angular.module('adaptv.adaptStrap.utils', [])
         }
       },
       parse = function(items) {
-        var itemsObject = []
+        var itemsObject = [];
         if (angular.isArray(items)) {
           itemsObject = items;
         } else {

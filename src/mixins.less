@@ -68,13 +68,14 @@
 }
 
 // ========= dragdrop ========== //
-[ad-drag=true] {
-  //cursor: move;
-}
-.ad-drag-handle {
+[ad-drag=true].ad-draggable {
   cursor: move;
 }
-[ad-drag=true].dragging {
+[ad-drag=true] > .ad-drag-handle {
+  cursor: move;
+}
+
+[ad-drag=true].ad-dragging {
   opacity: 0.5;
 }
 

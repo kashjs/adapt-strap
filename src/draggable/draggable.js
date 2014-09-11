@@ -44,6 +44,7 @@ angular.module("adaptv.adaptStrap.draggable", [])
           element.on(startEvents,'.ad-drag-handle', onPress);
         } else {
           element.on(startEvents, onPress);
+          element.addClass('ad-draggable');
         }
 
         if (!hasTouch) {
@@ -133,7 +134,7 @@ angular.module("adaptv.adaptStrap.draggable", [])
           offset = element.offset();
         }
                       
-        element.addClass('dragging');
+        element.addClass('ad-dragging');
 
         mx = (evt.pageX || evt.originalEvent.touches[0].pageX);
         my = (evt.pageY || evt.originalEvent.touches[0].pageY);
@@ -198,7 +199,7 @@ angular.module("adaptv.adaptStrap.draggable", [])
           callback: onDragComplete
         });
 
-        element.removeClass('dragging');
+        element.removeClass('ad-dragging');
         reset();
         $document.off(moveEvents, onMove);
         $document.off(endEvents, onRelease);

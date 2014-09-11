@@ -281,11 +281,12 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
   {
     moduleName: 'draggable',
     displayName: 'Drag and drop',
-    controllerName: '',
+    controllerName: 'draggableCtrl',
     description: 'simple directives to enable drag and drop functionalities',
     playGroundUrl: '',
     docFiles: [
-      
+      'draggable.view.html',
+      'draggable.ctrl.js'
     ],
     directives: [
       {
@@ -296,35 +297,37 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             required: 'true',
             default: 'NA',
             type: 'String',
-            description: 'if true enables drag functionalities'
+            description: 'If <code>true</code>, enables drag capabilities for the node'
           },
           {
             name: 'ad-drag-handle',
             required: 'false',
             default: 'NA',
             type: 'String',
-            description: 'if true uses a drag handle'
+            description: 'If <code>true</code>, a direct childnode with a class of <code>.ad-drag-handle</code> should be created. '
           },
           {
             name: 'ad-drag-data',
             required: 'false',
             default: 'NA',
             type: 'String',
-            description: 'drag to be used during drag'
+            description: 'The data to be used during drag'
           },
           {
             name: 'ad-drag-begin',
-            required: 'true',
+            required: 'false',
             default: 'NA',
             type: 'Function',
-            description: 'handler for drag begin event'
+            description: 'Callback for drag begin event. It fires when a drag starts. it should take 3 parameters <code>$data, ' +
+              '$dragElement, $event</code>.'
           },
           {
             name: 'ad-drag-end',
-            required: 'true',
+            required: 'false',
             default: 'NA',
             type: 'Function',
-            description: 'handler for drag end event'
+            description: 'Callback for drag end event. It fires when a drag has ended, always after the drop end. It should ' +
+              'take 3 parameters <code>$data, $dragElement, $event</code>.'
           }
         ]
       },
@@ -336,21 +339,23 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             required: 'true',
             default: 'NA',
             type: 'String',
-            description: 'enable drop functionality'
+            description: 'If <code>true</code>, enables drop capabilities for the element'
           },
           {
             name: 'ad-drop-over',
-            required: 'true',
+            required: 'false',
             default: 'NA',
             type: 'Function',
-            description: 'handler for the drop over event'
+            description: 'Callback for the drop over event. It fires on drag over a valid drop element. It takes 4 parameters' +
+              '<code>$data, $dragElement, $dropElement, $event</code>.'
           },
           {
             name: 'ad-drop-end',
-            required: 'true',
+            required: 'false',
             default: 'NA',
             type: 'Function',
-            description: 'handler for the dropend event'
+            description: 'Callback for the drop end event. It fires on a valid drop. It takes 4 parameters <code>$data,' +
+              '$dragElement, $dropElement, $event</code>.'
           }
         ]
       }

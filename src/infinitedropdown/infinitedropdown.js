@@ -91,7 +91,7 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
           } else {
             pageLoader(params).then(successHandler, errorHandler);
           }
-        });
+        }, 10);
 
         listModels.loadNextPage = function () {
           if (!listModels.localConfig.loadingData) {
@@ -135,14 +135,15 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
             listModels.loadNextPage();
           }
         }, 50);
-        angular.element(listContainer).on('scroll', function (event) {
-          event.stopPropagation();
+        angular.element(listContainer).bind('mousewheel', function (event) {
+          if (event.originalEvent && event.originalEvent.deltaY) {
+            listContainer.scrollTop += event.originalEvent.deltaY;
+            event.preventDefault();
+            event.stopPropagation();
+          }
           loadFunction();
         });
-
-        scope.template = '{{ item.name }}';
       }
-
       return {
         restrict: 'E',
         link: _link

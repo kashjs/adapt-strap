@@ -107,7 +107,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           }
         };
 
-        tableModels.onDragStart = function(data, dragElement, evt) {
+        tableModels.onDragStart = function(data, dragElement) {
           var parent = dragElement.parent();
           placeHolder = $('<tr><td colspan=' + dragElement.find('td').length + '>&nbsp;</td></tr>');
           initialPos = dragElement.index() + ((tableModels.items.paging.currentPage - 1) *
@@ -120,11 +120,11 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           $('body').append(dragElement);
         };
 
-        tableModels.onDragEnd = function(data, dragElement, evt) {
+        tableModels.onDragEnd = function() {
 
         };
 
-        tableModels.onDragOver = function(data, dragElement, dropElement, evt) {
+        tableModels.onDragOver = function(data, dragElement, dropElement) {
           if (dropElement.next()[0] === placeHolder[0]) {
             dropElement.before(placeHolder);
           } else if (dropElement.prev()[0] === placeHolder[0]) {
@@ -132,7 +132,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           }
         };
 
-        tableModels.onDropEnd = function(data, dragElement, dropElement, evt) {
+        tableModels.onDropEnd = function(data, dragElement) {
           var endPos;
           if (placeHolder.next()[0]) {
             placeHolder.next().before(dragElement);
@@ -150,7 +150,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           }
         };
 
-        tableModels.onNextPageButtonOver = function(data, dragElement, dropElement, evt) {
+        tableModels.onNextPageButtonOver = function(data, dragElement, dropElement) {
           if (pageButtonElement) {
             pageButtonElement.removeClass('btn-primary');
             pageButtonElement = null;
@@ -161,7 +161,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           }
         };
 
-        tableModels.onNextPageButtonDrop = function(data, dragElement, dropElement, evt) {
+        tableModels.onNextPageButtonDrop = function(data, dragElement) {
           var endPos;
           if (pageButtonElement) {
             validDrop = true;

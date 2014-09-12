@@ -41,19 +41,19 @@ angular.module('adaptv.adaptStrapDocs')
       l.splice(index, 1);
     };
 
-    $scope.onDragStart = function(data, dragElement, event) {
+    $scope.onDragStart = function() {
 
     };
 
-    $scope.onDragEnd = function(data, dragElement, event) {
+    $scope.onDragEnd = function() {
 
     };
 
-    $scope.onDragOver = function(data, dragElement, dropElement, event) {
+    $scope.onDragOver = function() {
 
     };
 
-    $scope.onDrop = function(data, dragElement, dropElement, event) {
+    $scope.onDrop = function(data, dragElement, dropElement) {
       if (dropElement.attr('id') === 'my-basket') {
         $scope.models.basket.push(data);
         $scope.remove($scope.models.cars, data);

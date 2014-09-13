@@ -1,0 +1,358 @@
+
+angular.module('adaptv.adaptStrap.draggable', [])
+  .directive('adDrag', ['$rootScope', '$parse', function ($rootScope, $parse) {
+    function _link(scope, element, attrs) {
+      scope.draggable = attrs.adDrag;
+      scope.hasHandle = attrs.adDragHandle === 'false' || typeof attrs.adDragHandle === 'undefined' ? false : true;
+      scope.onDragStartCallback = $parse(attrs.adDragBegin) || null;
+      scope.onDragEndCallback = $parse(attrs.adDragEnd) || null;
+      scope.data = null;
+
+      var offset, mx, my, tx, ty;
+
+      var hasTouch = ('ontouchstart' in document.documentElement);
+      /* -- Events -- */
+      var startEvents = 'touchstart mousedown';
+      var moveEvents = 'touchmove mousemove';
+      var endEvents = 'touchend mouseup';
+
+      var $document = $(document);
+      var $window = $(window);
+
+      var dragEnabled = false;
+      var pressTimer = null;
+
+      function init() {
+        element.attr('draggable', 'false'); // prevent native drag
+        toggleListeners(true);
+      }
+
+      function toggleListeners(enable) {
+        if (!enable) {
+          return;
+        }
+        // add listeners.
+        scope.$on('$destroy', onDestroy);
+        attrs.$observe('adDrag', onEnableChange);
+        scope.$watch(attrs.adDragData, onDragDataChange);
+
+        scope.$on('draggable:start', onDragStart);
+        scope.$on('draggable:end', onDragEnd);
+
+        if (scope.hasHandle) {
+          element.on(startEvents, '.ad-drag-handle', onPress);
+        } else {
+          element.on(startEvents, onPress);
+          element.addClass('ad-draggable');
+        }
+
+        if (!hasTouch) {
+          element.on('mousedown', '.ad-drag-handle', function() {
+            return false;
+          });
+          element.on('mousedown', function() {
+            return false;
+          }); // prevent native drag
+        }
+      }
+
+      //--- Event Handlers ---
+      function onDragStart(evt, o) {
+        if (o.el === element && o.callback) {
+          o.callback(evt);
+        }
+      }
+
+      function onDragEnd(evt, o) {
+        if (o.el === element && o.callback) {
+          o.callback(evt);
+        }
+      }
+
+      function onDestroy() {
+        toggleListeners(false);
+      }
+
+      function onDragDataChange(newVal) {
+        scope.data = newVal;
+      }
+
+      function onEnableChange(newVal) {
+        dragEnabled = scope.$eval(newVal);
+      }
+
+      /*
+      * When the element is clicked start the drag behaviour
+      * On touch devices as a small delay so as not to prevent native window scrolling
+      */
+      function onPress(evt) {
+        if (!dragEnabled) {
+          return;
+        }
+        if (hasTouch) {
+          cancelPress();
+          pressTimer = setTimeout(function() {
+            cancelPress();
+            onLongPress(evt);
+          }, 100);
+
+          $document.on(moveEvents, cancelPress);
+          $document.on(endEvents, cancelPress);
+        } else {
+          onLongPress(evt);
+        }
+      }
+
+      /*
+      * Preserve the width of the element during drag
+      */
+      function persistElementWidth() {
+        element.children()
+          .each(function() {
+            $(this).width($(this).width());
+          });
+      }
+
+      function cancelPress() {
+        clearTimeout(pressTimer);
+        $document.off(moveEvents, cancelPress);
+        $document.off(endEvents, cancelPress);
+      }
+
+      function onLongPress(evt) {
+        if (!dragEnabled) {
+          return;
+        }
+        evt.preventDefault();
+        offset = element.offset();
+
+        if (scope.hasHandle) {
+          offset = element.find('.ad-drag-handle').offset();
+        } else {
+          offset = element.offset();
+        }
+
+        element.addClass('ad-dragging');
+
+        mx = (evt.pageX || evt.originalEvent.touches[0].pageX);
+        my = (evt.pageY || evt.originalEvent.touches[0].pageY);
+
+        tx = mx - offset.left - $window.scrollLeft();
+        ty = my - offset.top - $window.scrollTop();
+
+        persistElementWidth();
+        moveElement(tx, ty);
+
+        $document.on(moveEvents, onMove);
+        $document.on(endEvents, onRelease);
+
+        $rootScope.$broadcast('draggable:start', {
+          x: mx,
+          y: my,
+          tx: tx,
+          ty: ty,
+          el: element,
+          data: scope.data,
+          callback: onDragBegin
+        });
+      }
+
+      function onMove(evt) {
+        var cx, cy;
+        if (!dragEnabled) {
+          return;
+        }
+        evt.preventDefault();
+
+        cx = (evt.pageX || evt.originalEvent.touches[0].pageX);
+        cy = (evt.pageY || evt.originalEvent.touches[0].pageY);
+
+        tx = (cx - mx) + offset.left - $window.scrollLeft();
+        ty = (cy - my) + offset.top - $window.scrollTop();
+
+        moveElement(tx, ty);
+
+        $rootScope.$broadcast('draggable:move', {
+          x: mx,
+          y: my,
+          tx: tx,
+          ty:ty,
+          el: element,
+          data: scope.data
+        });
+      }
+
+      function onRelease(evt) {
+        if (!dragEnabled) {
+          return;
+        }
+        evt.preventDefault();
+        $rootScope.$broadcast('draggable:end', {
+          x: mx,
+          y: my,
+          tx: tx,
+          ty: ty,
+          el: element,
+          data: scope.data,
+          callback: onDragComplete
+        });
+
+        element.removeClass('ad-dragging');
+        reset();
+        $document.off(moveEvents, onMove);
+        $document.off(endEvents, onRelease);
+      }
+
+      // Callbacks
+      function onDragBegin(evt) {
+        if (!scope.onDragStartCallback) {
+          return;
+        }
+        scope.$apply(function() {
+          scope.onDragStartCallback(scope, {
+            $data: scope.data,
+            $dragElement: element,
+            $event: evt
+          });
+        });
+      }
+
+      function onDragComplete(evt) {
+        if (!scope.onDragEndCallback) {
+          return;
+        }
+        scope.$apply(function () {
+          scope.onDragEndCallback(scope, {
+            $data: scope.data,
+            $dragElement: element,
+            $event: evt
+          });
+        });
+      }
+
+      // utils functions
+      function reset() {
+        element.css({ left: '', top: '', position:'', 'z-index': '' });
+      }
+
+      function moveElement(x, y) {
+        element.css({ left: x, top: y, position: 'fixed', 'z-index': 99999 });
+      }
+
+      init();
+    }
+    return {
+      restrict: 'A',
+      link: _link
+    };
+  }])
+  .directive('adDrop', ['$rootScope', '$parse', function ($rootScope, $parse) {
+    function _link(scope, element, attrs) {
+      scope.droppable = attrs.adDrop;
+      scope.onDropCallback = $parse(attrs.adDropEnd) || null;
+      scope.onDropOverCallback = $parse(attrs.adDropOver) || null;
+
+      var dropEnabled = false;
+      var elem = null;
+
+      var $window = $(window);
+
+      function init() {
+        toggleListeners(true);
+      }
+
+      function toggleListeners(enable) {
+        if (!enable) {
+          return;
+        }
+        // add listeners.
+        attrs.$observe('adDrop', onEnableChange);
+        scope.$on('$destroy', onDestroy);
+
+        scope.$on('draggable:move', onDragMove);
+        scope.$on('draggable:end', onDragEnd);
+        scope.$on('draggable:change', onDropChange);
+      }
+
+      function onDestroy() {
+        toggleListeners(false);
+      }
+
+      function onEnableChange(newVal) {
+        dropEnabled = scope.$eval(newVal);
+      }
+
+      function onDropChange(evt, obj) {
+        if (elem !== obj.el) {
+          elem = null;
+        }
+      }
+
+      function onDragMove(evt, obj) {
+        if (!dropEnabled) {
+          return;
+        }
+        // If the dropElement and the drag element are the same
+        if (element === obj.el) {
+          return;
+        }
+
+        var el = getCurrentDropElement(obj.tx, obj.ty, obj.el);
+
+        if (el !== null) {
+          elem = el;
+          scope.$apply(function() {
+            scope.onDropOverCallback(scope, {
+              $data: obj.data,
+              $dragElement: obj.el,
+              $dropElement: elem,
+              $event: evt
+            });
+          });
+
+          $rootScope.$broadcast('draggable:change', {
+            el: elem
+          });
+        }
+      }
+
+      function onDragEnd(evt, obj) {
+        if (!dropEnabled) {
+          return;
+        }
+
+        if (elem) {
+          // call the adDrop element callback
+          scope.$apply(function () {
+            scope.onDropCallback(scope, {
+              $data: obj.data,
+              $dragElement: obj.el,
+              $dropElement: elem,
+              $event: evt
+            });
+          });
+        }
+      }
+
+      function getCurrentDropElement(x, y, dragEl) {
+        var bounds = element.offset();
+        var vthold = Math.floor(element.outerHeight() / 3);
+        var xw, yh;
+
+        x = x + $window.scrollLeft();
+        y = y + $window.scrollTop();
+        xw = x + dragEl.outerWidth(); //xw => x + drag element width
+        yh = y + dragEl.outerHeight();
+
+        return ((y >= (bounds.top + vthold) && y <= (bounds.top + element.outerHeight() - vthold)) &&
+            (x >= (bounds.left) && x <= (bounds.left + element.outerWidth()))) || ((yh >= (bounds.top + vthold) &&
+                yh <= (bounds.top + element.outerHeight() - vthold)) && (x >= (bounds.left) &&
+                  x <= (bounds.left + element.outerWidth()))) ? element : null;
+      }
+      init();
+    }
+    return {
+      restrict: 'A',
+      link: _link
+    };
+  }]);

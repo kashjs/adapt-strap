@@ -1,6 +1,9 @@
 <div class="ad-table-lite-container">
     <table class="%=tableClasses%">
-        <tr class="ad-user-select-none">
+      <tr class="ad-user-select-none">
+            <th ng-if="%=tableName%.localConfig.draggable" class="ad-select-cell">
+              <i></i>
+            </th>
             <th ng-if="%=tableName%.localConfig.selectable && %=tableName%.items.allItems"
                 class="ad-select-cell">
               <input type="checkbox"
@@ -25,10 +28,34 @@
                       ng-bind="definition.columnHeaderDisplayName"></div>
             </th>
         </tr>
-        <tr data-ng-repeat="item in %=tableName%.items.list"
-            ng-class="{'ad-selected': %=tableName%.localConfig.selectable && %=tableName%.isSelected(item, %=tableName%.selectedItems)}">
+        <tr ng-if="!%=tableName%.localConfig.draggable" data-ng-repeat="item in %=tableName%.items.list"
+          ng-class="{'ad-selected': %=tableName%.localConfig.selectable && %=tableName%.isSelected(item, %=tableName%.selectedItems)}">
             <td ng-if="%=tableName%.localConfig.selectable"
                 class="ad-select-cell">
+              <input type="checkbox"
+                     class="ad-cursor-pointer"
+                     ng-checked="%=tableName%.isSelected(item, %=tableName%.selectedItems)"
+                     ng-click="%=tableName%.addRemoveItem(item, %=tableName%.selectedItems)">
+            </td>
+            <td data-ng-repeat="definition in %=columnDefinition%">
+                <div ng-if="definition.templateUrl">
+                    <ng-include src="definition.templateUrl"></ng-include>
+                </div>
+                <div ng-if="!definition.templateUrl">
+                    {{ %=tableName%.applyFilter(item[definition.displayProperty], definition.cellFilter) }}
+                </div>
+            </td>
+          </tr>
+          <tr ng-if="%=tableName%.localConfig.draggable" ad-drag="true" ad-drag-handle="true" ad-drop="true" ad-drag-data="" 
+            ad-drop-over="%=tableName%.onDragOver($data, $dragElement, $dropElement, $event)" 
+            ad-drop-end="%=tableName%.onDropEnd($data, $dragElement, $dropElement, $event)" 
+            ad-drag-begin="%=tableName%.onDragStart($data, $dragElement, $event)" 
+            ad-drag-end="%=tableName%.onDragEnd($data, $dragElement, $event)" data-ng-repeat="item in %=tableName%.items.list"
+            ng-class="{'ad-selected': %=tableName%.localConfig.selectable && %=tableName%.isSelected(item, %=tableName%.selectedItems)}">
+            <td ng-if="%=tableName%.localConfig.draggable" class="ad-select-cell ad-drag-handle">
+              <i class="%=icon-draggable%"></i>
+            </td>
+            <td ng-if="%=tableName%.localConfig.selectable" class="ad-select-cell">
               <input type="checkbox"
                      class="ad-cursor-pointer"
                      ng-checked="%=tableName%.isSelected(item, %=tableName%.selectedItems)"
@@ -46,6 +73,7 @@
                 </div>
             </td>
         </tr>
+ 
     </table>
     <div class="row" ng-if="%=tableName%.items.allItems.length > %=tableName%.items.paging.pageSizes[0] && %=tableName%.localConfig.showPaging">
         <div class="col-md-8 col-sm-8">
@@ -56,8 +84,18 @@
                         ng-disabled="%=tableName%.items.paging.currentPage == 1">
                     <i class="%=icon-firstPage%"></i>
                 </button>
-                <button type="button"
+                <button ng-if="!%=tableName%.localConfig.draggable" type="button"
                         class="btn btn-default"
+                        ng-click="%=tableName%.loadPreviousPage()"
+                        ng-disabled="%=tableName%.items.paging.currentPage == 1">
+                    <i class="%=icon-previousPage%"></i>
+                </button>
+                <button ng-if="%=tableName%.localConfig.draggable" type="button"
+                        id="btnPrev"
+                        class="btn btn-default"
+                        ad-drop="true"
+                        ad-drop-over="%=tableName%.onNextPageButtonOver($data, $dragElement, $dropElement, $event)" 
+                        ad-drop-end="%=tableName%.onNextPageButtonDrop($data, $dragElement, $dropElement, $event)"  
                         ng-click="%=tableName%.loadPreviousPage()"
                         ng-disabled="%=tableName%.items.paging.currentPage == 1">
                     <i class="%=icon-previousPage%"></i>
@@ -68,18 +106,26 @@
                         ng-class="{active: %=tableName%.items.paging.currentPage == page}"
                         ng-click="%=tableName%.loadPage(page)">{{ page }}
                 </button>
-                <button
-                    type="button"
-                    class="btn btn-default"
-                    ng-click="%=tableName%.loadNextPage()"
-                    ng-disabled="%=tableName%.items.paging.currentPage == %=tableName%.items.paging.totalPages">
+                <button ng-if="!%=tableName%.localConfig.draggable" type="button"
+                        class="btn btn-default"
+                        ng-click="%=tableName%.loadNextPage()"
+                        ng-disabled="%=tableName%.items.paging.currentPage == %=tableName%.items.paging.totalPages">
                     <i class="%=icon-nextPage%"></i>
                 </button>
-                <button
-                    type="button"
-                    class="btn btn-default"
-                    ng-click="%=tableName%.loadLastPage()"
-                    ng-disabled="%=tableName%.items.paging.currentPage == %=tableName%.items.paging.totalPages">
+                <button ng-if="%=tableName%.localConfig.draggable" type="button"
+                        id="btnNext"
+                        ad-drop="true"
+                        ad-drop-over="%=tableName%.onNextPageButtonOver($data, $dragElement, $dropElement, $event)" 
+                        ad-drop-end="%=tableName%.onNextPageButtonDrop($data, $dragElement, $dropElement, $event)" 
+                        class="btn btn-default"
+                        ng-click="%=tableName%.loadNextPage()"
+                        ng-disabled="%=tableName%.items.paging.currentPage == %=tableName%.items.paging.totalPages">
+                    <i class="%=icon-nextPage%"></i>
+                </button>
+                <button type="button"
+                        class="btn btn-default"
+                        ng-click="%=tableName%.loadLastPage()"
+                        ng-disabled="%=tableName%.items.paging.currentPage == %=tableName%.items.paging.totalPages">
                     <i class="%=icon-lastPage%"></i>
                 </button>
             </div>

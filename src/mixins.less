@@ -67,6 +67,18 @@
   animation: spin 2s infinite linear;
 }
 
+// ========= dragdrop ========== //
+[ad-drag=true].ad-draggable {
+  cursor: move;
+}
+[ad-drag=true] > .ad-drag-handle {
+  cursor: move;
+}
+
+[ad-drag=true].ad-dragging {
+  opacity: 0.5;
+}
+
 @-moz-keyframes spin {
   0% {
     -moz-transform: rotate(0deg);

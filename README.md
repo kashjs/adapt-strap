@@ -7,6 +7,7 @@
 - **Tree Browser** - simple tree UI that allows you to brows through local data models in a tree structure
 - **Infinite Dropdown** - simple directives to implement infinite scroll dropdowns/multi selectors
 - **Loading Indicators** - simple directives to render overlay and inline loading indicators
+- **Drag and Drop** - simple directives to enable drag and drop capabilities
 - **Global configuration** - all the components are globally configurable to use your set of icons and pagination/sorting configuration
 - **Customizable** - all the components are highly customizable.
 
@@ -27,7 +28,7 @@ angular.module('myApp', [
 ```
 * Read the [documentation](http://adaptv.github.io/adapt-strap/) to see the demo and usage of components
 
-###Developers one time seup:
+###Developers one time setup:
 * Fork the repo under your github account and clone it locally
 * Configure upstream:
 ```

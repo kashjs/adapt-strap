@@ -69,6 +69,13 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             'Ex (<code>pagination-btn-group-classes="btn-group btn-group-xs"</code>)'
         },
         {
+          name: 'draggable',
+          required: false,
+          default: 'NA',
+          type: 'Boolean',
+          description: 'enables drag & drop on the table rows within and across pages'
+        },
+        {
           name: 'selected-items',
           required: false,
           default: 'NA',
@@ -270,6 +277,90 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
         }
       ]
     }]
+  },
+  {
+    moduleName: 'draggable',
+    displayName: 'Drag and drop',
+    controllerName: 'draggableCtrl',
+    description: 'simple directives to enable drag and drop functionalities',
+    playGroundUrl: '',
+    docFiles: [
+      'draggable.view.html',
+      'draggable.ctrl.js'
+    ],
+    directives: [
+      {
+        name: 'ad-drag',
+        options: [
+          {
+            name: 'ad-drag',
+            required: 'true',
+            default: 'NA',
+            type: 'String',
+            description: 'If <code>true</code>, enables drag capabilities for the node'
+          },
+          {
+            name: 'ad-drag-handle',
+            required: 'false',
+            default: 'NA',
+            type: 'String',
+            description: 'If <code>true</code>, a direct childnode with a class of <code>.ad-drag-handle' +
+              '</code> should be created. '
+          },
+          {
+            name: 'ad-drag-data',
+            required: 'false',
+            default: 'NA',
+            type: 'String',
+            description: 'The data to be used during drag'
+          },
+          {
+            name: 'ad-drag-begin',
+            required: 'false',
+            default: 'NA',
+            type: 'Function',
+            description: 'Callback for drag begin event. It fires when a drag starts. it should take 3' +
+              'parameters <code>$data, $dragElement, $event</code>.'
+          },
+          {
+            name: 'ad-drag-end',
+            required: 'false',
+            default: 'NA',
+            type: 'Function',
+            description: 'Callback for drag end event. It fires when a drag has ended, always after the' +
+              'drop end. It should take 3 parameters <code>$data, $dragElement, $event</code>.'
+          }
+        ]
+      },
+      {
+        name: 'ad-drop',
+        options: [
+          {
+            name: 'ad-drop',
+            required: 'true',
+            default: 'NA',
+            type: 'String',
+            description: 'If <code>true</code>, enables drop capabilities for the element'
+          },
+          {
+            name: 'ad-drop-over',
+            required: 'false',
+            default: 'NA',
+            type: 'Function',
+            description: 'Callback for the drop over event. It fires on drag over a valid drop element. ' +
+              'It takes 4 parameters <code>$data, $dragElement, $dropElement, $event</code>.'
+          },
+          {
+            name: 'ad-drop-end',
+            required: 'false',
+            default: 'NA',
+            type: 'Function',
+            description: 'Callback for the drop end event. It fires on a valid drop. It takes 4 parameters' +
+              '<code>$data, $dragElement, $dropElement, $event</code>.'
+          }
+        ]
+      }
+    ]
   },
   {
     moduleName: 'infinitedropdown',

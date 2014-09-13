@@ -1,7 +1,27 @@
 <div class="ad-table-ajax-container">
-    <div class="ad-table-ajax-table-container">
+    <table class="%=tableClasses% ad-sticky-table" ng-ifx="%=tableName%.localConfig.tableMaxHeight">
+      <tr class="ad-user-select-none">
+        <th data-ng-repeat="definition in %=columnDefinition%"
+            ng-click="%=tableName%.sortByColumn(definition)"
+            ng-class="{'ad-cursor-pointer': definition.sortKey}"
+            ng-style="{'width': definition.width}">
+          <div class="pull-right" ng-if="definition.sortKey && %=tableName%.localConfig.predicate == definition.sortKey">
+            <i class="%=icon-sortAscending%" ng-hide="%=tableName%.localConfig.reverse"></i>
+            <i class="%=icon-sortDescending%" ng-show="%=tableName%.localConfig.reverse"></i>
+          </div>
+          <div class="pull-right" ng-if="definition.sortKey && %=tableName%.localConfig.predicate != definition.sortKey">
+            <i class="%=icon-sortable%"></i>
+          </div>
+          <div ng-if="definition.columnHeaderTemplate"
+               ng-bind-html="definition.columnHeaderTemplate"></div>
+          <div ng-if="definition.columnHeaderDisplayName"
+               ng-bind="definition.columnHeaderDisplayName"></div>
+        </th>
+      </tr>
+    </table>
+    <div class="ad-table-container" ng-style="{'max-height': %=tableName%.localConfig.tableMaxHeight}">
         <table class="%=tableClasses%">
-            <tr class="ad-user-select-none">
+            <tr class="ad-user-select-none" ng-if="!%=tableName%.localConfig.tableMaxHeight">
                 <th data-ng-repeat="definition in %=columnDefinition%"
                     ng-click="%=tableName%.sortByColumn(definition)"
                     ng-class="{'ad-cursor-pointer': definition.sortKey}"
@@ -20,7 +40,8 @@
                 </th>
             </tr>
             <tr data-ng-repeat="item in %=tableName%.items.list">
-                <td data-ng-repeat="definition in %=columnDefinition%">
+                <td data-ng-repeat="definition in %=columnDefinition%"
+                    ng-style="{'width': definition.width}">
                     <div ng-if="definition.templateUrl">
                         <ng-include src="definition.templateUrl"></ng-include>
                     </div>

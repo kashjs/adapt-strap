@@ -26,7 +26,8 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
             pagingArray: [],
             selectable: attrs.selectedItems ? true : false,
             draggable: attrs.draggable ? true : false,
-            showPaging: $parse(attrs.disablePaging)() ? false : true
+            showPaging: $parse(attrs.disablePaging)() ? false : true,
+            tableMaxHeight: attrs.tableMaxHeight
           },
           selectedItems: scope.$eval(attrs.selectedItems),
           applyFilter: adStrapUtils.applyFilter,

@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v0.3.1 - 2014-09-10
+ * @version v1.0.0 - 2014-09-14
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -14,6 +14,7 @@ angular.module('adaptv.adaptStrap', [
   'adaptv.adaptStrap.tablelite',
   'adaptv.adaptStrap.tableajax',
   'adaptv.adaptStrap.loadingindicator',
+  'adaptv.adaptStrap.draggable',
   'adaptv.adaptStrap.infinitedropdown'
 ]).provider('$adConfig', function () {
   var iconClasses = this.iconClasses = {
@@ -27,6 +28,7 @@ angular.module('adaptv.adaptStrap', [
       sortAscending: 'glyphicon glyphicon-chevron-up',
       sortDescending: 'glyphicon glyphicon-chevron-down',
       sortable: 'glyphicon glyphicon-resize-vertical',
+      draggable: 'glyphicon glyphicon-align-justify',
       selectedItem: 'glyphicon glyphicon-ok'
     }, paging = this.paging = {
       request: {
@@ -50,6 +52,322 @@ angular.module('adaptv.adaptStrap', [
     };
   };
 });
+
+// Source: draggable.js
+angular.module('adaptv.adaptStrap.draggable', []).directive('adDrag', [
+  '$rootScope',
+  '$parse',
+  function ($rootScope, $parse) {
+    function _link(scope, element, attrs) {
+      scope.draggable = attrs.adDrag;
+      scope.hasHandle = attrs.adDragHandle === 'false' || typeof attrs.adDragHandle === 'undefined' ? false : true;
+      scope.onDragStartCallback = $parse(attrs.adDragBegin) || null;
+      scope.onDragEndCallback = $parse(attrs.adDragEnd) || null;
+      scope.data = null;
+      var offset, mx, my, tx, ty;
+      var hasTouch = 'ontouchstart' in document.documentElement;
+      /* -- Events -- */
+      var startEvents = 'touchstart mousedown';
+      var moveEvents = 'touchmove mousemove';
+      var endEvents = 'touchend mouseup';
+      var $document = $(document);
+      var $window = $(window);
+      var dragEnabled = false;
+      var pressTimer = null;
+      function init() {
+        element.attr('draggable', 'false');
+        // prevent native drag
+        toggleListeners(true);
+      }
+      function toggleListeners(enable) {
+        if (!enable) {
+          return;
+        }
+        // add listeners.
+        scope.$on('$destroy', onDestroy);
+        attrs.$observe('adDrag', onEnableChange);
+        scope.$watch(attrs.adDragData, onDragDataChange);
+        scope.$on('draggable:start', onDragStart);
+        scope.$on('draggable:end', onDragEnd);
+        if (scope.hasHandle) {
+          element.on(startEvents, '.ad-drag-handle', onPress);
+        } else {
+          element.on(startEvents, onPress);
+          element.addClass('ad-draggable');
+        }
+        if (!hasTouch) {
+          element.on('mousedown', '.ad-drag-handle', function () {
+            return false;
+          });
+          element.on('mousedown', function () {
+            return false;
+          });  // prevent native drag
+        }
+      }
+      //--- Event Handlers ---
+      function onDragStart(evt, o) {
+        if (o.el === element && o.callback) {
+          o.callback(evt);
+        }
+      }
+      function onDragEnd(evt, o) {
+        if (o.el === element && o.callback) {
+          o.callback(evt);
+        }
+      }
+      function onDestroy() {
+        toggleListeners(false);
+      }
+      function onDragDataChange(newVal) {
+        scope.data = newVal;
+      }
+      function onEnableChange(newVal) {
+        dragEnabled = scope.$eval(newVal);
+      }
+      /*
+      * When the element is clicked start the drag behaviour
+      * On touch devices as a small delay so as not to prevent native window scrolling
+      */
+      function onPress(evt) {
+        if (!dragEnabled) {
+          return;
+        }
+        if (hasTouch) {
+          cancelPress();
+          pressTimer = setTimeout(function () {
+            cancelPress();
+            onLongPress(evt);
+          }, 100);
+          $document.on(moveEvents, cancelPress);
+          $document.on(endEvents, cancelPress);
+        } else {
+          onLongPress(evt);
+        }
+      }
+      /*
+      * Preserve the width of the element during drag
+      */
+      function persistElementWidth() {
+        element.children().each(function () {
+          $(this).width($(this).width());
+        });
+      }
+      function cancelPress() {
+        clearTimeout(pressTimer);
+        $document.off(moveEvents, cancelPress);
+        $document.off(endEvents, cancelPress);
+      }
+      function onLongPress(evt) {
+        if (!dragEnabled) {
+          return;
+        }
+        evt.preventDefault();
+        offset = element.offset();
+        if (scope.hasHandle) {
+          offset = element.find('.ad-drag-handle').offset();
+        } else {
+          offset = element.offset();
+        }
+        element.addClass('ad-dragging');
+        mx = evt.pageX || evt.originalEvent.touches[0].pageX;
+        my = evt.pageY || evt.originalEvent.touches[0].pageY;
+        tx = mx - offset.left - $window.scrollLeft();
+        ty = my - offset.top - $window.scrollTop();
+        persistElementWidth();
+        moveElement(tx, ty);
+        $document.on(moveEvents, onMove);
+        $document.on(endEvents, onRelease);
+        $rootScope.$broadcast('draggable:start', {
+          x: mx,
+          y: my,
+          tx: tx,
+          ty: ty,
+          el: element,
+          data: scope.data,
+          callback: onDragBegin
+        });
+      }
+      function onMove(evt) {
+        var cx, cy;
+        if (!dragEnabled) {
+          return;
+        }
+        evt.preventDefault();
+        cx = evt.pageX || evt.originalEvent.touches[0].pageX;
+        cy = evt.pageY || evt.originalEvent.touches[0].pageY;
+        tx = cx - mx + offset.left - $window.scrollLeft();
+        ty = cy - my + offset.top - $window.scrollTop();
+        moveElement(tx, ty);
+        $rootScope.$broadcast('draggable:move', {
+          x: mx,
+          y: my,
+          tx: tx,
+          ty: ty,
+          el: element,
+          data: scope.data
+        });
+      }
+      function onRelease(evt) {
+        if (!dragEnabled) {
+          return;
+        }
+        evt.preventDefault();
+        $rootScope.$broadcast('draggable:end', {
+          x: mx,
+          y: my,
+          tx: tx,
+          ty: ty,
+          el: element,
+          data: scope.data,
+          callback: onDragComplete
+        });
+        element.removeClass('ad-dragging');
+        reset();
+        $document.off(moveEvents, onMove);
+        $document.off(endEvents, onRelease);
+      }
+      // Callbacks
+      function onDragBegin(evt) {
+        if (!scope.onDragStartCallback) {
+          return;
+        }
+        scope.$apply(function () {
+          scope.onDragStartCallback(scope, {
+            $data: scope.data,
+            $dragElement: element,
+            $event: evt
+          });
+        });
+      }
+      function onDragComplete(evt) {
+        if (!scope.onDragEndCallback) {
+          return;
+        }
+        scope.$apply(function () {
+          scope.onDragEndCallback(scope, {
+            $data: scope.data,
+            $dragElement: element,
+            $event: evt
+          });
+        });
+      }
+      // utils functions
+      function reset() {
+        element.css({
+          left: '',
+          top: '',
+          position: '',
+          'z-index': ''
+        });
+      }
+      function moveElement(x, y) {
+        element.css({
+          left: x,
+          top: y,
+          position: 'fixed',
+          'z-index': 99999
+        });
+      }
+      init();
+    }
+    return {
+      restrict: 'A',
+      link: _link
+    };
+  }
+]).directive('adDrop', [
+  '$rootScope',
+  '$parse',
+  function ($rootScope, $parse) {
+    function _link(scope, element, attrs) {
+      scope.droppable = attrs.adDrop;
+      scope.onDropCallback = $parse(attrs.adDropEnd) || null;
+      scope.onDropOverCallback = $parse(attrs.adDropOver) || null;
+      var dropEnabled = false;
+      var elem = null;
+      var $window = $(window);
+      function init() {
+        toggleListeners(true);
+      }
+      function toggleListeners(enable) {
+        if (!enable) {
+          return;
+        }
+        // add listeners.
+        attrs.$observe('adDrop', onEnableChange);
+        scope.$on('$destroy', onDestroy);
+        scope.$on('draggable:move', onDragMove);
+        scope.$on('draggable:end', onDragEnd);
+        scope.$on('draggable:change', onDropChange);
+      }
+      function onDestroy() {
+        toggleListeners(false);
+      }
+      function onEnableChange(newVal) {
+        dropEnabled = scope.$eval(newVal);
+      }
+      function onDropChange(evt, obj) {
+        if (elem !== obj.el) {
+          elem = null;
+        }
+      }
+      function onDragMove(evt, obj) {
+        if (!dropEnabled) {
+          return;
+        }
+        // If the dropElement and the drag element are the same
+        if (element === obj.el) {
+          return;
+        }
+        var el = getCurrentDropElement(obj.tx, obj.ty, obj.el);
+        if (el !== null) {
+          elem = el;
+          scope.$apply(function () {
+            scope.onDropOverCallback(scope, {
+              $data: obj.data,
+              $dragElement: obj.el,
+              $dropElement: elem,
+              $event: evt
+            });
+          });
+          $rootScope.$broadcast('draggable:change', { el: elem });
+        }
+      }
+      function onDragEnd(evt, obj) {
+        if (!dropEnabled) {
+          return;
+        }
+        if (elem) {
+          // call the adDrop element callback
+          scope.$apply(function () {
+            scope.onDropCallback(scope, {
+              $data: obj.data,
+              $dragElement: obj.el,
+              $dropElement: elem,
+              $event: evt
+            });
+          });
+        }
+      }
+      function getCurrentDropElement(x, y, dragEl) {
+        var bounds = element.offset();
+        var vthold = Math.floor(element.outerHeight() / 3);
+        var xw, yh;
+        x = x + $window.scrollLeft();
+        y = y + $window.scrollTop();
+        xw = x + dragEl.outerWidth();
+        //xw => x + drag element width
+        yh = y + dragEl.outerHeight();
+        return y >= bounds.top + vthold && y <= bounds.top + element.outerHeight() - vthold && (x >= bounds.left && x <= bounds.left + element.outerWidth()) || yh >= bounds.top + vthold && yh <= bounds.top + element.outerHeight() - vthold && (x >= bounds.left && x <= bounds.left + element.outerWidth()) ? element : null;
+      }
+      init();
+    }
+    return {
+      restrict: 'A',
+      link: _link
+    };
+  }
+]);
 
 // Source: infinitedropdown.js
 angular.module('adaptv.adaptStrap.infinitedropdown', [
@@ -267,7 +585,8 @@ function _link(scope, element, attrs) {
         },
         localConfig: {
           pagingArray: [],
-          loadingData: false
+          loadingData: false,
+          tableMaxHeight: attrs.tableMaxHeight
         },
         ajaxConfig: scope.$eval(attrs.ajaxConfig),
         applyFilter: adStrapUtils.applyFilter,
@@ -395,9 +714,12 @@ function _link(scope, element, attrs) {
           }
         },
         localConfig: {
+          localData: adStrapUtils.parse(scope.$eval(attrs.localDataSource)),
           pagingArray: [],
           selectable: attrs.selectedItems ? true : false,
-          showPaging: $parse(attrs.disablePaging)() ? false : true
+          draggable: attrs.draggable ? true : false,
+          showPaging: $parse(attrs.disablePaging)() ? false : true,
+          tableMaxHeight: attrs.tableMaxHeight
         },
         selectedItems: scope.$eval(attrs.selectedItems),
         applyFilter: adStrapUtils.applyFilter,
@@ -408,18 +730,11 @@ function _link(scope, element, attrs) {
         readProperty: adStrapUtils.getObjectProperty
       };
       // ---------- Local data ---------- //
-      var tableModels = scope[attrs.tableName], mainTemplate = $templateCache.get('tablelite/tablelite.tpl.html');
+      var tableModels = scope[attrs.tableName], mainTemplate = $templateCache.get('tablelite/tablelite.tpl.html'), placeHolder = null, pageButtonElement = null, validDrop = false, initialPos;
       tableModels.items.paging.pageSize = tableModels.items.paging.pageSizes[0];
       // ---------- ui handlers ---------- //
       tableModels.loadPage = adDebounce(function (page) {
-        var itemsObject = [], params;
-        if (angular.isArray(scope.$eval(attrs.localDataSource))) {
-          itemsObject = scope.$eval(attrs.localDataSource);
-        } else {
-          angular.forEach(scope.$eval(attrs.localDataSource), function (item) {
-            itemsObject.push(item);
-          });
-        }
+        var itemsObject = tableModels.localConfig.localData, params;
         params = {
           pageNumber: page,
           pageSize: tableModels.localConfig.showPaging ? tableModels.items.paging.pageSize : itemsObject.length,
@@ -469,16 +784,79 @@ function _link(scope, element, attrs) {
           tableModels.loadPage(tableModels.items.paging.currentPage);
         }
       };
+      tableModels.onDragStart = function (data, dragElement) {
+        var parent = dragElement.parent();
+        placeHolder = $('<tr><td colspan=' + dragElement.find('td').length + '>&nbsp;</td></tr>');
+        initialPos = dragElement.index() + (tableModels.items.paging.currentPage - 1) * tableModels.items.paging.pageSize - 1;
+        if (dragElement[0] !== parent.children().last()[0]) {
+          dragElement.next().before(placeHolder);
+        } else {
+          parent.append(placeHolder);
+        }
+        $('body').append(dragElement);
+      };
+      tableModels.onDragEnd = function () {
+      };
+      tableModels.onDragOver = function (data, dragElement, dropElement) {
+        if (dropElement.next()[0] === placeHolder[0]) {
+          dropElement.before(placeHolder);
+        } else if (dropElement.prev()[0] === placeHolder[0]) {
+          dropElement.after(placeHolder);
+        }
+      };
+      tableModels.onDropEnd = function (data, dragElement) {
+        var endPos;
+        if (placeHolder.next()[0]) {
+          placeHolder.next().before(dragElement);
+        } else if (placeHolder.prev()[0]) {
+          placeHolder.prev().after(dragElement);
+        }
+        placeHolder.remove();
+        validDrop = true;
+        endPos = dragElement.index() + (tableModels.items.paging.currentPage - 1) * tableModels.items.paging.pageSize - 1;
+        adStrapUtils.moveItemInList(initialPos, endPos, tableModels.localConfig.localData);
+        if (pageButtonElement) {
+          pageButtonElement.removeClass('btn-primary');
+          pageButtonElement = null;
+        }
+      };
+      tableModels.onNextPageButtonOver = function (data, dragElement, dropElement) {
+        if (pageButtonElement) {
+          pageButtonElement.removeClass('btn-primary');
+          pageButtonElement = null;
+        }
+        if (dropElement.attr('disabled') !== 'disabled') {
+          pageButtonElement = dropElement;
+          pageButtonElement.addClass('btn-primary');
+        }
+      };
+      tableModels.onNextPageButtonDrop = function (data, dragElement) {
+        var endPos;
+        if (pageButtonElement) {
+          validDrop = true;
+          if (pageButtonElement.attr('id') === 'btnPrev') {
+            endPos = tableModels.items.paging.pageSize * (tableModels.items.paging.currentPage - 1) - 1;
+          }
+          if (pageButtonElement.attr('id') === 'btnNext') {
+            endPos = tableModels.items.paging.pageSize * tableModels.items.paging.currentPage;
+          }
+          adStrapUtils.moveItemInList(initialPos, endPos, tableModels.localConfig.localData);
+          placeHolder.remove();
+          dragElement.remove();
+          pageButtonElement.removeClass('btn-primary');
+          pageButtonElement = null;
+        }
+      };
       // ---------- initialization and event listeners ---------- //
       //We do the compile after injecting the name spacing into the template.
       tableModels.loadPage(1);
       attrs.tableClasses = attrs.tableClasses || 'table';
       attrs.paginationBtnGroupClasses = attrs.paginationBtnGroupClasses || 'btn-group btn-group-sm';
-      mainTemplate = mainTemplate.replace(/%=tableName%/g, attrs.tableName).replace(/%=columnDefinition%/g, attrs.columnDefinition).replace(/%=paginationBtnGroupClasses%/g, attrs.paginationBtnGroupClasses).replace(/%=tableClasses%/g, attrs.tableClasses).replace(/%=icon-firstPage%/g, $adConfig.iconClasses.firstPage).replace(/%=icon-previousPage%/g, $adConfig.iconClasses.previousPage).replace(/%=icon-nextPage%/g, $adConfig.iconClasses.nextPage).replace(/%=icon-lastPage%/g, $adConfig.iconClasses.lastPage).replace(/%=icon-sortAscending%/g, $adConfig.iconClasses.sortAscending).replace(/%=icon-sortDescending%/g, $adConfig.iconClasses.sortDescending).replace(/%=icon-sortable%/g, $adConfig.iconClasses.sortable);
+      mainTemplate = mainTemplate.replace(/%=tableName%/g, attrs.tableName).replace(/%=columnDefinition%/g, attrs.columnDefinition).replace(/%=paginationBtnGroupClasses%/g, attrs.paginationBtnGroupClasses).replace(/%=tableClasses%/g, attrs.tableClasses).replace(/%=icon-firstPage%/g, $adConfig.iconClasses.firstPage).replace(/%=icon-previousPage%/g, $adConfig.iconClasses.previousPage).replace(/%=icon-nextPage%/g, $adConfig.iconClasses.nextPage).replace(/%=icon-lastPage%/g, $adConfig.iconClasses.lastPage).replace(/%=icon-sortAscending%/g, $adConfig.iconClasses.sortAscending).replace(/%=icon-sortDescending%/g, $adConfig.iconClasses.sortDescending).replace(/%=icon-sortable%/g, $adConfig.iconClasses.sortable).replace(/%=icon-draggable%/g, $adConfig.iconClasses.draggable);
       element.empty();
       element.append($compile(mainTemplate)(scope));
       scope.$watch(attrs.localDataSource, function () {
-        tableModels.loadPage(1);
+        tableModels.loadPage(tableModels.items.paging.currentPage);
       }, true);
     }
     return {
@@ -623,6 +1001,20 @@ angular.module('adaptv.adaptStrap.utils', []).factory('adStrapUtils', [
         } else {
           addItemsToList(items, list);
         }
+      }, moveItemInList = function (startPos, endPos, list) {
+        if (endPos < list.length) {
+          list.splice(endPos, 0, list.splice(startPos, 1)[0]);
+        }
+      }, parse = function (items) {
+        var itemsObject = [];
+        if (angular.isArray(items)) {
+          itemsObject = items;
+        } else {
+          angular.forEach(items, function (item) {
+            itemsObject.push(item);
+          });
+        }
+        return itemsObject;
       }, getObjectProperty = function (item, property) {
         var arr = property.split('.');
         while (arr.length) {
@@ -640,6 +1032,8 @@ angular.module('adaptv.adaptStrap.utils', []).factory('adStrapUtils', [
       addRemoveItemFromList: addRemoveItemFromList,
       addItemsToList: addItemsToList,
       addRemoveItemsFromList: addRemoveItemsFromList,
+      moveItemInList: moveItemInList,
+      parse: parse,
       getObjectProperty: getObjectProperty
     };
   }
@@ -748,14 +1142,7 @@ var deb = function (func, delay, immediate, ctx) {
           pagingArray: [],
           token: options.token
         };
-      var start = (options.pageNumber - 1) * options.pageSize, end = start + options.pageSize, i, itemsObject = [], localItems;
-      if (angular.isArray(options.localData)) {
-        itemsObject = options.localData;
-      } else {
-        angular.forEach(options.localData, function (item) {
-          itemsObject.push(item);
-        });
-      }
+      var start = (options.pageNumber - 1) * options.pageSize, end = start + options.pageSize, i, itemsObject = options.localData, localItems;
       localItems = $filter('orderBy')(itemsObject, options.sortKey, options.sortDirection);
       response.items = localItems.slice(start, end);
       response.allItems = itemsObject;

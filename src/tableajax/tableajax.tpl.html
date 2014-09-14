@@ -1,5 +1,5 @@
 <div class="ad-table-ajax-container">
-  <table class="%=tableClasses% ad-sticky-table" ng-ifx="%=tableName%.localConfig.tableMaxHeight">
+  <table class="%=tableClasses% ad-sticky-table" ng-if="%=tableName%.localConfig.tableMaxHeight">
     <tr class="ad-user-select-none">
       <th data-ng-repeat="definition in %=columnDefinition%"
           ng-click="%=tableName%.sortByColumn(definition)"

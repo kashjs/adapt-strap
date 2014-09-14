@@ -94,6 +94,14 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
           description: 'classes to be applied to dropdown button. ' +
             '<code>Ex: btn-classes="btn btn-primary btn-sm"</code>'
 
+        },
+        {
+          name: 'table-max-height',
+          required: false,
+          default: 'auto',
+          type: 'String',
+          description: 'This property makes the table scrollable. The header becomes fixed at top. ' +
+            'Pass in any css max-height property. EX: <code>table-max-height="157px"</code>'
         }
       ]
     }]

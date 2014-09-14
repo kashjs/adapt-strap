@@ -94,6 +94,14 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
           description: 'classes to be applied to dropdown button. ' +
             '<code>Ex: btn-classes="btn btn-primary btn-sm"</code>'
 
+        },
+        {
+          name: 'table-max-height',
+          required: false,
+          default: 'auto',
+          type: 'String',
+          description: 'This property makes the table scrollable. The header becomes fixed at top. ' +
+            'Pass in any css max-height property. EX: <code>table-max-height="157px"</code>'
         }
       ]
     }]
@@ -170,6 +178,14 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             'But for some reason if you need to provide your own page loader, you can specify the path ' +
             'to that function on your scope. Look at more info below to find out how request object looks like and ' +
             'what is expected from this function'
+        },
+        {
+          name: 'table-max-height',
+          required: false,
+          default: 'auto',
+          type: 'String',
+          description: 'This property makes the table scrollable. The header becomes fixed at top. ' +
+            'Pass in any css max-height property. EX: <code>table-max-height="157px"</code>'
         }
       ]
     }]

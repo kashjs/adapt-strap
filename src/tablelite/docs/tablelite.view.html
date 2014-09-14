@@ -1,22 +1,22 @@
 <div ng-controller="tableliteCtrl">
-    <p class="text-muted">
-      Cars Selected: <span class="badge">{{ models.selectedCars.length }}</span>
-    </p>
+  <p class="text-muted">
+    Cars Selected: <span class="badge">{{ models.selectedCars.length }}</span>
+  </p>
 
-    <!-- ========== Usage ========== -->
-    <ad-table-lite table-name="carsForSale"
-                   column-definition="carsTableColumnDefinition"
-                   local-data-source="models.carsForSale"
-                   page-sizes="[7, 20]"
-                   pagination-btn-group-classes="btn-group btn-group-sm"
-                   table-classes="table table-bordered"
-                   draggable=true
-                   selected-items="models.selectedCars">
-    </ad-table-lite>
+  <!-- ========== Usage ========== -->
+  <ad-table-lite table-name="carsForSale"
+                 column-definition="carsTableColumnDefinition"
+                 local-data-source="models.carsForSale"
+                 page-sizes="[7, 20]"
+                 pagination-btn-group-classes="btn-group btn-group-sm"
+                 table-classes="table table-bordered"
+                 draggable=true
+                 selected-items="models.selectedCars">
+  </ad-table-lite>
 
-    <h3 class="text-muted">Selected Items:</h3>
+  <h3 class="text-muted">Selected Items:</h3>
 
-    <div class="well">
-      <span>{{ models.selectedCars }}</span>
-    </div>
+  <div class="well">
+    <span>{{ models.selectedCars }}</span>
+  </div>
 </div>

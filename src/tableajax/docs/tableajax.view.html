@@ -1,41 +1,41 @@
 <div ng-controller="tableajaxCtrl">
 
-    <!-- ========== Simple Table Implementation ========== -->
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <ad-table-ajax table-name="artistsTable"
-                           column-definition="artistsColumnDef"
-                           table-classes="table table-bordered"
-                           page-sizes="[5, 20, 50]"
-                           pagination-btn-group-classes="btn-group btn-group-xs"
-                           ajax-config="artistsAjaxConfig">
-            </ad-table-ajax>
-        </div>
+  <!-- ========== Simple Table Implementation ========== -->
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <ad-table-ajax table-name="artistsTable"
+                     column-definition="artistsColumnDef"
+                     table-classes="table table-bordered"
+                     page-sizes="[5, 20, 50]"
+                     pagination-btn-group-classes="btn-group btn-group-xs"
+                     ajax-config="artistsAjaxConfig">
+      </ad-table-ajax>
     </div>
+  </div>
 
-    <!--========== Advanced Implementation with search ========== -->
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="input-group">
-                        <input type="text" class="form-control" ng-change="searchArtist()" ng-model="artistSearchKey">
-                        <span class="input-group-addon">
-                          <i class="glyphicon glyphicon-search"></i>
-                        </span>
-                    </div>
-                </div>
-            </div>
+  <!--========== Advanced Implementation with search ========== -->
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="input-group">
+            <input type="text" class="form-control" ng-change="searchArtist()" ng-model="artistSearchKey">
+            <span class="input-group-addon">
+              <i class="glyphicon glyphicon-search"></i>
+            </span>
+          </div>
         </div>
-        <div class="panel-body">
-            <ad-table-ajax table-name="artistsTableSearch"
-                           column-definition="artistsColumnDefSearch"
-                           table-classes="table table-bordered"
-                           page-sizes="[5, 20, 50]"
-                           pagination-btn-group-classes="btn-group btn-group-sm"
-                           ajax-config="artistsAjaxConfigSearch"
-                           page-loader="methods.pageLoader">
-            </ad-table-ajax>
-        </div>
+      </div>
     </div>
+    <div class="panel-body">
+      <ad-table-ajax table-name="artistsTableSearch"
+                     column-definition="artistsColumnDefSearch"
+                     table-classes="table table-bordered"
+                     page-sizes="[5, 20, 50]"
+                     pagination-btn-group-classes="btn-group btn-group-sm"
+                     ajax-config="artistsAjaxConfigSearch"
+                     page-loader="methods.pageLoader">
+      </ad-table-ajax>
+    </div>
+  </div>
 </div>

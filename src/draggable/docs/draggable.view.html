@@ -4,27 +4,52 @@
     <div class=" col-md-3">
       <ul id="car-list" class="list-group">
         <li class="list-group-item active">List of Cars</li>
-        <li class="list-group-item" ad-drag="true" ad-drag-data="car" ad-drag-begin="onDragStart($data, $dragElement, $event);" 
-          ad-drag-end="onDataEnd($data, $dragElement, $event);" ng-repeat="car in models.cars">
-          <span><span class="glyphicon glyphicon-th"></span> {{ car.name }} - {{ car.modelYear }} ( {{ car.price | currency }} )</span>
+        <!-- ========== Usage Drag ========== -->
+        <li class="list-group-item"
+            ad-drag="true"
+            ad-drag-data="car"
+            ad-drag-begin="onDragStart($data, $dragElement, $event);"
+            ad-drag-end="onDataEnd($data, $dragElement, $event);"
+            ng-repeat="car in models.cars">
+          <span>
+            <span class="glyphicon glyphicon-th"></span>
+            {{ car.name }} - {{ car.modelYear }} ( {{ car.price | currency }} )
+          </span>
         </li>
       </ul>
     </div>
     <div class="col-md-offset-1 col-md-3">
-      <ul id="my-basket" ad-drop="true" ad-drop-over="onDragOver($data, $dragElement, $dropElement, $event);" 
-        ad-drop-end="onDrop($data, $dragElement, $dropElement, $event);" class="list-group">
+      <!-- ========== Usage Drop ========== -->
+      <ul id="my-basket"
+          class="list-group"
+          ad-drop="true"
+          ad-drop-over="onDragOver($data, $dragElement, $dropElement, $event);"
+          ad-drop-end="onDrop($data, $dragElement, $dropElement, $event);">
         <li class="list-group-item disabled">My Basket</li>
-        <li class="list-group-item" ad-drag="true" ng-repeat="car in models.basket">
-          <span><span class="glyphicon glyphicon-thumbs-up"></span> {{ car.name }} - {{ car.modelYear }} ( {{ car.price | currency }} )</span>
+        <li class="list-group-item"
+            ad-drag="true"
+            ng-repeat="car in models.basket">
+          <span>
+            <span class="glyphicon glyphicon-thumbs-up"></span>
+            {{ car.name }} - {{ car.modelYear }} ( {{ car.price | currency }} )
+          </span>
         </li>
       </ul> 
     </div>
     <div class="col-md-offset-1 col-md-3">
       <ul class="list-group">
         <!-- =========== Drag with handles ============= -->
-        <li ad-drag="true" ad-drag-handle="true" class="list-group-item"><span class="ad-drag-handle glyphicon glyphicon-align-justify"></span>  Drag me using my handle</li>
+        <li class="list-group-item"
+            ad-drag="true"
+            ad-drag-handle="true">
+          <span class="ad-drag-handle glyphicon glyphicon-align-justify"></span>
+          Drag me using my handle
+        </li>
         <!-- =========== Drag on the whole element ============= -->
-        <li ad-drag="true" class="list-group-item"> Drag me without handle </li> 
+        <li class="list-group-item"
+            ad-drag="true">
+          Drag me without handle
+        </li>
       </ul>
     </div>
   </div>

@@ -21,7 +21,8 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
           },
           localConfig: {
             pagingArray: [],
-            loadingData: false
+            loadingData: false,
+            tableMaxHeight: attrs.tableMaxHeight
           },
           ajaxConfig: scope.$eval(attrs.ajaxConfig),
           applyFilter: adStrapUtils.applyFilter,

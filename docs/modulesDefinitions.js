@@ -299,7 +299,7 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
     displayName: 'Drag and drop',
     controllerName: 'draggableCtrl',
     description: 'simple directives to enable drag and drop functionalities',
-    playGroundUrl: '',
+    playGroundUrl: 'http://jsfiddle.net/kashjs/n2gxobf7/',
     docFiles: [
       'draggable.view.html',
       'draggable.ctrl.js'

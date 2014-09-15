@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v1.0.0 - 2014-09-14
+ * @version v1.0.1 - 2014-09-15
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -734,7 +734,7 @@ function _link(scope, element, attrs) {
       tableModels.items.paging.pageSize = tableModels.items.paging.pageSizes[0];
       // ---------- ui handlers ---------- //
       tableModels.loadPage = adDebounce(function (page) {
-        var itemsObject = tableModels.localConfig.localData, params;
+        var itemsObject = tableModels.localConfig.localData = adStrapUtils.parse(scope.$eval(attrs.localDataSource)), params;
         params = {
           pageNumber: page,
           pageSize: tableModels.localConfig.showPaging ? tableModels.items.paging.pageSize : itemsObject.length,

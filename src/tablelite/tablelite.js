@@ -26,6 +26,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
             pagingArray: [],
             selectable: attrs.selectedItems ? true : false,
             draggable: attrs.draggable ? true : false,
+            dragChange: scope.$eval(attrs.onDragChange),
             showPaging: $parse(attrs.disablePaging)() ? false : true,
             tableMaxHeight: attrs.tableMaxHeight
           },
@@ -145,6 +146,10 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           endPos = dragElement.index() + ((tableModels.items.paging.currentPage - 1) *
               tableModels.items.paging.pageSize) - 1;
           adStrapUtils.moveItemInList(initialPos, endPos, tableModels.localConfig.localData);
+
+          if (tableModels.localConfig.dragChange) {
+            tableModels.localConfig.dragChange(initialPos, endPos, data);
+          }
           if (pageButtonElement) {
             pageButtonElement.removeClass('btn-primary');
             pageButtonElement = null;
@@ -175,6 +180,9 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
             adStrapUtils.moveItemInList(initialPos, endPos, tableModels.localConfig.localData);
             placeHolder.remove();
             dragElement.remove();
+            if (tableModels.localConfig.dragChange) {
+              tableModels.localConfig.dragChange(initialPos, endPos, data);
+            }
             pageButtonElement.removeClass('btn-primary');
             pageButtonElement = null;
           }

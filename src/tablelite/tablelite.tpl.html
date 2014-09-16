@@ -83,7 +83,7 @@
         </td>
       </tr>
       <tr ng-if="%=tableName%.localConfig.draggable" ad-drag="true" ad-drag-handle="true" ad-drop="true"
-          ad-drag-data=""
+          ad-drag-data="item"
           ad-drop-over="%=tableName%.onDragOver($data, $dragElement, $dropElement, $event)"
           ad-drop-end="%=tableName%.onDropEnd($data, $dragElement, $dropElement, $event)"
           ad-drag-begin="%=tableName%.onDragStart($data, $dragElement, $event)"

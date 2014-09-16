@@ -76,6 +76,15 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
           description: 'enables drag & drop on the table rows within and across pages'
         },
         {
+          name: 'on-drag-change',
+          required: false,
+          default: 'NA',
+          type: 'Function',
+          description: 'callback function which fires when a change occurs due to a ' +
+            'drag and drop, the parameters for the callback are position before drag,' +
+            'position after drag & the data being moved'
+        },
+        {
           name: 'selected-items',
           required: false,
           default: 'NA',

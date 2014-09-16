@@ -11,6 +11,7 @@
                  pagination-btn-group-classes="btn-group btn-group-sm"
                  table-classes="table table-bordered"
                  draggable=true
+                 on-drag-change="onChange"
                  selected-items="models.selectedCars">
   </ad-table-lite>
 
@@ -18,5 +19,9 @@
 
   <div class="well">
     <span>{{ models.selectedCars }}</span>
+  </div>
+  <h3 class="text-muted">Drag Data Change Log:</h3>
+  <div class="well">
+    <span>{{ models.changeInfo }}</span>
   </div>
 </div>

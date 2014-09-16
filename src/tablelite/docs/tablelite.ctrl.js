@@ -1,6 +1,7 @@
 angular.module('adaptv.adaptStrapDocs')
   .controller('tableliteCtrl', ['$scope', function ($scope) {
     $scope.models = {
+      changeInfo: [],
       selectedCars: [
         {
           id: 1,
@@ -110,6 +111,14 @@ angular.module('adaptv.adaptStrapDocs')
         width: '4em'
       }
     ];
+
+    $scope.onChange = function(o, n, data) {
+      $scope.models.changeInfo.push({
+        startPosition: o,
+        endPosition: n,
+        data: data
+      });
+    };
 
     // ========== ui handlers ========== //
     $scope.buyCar = function (car) {

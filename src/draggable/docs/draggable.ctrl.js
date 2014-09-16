@@ -38,7 +38,9 @@ angular.module('adaptv.adaptStrapDocs')
 
     $scope.remove = function(l, o) {
       var index = l.indexOf(o);
-      l.splice(index, 1);
+      if (index > -1) {
+        l.splice(index, 1);
+      }
     };
 
     $scope.onDragStart = function() {
@@ -54,7 +56,7 @@ angular.module('adaptv.adaptStrapDocs')
     };
 
     $scope.onDrop = function(data, dragElement, dropElement) {
-      if (dropElement.attr('id') === 'my-basket') {
+      if (data) {
         $scope.models.basket.push(data);
         $scope.remove($scope.models.cars, data);
       }

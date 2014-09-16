@@ -34,6 +34,9 @@
             {{ car.name }} - {{ car.modelYear }} ( {{ car.price | currency }} )
           </span>
         </li>
+        <li class="list-group-item" ng-hide="models.basket.length">
+            <span> Drop here</span>
+        </li>
       </ul> 
     </div>
     <div class="col-md-3">

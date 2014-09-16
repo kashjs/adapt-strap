@@ -55,7 +55,7 @@ angular.module('adaptv.adaptStrapDocs')
 
     };
 
-    $scope.onDrop = function(data, dragElement, dropElement) {
+    $scope.onDrop = function(data) {
       if (data) {
         $scope.models.basket.push(data);
         $scope.remove($scope.models.cars, data);

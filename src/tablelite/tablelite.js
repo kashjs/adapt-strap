@@ -118,10 +118,6 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           } else {
             parent.append(placeHolder);
           }
-          dragElement.children()
-            .each(function() {
-              $(this).width($(this).width());
-            });
           $('body').append(dragElement);
         };
 

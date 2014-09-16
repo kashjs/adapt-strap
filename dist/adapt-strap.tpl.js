@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v1.0.1 - 2014-09-15
+ * @version v1.0.2 - 2014-09-16
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -8,19 +8,19 @@
 (function(window, document, undefined) {
 'use strict';
 
-// Source: infinitedropdown.tpl.js
-angular.module('adaptv.adaptStrap.infinitedropdown').run([
-  '$templateCache',
-  function ($templateCache) {
-    $templateCache.put('infinitedropdown/infinitedropdown.tpl.html', '<div class="ad-infinite-list-container"><div class="dropdown"><button class="%=btnClasses% dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown"><span ng-if="!%=dropdownName%.localConfig.dynamicLabel || !%=dropdownName%.selectedItems.length">{{ %=dropdownName%.localConfig.initialLabel }}</span> <span ng-if="%=dropdownName%.localConfig.dynamicLabel && %=dropdownName%.selectedItems.length">{{ %=dropdownName%.readProperty(%=dropdownName%.selectedItems[%=dropdownName%.selectedItems.length - 1], \'%=labelDisplayProperty%\') }}</span> <span class="caret"></span></button><ul class="dropdown-menu" ng-style="%=dropdownName%.localConfig.dimensions" role="menu" aria-labelledby="dropdownMenu1"><li class="text-overflow" data-ng-repeat="item in %=dropdownName%.items.list" ng-class="{\'active\': %=dropdownName%.isSelected(item, %=dropdownName%.selectedItems)}" ng-click="%=dropdownName%.addRemoveItem($event, item, %=dropdownName%.selectedItems)"><a role="menuitem" tabindex="-1" href=""><span ng-if="%=dropdownName%.localConfig.showDisplayProperty">{{ %=dropdownName%.readProperty(item, \'%=displayProperty%\') }}</span> <span ng-if="%=dropdownName%.localConfig.showTemplate" ad-compile-template="%=template%"></span> <span ng-if="%=dropdownName%.localConfig.loadTemplate" ng-include="\'%=templateUrl%\'"></span></a></li><li ng-if="%=dropdownName%.localConfig.loadingData" class="text-overflow text-center" style="display: block"><a role="menuitem" tabindex="-1" href=""><ad-loading-icon></ad-loading-icon></a></li></ul></div></div>');
-  }
-]);
-
 // Source: loadingindicator.tpl.js
 angular.module('adaptv.adaptStrap.loadingindicator').run([
   '$templateCache',
   function ($templateCache) {
     $templateCache.put('loadingindicator/loadingindicator.tpl.html', '<div class="ad-loading-overlay-container" ng-class="containerClasses" ng-style="{\'z-index\': zIndex || \'1000\',\'position\': position || \'absolute\'}" ng-show="loading"><div class="wrapper"><div class="loading-indicator"><ad-loading-icon loading-icon-size="{{ loadingIconSize }}" loading-icon-class="{{ loadingIconClass }}"></ad-loading-icon></div></div></div>');
+  }
+]);
+
+// Source: infinitedropdown.tpl.js
+angular.module('adaptv.adaptStrap.infinitedropdown').run([
+  '$templateCache',
+  function ($templateCache) {
+    $templateCache.put('infinitedropdown/infinitedropdown.tpl.html', '<div class="ad-infinite-list-container"><div class="dropdown"><button class="%=btnClasses% dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown"><span ng-if="!%=dropdownName%.localConfig.dynamicLabel || !%=dropdownName%.selectedItems.length">{{ %=dropdownName%.localConfig.initialLabel }}</span> <span ng-if="%=dropdownName%.localConfig.dynamicLabel && %=dropdownName%.selectedItems.length">{{ %=dropdownName%.readProperty(%=dropdownName%.selectedItems[%=dropdownName%.selectedItems.length - 1], \'%=labelDisplayProperty%\') }}</span> <span class="caret"></span></button><ul class="dropdown-menu" ng-style="%=dropdownName%.localConfig.dimensions" role="menu" aria-labelledby="dropdownMenu1"><li class="text-overflow" data-ng-repeat="item in %=dropdownName%.items.list" ng-class="{\'active\': %=dropdownName%.isSelected(item, %=dropdownName%.selectedItems)}" ng-click="%=dropdownName%.addRemoveItem($event, item, %=dropdownName%.selectedItems)"><a role="menuitem" tabindex="-1" href=""><span ng-if="%=dropdownName%.localConfig.showDisplayProperty">{{ %=dropdownName%.readProperty(item, \'%=displayProperty%\') }}</span> <span ng-if="%=dropdownName%.localConfig.showTemplate" ad-compile-template="%=template%"></span> <span ng-if="%=dropdownName%.localConfig.loadTemplate" ng-include="\'%=templateUrl%\'"></span></a></li><li ng-if="%=dropdownName%.localConfig.loadingData" class="text-overflow text-center" style="display: block"><a role="menuitem" tabindex="-1" href=""><ad-loading-icon></ad-loading-icon></a></li></ul></div></div>');
   }
 ]);
 

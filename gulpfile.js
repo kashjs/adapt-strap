@@ -197,12 +197,12 @@ gulp.task('unit', function() {
 
 // ========== DEFAULT TASKS ========== //
 gulp.task('dist', function(callback) {
-  runSequence(['jshint:fail', 'htmlhint:fail', 'jscs'],'clean:dist', ['templates:dist', 'scripts:dist', 'style:dist'], callback);
+  runSequence(['jshint:fail', 'htmlhint:fail'],'clean:dist', ['templates:dist', 'scripts:dist', 'style:dist'], callback);
 });
 
 gulp.task('dist:release', function(callback) {
   src.dist = 'dist';
-  runSequence(['jshint:fail', 'htmlhint:fail', 'jscs'],'clean:dist', ['templates:dist', 'scripts:dist', 'style:dist'], callback);
+  runSequence(['jshint:fail', 'htmlhint:fail'],'clean:dist', ['templates:dist', 'scripts:dist', 'style:dist'], callback);
 });
 
 

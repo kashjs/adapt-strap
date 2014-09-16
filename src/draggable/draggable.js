@@ -371,6 +371,7 @@ angular.module('adaptv.adaptStrap.draggable', [])
               $event: evt
             });
           });
+          elem = null;
         }
       }
 

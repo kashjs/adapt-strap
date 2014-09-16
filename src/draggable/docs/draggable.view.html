@@ -1,7 +1,7 @@
 <div ng-controller="draggableCtrl">
   <p>( Drag car from the <strong>list of cars</strong> to the <strong>basket</strong>. )</p>
   <div class="rows">
-    <div class=" col-md-3">
+    <div class="col-md-3">
       <ul id="car-list" class="list-group">
         <li class="list-group-item active">List of Cars</li>
         <!-- ========== Usage Drag ========== -->
@@ -18,7 +18,7 @@
         </li>
       </ul>
     </div>
-    <div class="col-md-offset-1 col-md-3">
+    <div class="col-md-4">
       <!-- ========== Usage Drop ========== -->
       <ul id="my-basket"
           class="list-group"
@@ -34,9 +34,12 @@
             {{ car.name }} - {{ car.modelYear }} ( {{ car.price | currency }} )
           </span>
         </li>
+        <li class="list-group-item" ng-hide="models.basket.length">
+            <span> Drop here</span>
+        </li>
       </ul> 
     </div>
-    <div class="col-md-offset-1 col-md-3">
+    <div class="col-md-3">
       <ul class="list-group">
         <!-- =========== Drag with handles ============= -->
         <li class="list-group-item"

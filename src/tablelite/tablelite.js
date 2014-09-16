@@ -50,7 +50,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
 
         // ---------- ui handlers ---------- //
         tableModels.loadPage = adDebounce(function (page) {
-          var itemsObject = tableModels.localConfig.localData,
+          var itemsObject = tableModels.localConfig.localData = adStrapUtils.parse(scope.$eval(attrs.localDataSource)),
               params;
           params = {
             pageNumber: page,

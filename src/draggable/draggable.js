@@ -260,11 +260,9 @@ angular.module('adaptv.adaptStrap.draggable', [])
         element.css({ left: '', top: '', position:'', 'z-index': '' });
         var width = element.data('ad-draggable-temp-width');
         if (width) {
-          if (width) {
-            element.css({width: width});
-          } else {
-            element.css({width: ''});
-          }
+          element.css({width: width});
+        } else {
+          element.css({width: ''});
         }
         element.children()
           .each(function() {

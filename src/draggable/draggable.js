@@ -103,16 +103,15 @@ angular.module('adaptv.adaptStrap.draggable', [])
         }
       }
 
-
       /*
        * Returns the inline property of an element
        */
       function getInlineProperty (prop, element) {
-        var styles = $(element).attr("style"),
+        var styles = $(element).attr('style'),
           value;
         if (styles) {
-          styles.split(";").forEach(function (e) {
-            var style = e.split(":");
+          styles.split(';').forEach(function (e) {
+            var style = e.split(':');
             if ($.trim(style[0]) === prop) {
               value = style[1];
             }
@@ -281,11 +280,11 @@ angular.module('adaptv.adaptStrap.draggable', [])
       }
 
       function moveElement(x, y) {
-        element.css({ 
-          left: x, 
-          top: y, 
-          position: 'fixed', 
-          'z-index': 99999 
+        element.css({
+          left: x,
+          top: y,
+          position: 'fixed',
+          'z-index': 99999
         });
       }
 
@@ -384,7 +383,6 @@ angular.module('adaptv.adaptStrap.draggable', [])
           });
           elem = null;
         }
-        
       }
 
       function getCurrentDropElement(x, y, dragEl) {

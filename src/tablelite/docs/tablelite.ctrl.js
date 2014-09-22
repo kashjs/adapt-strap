@@ -85,46 +85,8 @@ angular.module('adaptv.adaptStrapDocs')
         }
       ]
     };
-// ---- temproary ------------
-    $scope.models.carsTestTable = [{
-        id: 7,
-        name: 'Audi A6',
-        modelYear: 2012,
-        price: 44000
-      },
-      {
-        id: 8,
-        name: 'Audi S8',
-        modelYear: 2014,
-        price: 100000
-      },
-      {
-        id: 9,
-        name: 'Audi A6',
-        modelYear: 2012,
-        price: 44000
-      },
-      {
-        id: 10,
-        name: 'Audi S8',
-        modelYear: 2014,
-        price: 100000
-      },
-      {
-        id: 11,
-        name: 'Audi A6',
-        modelYear: 2012,
-        price: 44000
-      },
-      {
-        id: 12,
-        name: 'Audi S8',
-        modelYear: 2014,
-        price: 100000
-      }
-  ];
 
-  $scope.carsTableColumnDefinition = [
+    $scope.carsTableColumnDefinition = [
       {
         columnHeaderDisplayName: 'Model',
         displayProperty: 'name',

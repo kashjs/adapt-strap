@@ -45,10 +45,9 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           placeHolder = null,
           pageButtonElement = null,
           validDrop = false,
-          dragParent = null,
           cacheDropElement = null,
           initialPos;
-        
+
         function moveElementNode(nodeToMove, relativeNode, dragNode) {
           if (relativeNode.next()[0] === nodeToMove[0] || relativeNode.next()[0] === dragNode[0]) {
             relativeNode.before(nodeToMove);
@@ -120,8 +119,8 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
         };
 
         tableModels.onDragStart = function(data, dragElement) {
-          var parent = dragParent = dragElement.parent();
-          placeHolder = $('<tr id="ph_' + attrs.tableName +'"><td colspan=' + dragElement.find('td').length + '>&nbsp;</td></tr>');
+          var parent = dragElement.parent();
+          placeHolder = $('<tr><td colspan=' + dragElement.find('td').length + '>&nbsp;</td></tr>');
           initialPos = dragElement.index() + ((tableModels.items.paging.currentPage - 1) *
               tableModels.items.paging.pageSize) - 1;
           if (dragElement[0] !== parent.children().last()[0]) {
@@ -131,11 +130,11 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           }
         };
 
-        tableModels.onDragEnd = function() { 
+        tableModels.onDragEnd = function() {
           placeHolder.remove();
         };
 
-        tableModels.onDragOver = function(data, dragElement, dropElement, evnt) {
+        tableModels.onDragOver = function(data, dragElement, dropElement) {
           if (placeHolder) {
             // Restricts valid drag to current table instance
             if (cacheDropElement) {
@@ -145,12 +144,12 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
               }
             } else {
               moveElementNode(placeHolder, dropElement, dragElement);
-              cacheDropElement = dropElement;           
+              cacheDropElement = dropElement;
             }
           }
         };
 
-        tableModels.onDropEnd = function(data, dragElement, evnt) {
+        tableModels.onDropEnd = function(data, dragElement) {
           var endPos;
           if (placeHolder) {
             // Restricts drop to current table instance

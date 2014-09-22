@@ -72,7 +72,7 @@ gulp unit
 ---
 ####Kash Patel
 
-- [https://github.com/kashyap02004](https://github.com/kashyap02004)
+- [https://github.com/kashjs](https://github.com/kashjs)
 - [https://twitter.com/kashjs](https://twitter.com/kashjs)
 
 ---

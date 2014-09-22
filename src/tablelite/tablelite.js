@@ -45,7 +45,17 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           placeHolder = null,
           pageButtonElement = null,
           validDrop = false,
+          dragParent = null,
+          cacheDropElement = null,
           initialPos;
+        
+        function moveElementNode(nodeToMove, relativeNode, dragNode) {
+          if (relativeNode.next()[0] === nodeToMove[0] || relativeNode.next()[0] === dragNode[0]) {
+            relativeNode.before(nodeToMove);
+          } else if (relativeNode.prev()[0] === nodeToMove[0] || relativeNode.prev()[0] === dragNode[0]) {
+            relativeNode.after(nodeToMove);
+          }
+        }
 
         tableModels.items.paging.pageSize = tableModels.items.paging.pageSizes[0];
 
@@ -110,8 +120,8 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
         };
 
         tableModels.onDragStart = function(data, dragElement) {
-          var parent = dragElement.parent();
-          placeHolder = $('<tr><td colspan=' + dragElement.find('td').length + '>&nbsp;</td></tr>');
+          var parent = dragParent = dragElement.parent();
+          placeHolder = $('<tr id="ph_' + attrs.tableName +'"><td colspan=' + dragElement.find('td').length + '>&nbsp;</td></tr>');
           initialPos = dragElement.index() + ((tableModels.items.paging.currentPage - 1) *
               tableModels.items.paging.pageSize) - 1;
           if (dragElement[0] !== parent.children().last()[0]) {
@@ -119,36 +129,45 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           } else {
             parent.append(placeHolder);
           }
-          $('body').append(dragElement);
         };
 
-        tableModels.onDragEnd = function() {
-
-        };
-
-        tableModels.onDragOver = function(data, dragElement, dropElement) {
-          if (dropElement.next()[0] === placeHolder[0]) {
-            dropElement.before(placeHolder);
-          } else if (dropElement.prev()[0] === placeHolder[0]) {
-            dropElement.after(placeHolder);
-          }
-        };
-
-        tableModels.onDropEnd = function(data, dragElement) {
-          var endPos;
-          if (placeHolder.next()[0]) {
-            placeHolder.next().before(dragElement);
-          } else if (placeHolder.prev()[0]) {
-            placeHolder.prev().after(dragElement);
-          }
+        tableModels.onDragEnd = function() { 
           placeHolder.remove();
-          validDrop = true;
-          endPos = dragElement.index() + ((tableModels.items.paging.currentPage - 1) *
-              tableModels.items.paging.pageSize) - 1;
-          adStrapUtils.moveItemInList(initialPos, endPos, tableModels.localConfig.localData);
+        };
 
-          if (tableModels.localConfig.dragChange) {
-            tableModels.localConfig.dragChange(initialPos, endPos, data);
+        tableModels.onDragOver = function(data, dragElement, dropElement, evnt) {
+          if (placeHolder) {
+            // Restricts valid drag to current table instance
+            if (cacheDropElement) {
+              if (cacheDropElement[0] !== dropElement[0]) {
+                moveElementNode(placeHolder, dropElement, dragElement);
+                cacheDropElement = dropElement;
+              }
+            } else {
+              moveElementNode(placeHolder, dropElement, dragElement);
+              cacheDropElement = dropElement;           
+            }
+          }
+        };
+
+        tableModels.onDropEnd = function(data, dragElement, evnt) {
+          var endPos;
+          if (placeHolder) {
+            // Restricts drop to current table instance
+            if (placeHolder.next()[0]) {
+              placeHolder.next().before(dragElement);
+            } else if (placeHolder.prev()[0]) {
+              placeHolder.prev().after(dragElement);
+            }
+            placeHolder.remove();
+            validDrop = true;
+            endPos = dragElement.index() + ((tableModels.items.paging.currentPage - 1) *
+              tableModels.items.paging.pageSize) - 1;
+            adStrapUtils.moveItemInList(initialPos, endPos, tableModels.localConfig.localData);
+
+            if (tableModels.localConfig.dragChange) {
+              tableModels.localConfig.dragChange(initialPos, endPos, data);
+            }
           }
           if (pageButtonElement) {
             pageButtonElement.removeClass('btn-primary');

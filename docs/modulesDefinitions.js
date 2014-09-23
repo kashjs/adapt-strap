@@ -414,7 +414,7 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
           {
             name: 'display-property',
             required: false,
-            type: 'String',
+            type: 'String || Function',
             default: 'NA',
             description: 'property on the object to be displayed (ex: name)'
           },

@@ -416,7 +416,8 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             required: false,
             type: 'String || Function',
             default: 'NA',
-            description: 'property on the object to be displayed (ex: name)'
+              description: 'property on the object to be displayed (ex: name). In case of function ' +
+                  '"item" object gets passed into function. returned value is printed in the column'
           },
           {
             name: 'template',

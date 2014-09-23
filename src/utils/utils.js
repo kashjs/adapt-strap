@@ -101,6 +101,9 @@ angular.module('adaptv.adaptStrap.utils', [])
         return itemsObject;
       },
       getObjectProperty = function (item, property) {
+        if ( property && getClass.call(property) == '[object Function]' ) {
+          return property(item);
+        }
         var arr = property.split('.');
         while (arr.length) {
           item = item[arr.shift()];

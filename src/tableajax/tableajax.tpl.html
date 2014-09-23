@@ -44,13 +44,13 @@
       <tr data-ng-repeat="item in %=tableName%.items.list">
         <td data-ng-repeat="definition in %=columnDefinition%"
             ng-style="{'width': definition.width}">
-          <div ng-if="definition.templateUrl">
+          <div ng-class="definition.columnClass" ng-if="definition.templateUrl">
             <ng-include src="definition.templateUrl"></ng-include>
           </div>
-          <div ng-if="definition.template">
+          <div ng-class="definition.columnClass" ng-if="definition.template">
             <span ad-compile-template="definition.template"></span>
           </div>
-          <div ng-if="!definition.templateUrl && !definition.template">
+          <div ng-class="definition.columnClass" ng-if="!definition.templateUrl && !definition.template">
             {{ %=tableName%.applyFilter(%=tableName%.readProperty(item, definition.displayProperty),
             definition.cellFilter) }}
           </div>

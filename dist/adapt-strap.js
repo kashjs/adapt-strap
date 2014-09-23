@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v1.0.2 - 2014-09-16
+ * @version v1.0.2-beta.1 - 2014-09-22
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -57,7 +57,8 @@ angular.module('adaptv.adaptStrap', [
 angular.module('adaptv.adaptStrap.draggable', []).directive('adDrag', [
   '$rootScope',
   '$parse',
-  function ($rootScope, $parse) {
+  '$timeout',
+  function ($rootScope, $parse, $timeout) {
     function _link(scope, element, attrs) {
       scope.draggable = attrs.adDrag;
       scope.hasHandle = attrs.adDragHandle === 'false' || typeof attrs.adDragHandle === 'undefined' ? false : true;
@@ -265,13 +266,18 @@ angular.module('adaptv.adaptStrap.draggable', []).directive('adDrag', [
         if (!scope.onDragEndCallback) {
           return;
         }
-        scope.$apply(function () {
-          scope.onDragEndCallback(scope, {
-            $data: scope.data,
-            $dragElement: element,
-            $event: evt
+        // To fix a bug issue where onDragEnd happens before
+        // onDropEnd. Currently the only way around this
+        // Ideally onDropEnd should fire before onDragEnd
+        $timeout(function () {
+          scope.$apply(function () {
+            scope.onDragEndCallback(scope, {
+              $data: scope.data,
+              $dragElement: element,
+              $event: evt
+            });
           });
-        });
+        }, 100);
       }
       // utils functions
       function reset() {
@@ -768,7 +774,14 @@ function _link(scope, element, attrs) {
         readProperty: adStrapUtils.getObjectProperty
       };
       // ---------- Local data ---------- //
-      var tableModels = scope[attrs.tableName], mainTemplate = $templateCache.get('tablelite/tablelite.tpl.html'), placeHolder = null, pageButtonElement = null, validDrop = false, initialPos;
+      var tableModels = scope[attrs.tableName], mainTemplate = $templateCache.get('tablelite/tablelite.tpl.html'), placeHolder = null, pageButtonElement = null, validDrop = false, cacheDropElement = null, initialPos;
+      function moveElementNode(nodeToMove, relativeNode, dragNode) {
+        if (relativeNode.next()[0] === nodeToMove[0] || relativeNode.next()[0] === dragNode[0]) {
+          relativeNode.before(nodeToMove);
+        } else if (relativeNode.prev()[0] === nodeToMove[0] || relativeNode.prev()[0] === dragNode[0]) {
+          relativeNode.after(nodeToMove);
+        }
+      }
       tableModels.items.paging.pageSize = tableModels.items.paging.pageSizes[0];
       // ---------- ui handlers ---------- //
       tableModels.loadPage = adDebounce(function (page) {
@@ -831,30 +844,40 @@ function _link(scope, element, attrs) {
         } else {
           parent.append(placeHolder);
         }
-        $('body').append(dragElement);
       };
       tableModels.onDragEnd = function () {
+        placeHolder.remove();
       };
       tableModels.onDragOver = function (data, dragElement, dropElement) {
-        if (dropElement.next()[0] === placeHolder[0]) {
-          dropElement.before(placeHolder);
-        } else if (dropElement.prev()[0] === placeHolder[0]) {
-          dropElement.after(placeHolder);
+        if (placeHolder) {
+          // Restricts valid drag to current table instance
+          if (cacheDropElement) {
+            if (cacheDropElement[0] !== dropElement[0]) {
+              moveElementNode(placeHolder, dropElement, dragElement);
+              cacheDropElement = dropElement;
+            }
+          } else {
+            moveElementNode(placeHolder, dropElement, dragElement);
+            cacheDropElement = dropElement;
+          }
         }
       };
       tableModels.onDropEnd = function (data, dragElement) {
         var endPos;
-        if (placeHolder.next()[0]) {
-          placeHolder.next().before(dragElement);
-        } else if (placeHolder.prev()[0]) {
-          placeHolder.prev().after(dragElement);
-        }
-        placeHolder.remove();
-        validDrop = true;
-        endPos = dragElement.index() + (tableModels.items.paging.currentPage - 1) * tableModels.items.paging.pageSize - 1;
-        adStrapUtils.moveItemInList(initialPos, endPos, tableModels.localConfig.localData);
-        if (tableModels.localConfig.dragChange) {
-          tableModels.localConfig.dragChange(initialPos, endPos, data);
+        if (placeHolder) {
+          // Restricts drop to current table instance
+          if (placeHolder.next()[0]) {
+            placeHolder.next().before(dragElement);
+          } else if (placeHolder.prev()[0]) {
+            placeHolder.prev().after(dragElement);
+          }
+          placeHolder.remove();
+          validDrop = true;
+          endPos = dragElement.index() + (tableModels.items.paging.currentPage - 1) * tableModels.items.paging.pageSize - 1;
+          adStrapUtils.moveItemInList(initialPos, endPos, tableModels.localConfig.localData);
+          if (tableModels.localConfig.dragChange) {
+            tableModels.localConfig.dragChange(initialPos, endPos, data);
+          }
         }
         if (pageButtonElement) {
           pageButtonElement.removeClass('btn-primary');

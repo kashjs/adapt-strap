@@ -10,6 +10,9 @@ dist_temp
 # ========== log files ==========
 *.log
 
+# ========== swap files ==========
+*.swp
+
 # ========== ide files ==========
 .idea/
 

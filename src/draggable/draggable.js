@@ -385,20 +385,17 @@ angular.module('adaptv.adaptStrap.draggable', [])
         }
       }
 
-      function getCurrentDropElement(x, y, dragEl) {
+      function getCurrentDropElement(x, y) {
         var bounds = element.offset();
-        var vthold = Math.floor(element.outerHeight() / 3);
-        var xw, yh;
+        // set drag sensitivity
+        var vthold = Math.floor(element.outerHeight() / 6);
 
         x = x + $window.scrollLeft();
         y = y + $window.scrollTop();
-        xw = x + dragEl.outerWidth(); //xw => x + drag element width
-        yh = y + dragEl.outerHeight();
 
         return ((y >= (bounds.top + vthold) && y <= (bounds.top + element.outerHeight() - vthold)) &&
-            (x >= (bounds.left) && x <= (bounds.left + element.outerWidth()))) || ((yh >= (bounds.top + vthold) &&
-                yh <= (bounds.top + element.outerHeight() - vthold)) && (x >= (bounds.left) &&
-                  x <= (bounds.left + element.outerWidth()))) ? element : null;
+            (x >= (bounds.left) && x <= (bounds.left + element.outerWidth()))) && (x >= bounds.left &&
+                  x <= (bounds.left + element.outerWidth())) ? element : null;
       }
       init();
     }

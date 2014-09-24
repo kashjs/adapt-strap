@@ -51,7 +51,7 @@
             <span ad-compile-template="definition.template"></span>
           </div>
           <div ng-if="!definition.templateUrl && !definition.template">
-            {{ %=tableName%.applyFilter(%=tableName%.readProperty(item, definition.displayProperty),
+            {{ %=tableName%.applyFilter(%=tableName%.readProperty(item, definition.displayProperty, item),
             definition.cellFilter) }}
           </div>
         </td>

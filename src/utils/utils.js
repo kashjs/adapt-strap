@@ -12,9 +12,13 @@ angular.module('adaptv.adaptStrap.utils', [])
         }
         return obj;
       },
-      applyFilter = function (value, filter) {
+      applyFilter = function (value, filter, item) {
         var parts,
           filterOptions;
+
+        if (value && ('function' === typeof value)) {
+            return value(item);
+        }
         if (filter) {
           parts = filter.split(':');
           filterOptions = parts[1];
@@ -101,6 +105,9 @@ angular.module('adaptv.adaptStrap.utils', [])
         return itemsObject;
       },
       getObjectProperty = function (item, property) {
+        if ( property && ('function' === typeof property) ) {
+          return property(item);
+        }
         var arr = property.split('.');
         while (arr.length) {
           item = item[arr.shift()];

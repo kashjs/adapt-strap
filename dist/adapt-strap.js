@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v1.0.2-beta.1 - 2014-09-22
+ * @version v1.0.2-beta.2 - 2014-09-23
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -1007,8 +1007,11 @@ angular.module('adaptv.adaptStrap.utils', []).factory('adStrapUtils', [
           }
         }
         return obj;
-      }, applyFilter = function (value, filter) {
+      }, applyFilter = function (value, filter, item) {
         var parts, filterOptions;
+        if (value && 'function' === typeof value) {
+          return value(item);
+        }
         if (filter) {
           parts = filter.split(':');
           filterOptions = parts[1];
@@ -1083,6 +1086,9 @@ angular.module('adaptv.adaptStrap.utils', []).factory('adStrapUtils', [
         }
         return itemsObject;
       }, getObjectProperty = function (item, property) {
+        if (property && 'function' === typeof property) {
+          return property(item);
+        }
         var arr = property.split('.');
         while (arr.length) {
           item = item[arr.shift()];

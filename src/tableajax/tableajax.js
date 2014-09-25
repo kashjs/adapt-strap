@@ -24,7 +24,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
             loadingData: false,
             tableMaxHeight: attrs.tableMaxHeight
           },
-          watchTimeout: attrs.watchTimeout || 1000,
+          watchTimeout: attrs.watchTimeout || 2000,
           ajaxConfig: scope.$eval(attrs.ajaxConfig),
           applyFilter: adStrapUtils.applyFilter,
           readProperty: adStrapUtils.getObjectProperty

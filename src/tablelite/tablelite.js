@@ -45,7 +45,8 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           placeHolder = null,
           pageButtonElement = null,
           validDrop = false,
-          initialPos;
+          initialPos,
+          watchers = [];
 
         function moveElementNode(nodeToMove, relativeNode, dragNode) {
           if (relativeNode.next()[0] === nodeToMove[0]) {
@@ -223,9 +224,25 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           replace(/%=icon-draggable%/g, $adConfig.iconClasses.draggable);
         element.empty();
         element.append($compile(mainTemplate)(scope));
-        scope.$watch(attrs.localDataSource, function () {
-          tableModels.loadPage(tableModels.items.paging.currentPage);
-        }, true);
+
+        // ---------- set watchers ---------- //
+        watchers.push(
+          scope.$watch(attrs.localDataSource, function () {
+            tableModels.loadPage(tableModels.items.paging.currentPage);
+          })
+        );
+        watchers.push(
+          scope.$watch(attrs.localDataSource + '.length', function () {
+            tableModels.loadPage(tableModels.items.paging.currentPage);
+          })
+        );
+
+        // ---------- disable watchers ---------- //
+        scope.$on('$destroy', function () {
+          watchers.forEach(function (watcher) {
+            watcher();
+          });
+        });
       }
 
       return {

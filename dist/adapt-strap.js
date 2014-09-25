@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v1.0.2-beta.1 - 2014-09-23
+ * @version v1.0.2-beta.1 - 2014-09-25
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -604,11 +604,12 @@ angular.module('adaptv.adaptStrap.tableajax', [
   '$parse',
   '$compile',
   '$templateCache',
+  '$timeout',
   '$adConfig',
   'adLoadPage',
   'adDebounce',
   'adStrapUtils',
-  function ($parse, $compile, $templateCache, $adConfig, adLoadPage, adDebounce, adStrapUtils) {
+  function ($parse, $compile, $templateCache, $timeout, $adConfig, adLoadPage, adDebounce, adStrapUtils) {
 function _link(scope, element, attrs) {
       // We do the name spacing so the if there are multiple ad-table-ajax on the scope,
       // they don't fight with each other.
@@ -631,12 +632,13 @@ function _link(scope, element, attrs) {
           loadingData: false,
           tableMaxHeight: attrs.tableMaxHeight
         },
+        watchTimeout: attrs.watchTimeout || 1000,
         ajaxConfig: scope.$eval(attrs.ajaxConfig),
         applyFilter: adStrapUtils.applyFilter,
         readProperty: adStrapUtils.getObjectProperty
       };
       // ---------- Local data ---------- //
-      var tableModels = scope[attrs.tableName], mainTemplate = $templateCache.get('tableajax/tableajax.tpl.html'), lastRequestToken;
+      var tableModels = scope[attrs.tableName], mainTemplate = $templateCache.get('tableajax/tableajax.tpl.html'), lastRequestToken, timeoutWatchPromise;
       tableModels.items.paging.pageSize = tableModels.items.paging.pageSizes[0];
       // ---------- ui handlers ---------- //
       tableModels.loadPage = adDebounce(function (page) {
@@ -710,7 +712,10 @@ function _link(scope, element, attrs) {
       tableModels.loadPage(1);
       // reset on parameter change
       scope.$watch(attrs.ajaxConfig, function () {
-        tableModels.loadPage(1);
+        $timeout.cancel(timeoutWatchPromise);
+        timeoutWatchPromise = $timeout(function () {
+          tableModels.loadPage(1);
+        });
       }, true);
       attrs.tableClasses = attrs.tableClasses || 'table';
       attrs.paginationBtnGroupClasses = attrs.paginationBtnGroupClasses || 'btn-group btn-group-sm';

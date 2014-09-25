@@ -3,8 +3,8 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
  * Use this directive if you need to render a table that loads data from ajax.
  */
   .directive('adTableAjax',
-  ['$parse', '$compile', '$templateCache', '$adConfig', 'adLoadPage', 'adDebounce', 'adStrapUtils',
-    function ($parse, $compile, $templateCache, $adConfig, adLoadPage, adDebounce, adStrapUtils) {
+  ['$parse', '$compile', '$templateCache', '$timeout', '$adConfig', 'adLoadPage', 'adDebounce', 'adStrapUtils',
+    function ($parse, $compile, $templateCache, $timeout, $adConfig, adLoadPage, adDebounce, adStrapUtils) {
       'use strict';
       function _link(scope, element, attrs) {
         // We do the name spacing so the if there are multiple ad-table-ajax on the scope,
@@ -24,6 +24,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
             loadingData: false,
             tableMaxHeight: attrs.tableMaxHeight
           },
+          watchTimeout: attrs.watchTimeout || 1000,
           ajaxConfig: scope.$eval(attrs.ajaxConfig),
           applyFilter: adStrapUtils.applyFilter,
           readProperty: adStrapUtils.getObjectProperty
@@ -32,7 +33,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
         // ---------- Local data ---------- //
         var tableModels = scope[attrs.tableName],
           mainTemplate = $templateCache.get('tableajax/tableajax.tpl.html'),
-          lastRequestToken;
+          lastRequestToken, timeoutWatchPromise;
         tableModels.items.paging.pageSize = tableModels.items.paging.pageSizes[0];
 
         // ---------- ui handlers ---------- //
@@ -118,7 +119,10 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
 
         // reset on parameter change
         scope.$watch(attrs.ajaxConfig, function () {
-          tableModels.loadPage(1);
+            $timeout.cancel(timeoutWatchPromise);
+            timeoutWatchPromise = $timeout(function() {
+                tableModels.loadPage(1);
+            });
         }, true);
 
         attrs.tableClasses = attrs.tableClasses || 'table';

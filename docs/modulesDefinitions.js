@@ -46,6 +46,13 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
           description: 'Available page sizes'
         },
         {
+          name: 'page-size',
+          required: false,
+          default: '10',
+          type: 'Number',
+          description: 'Starting page size, defaults to first in page-sizes'
+        },
+        {
           name: 'disable-paging',
           required: false,
           default: 'false',
@@ -168,6 +175,13 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
           default: '[10, 25, 50]',
           type: 'String',
           description: 'Available page sizes'
+        },
+        {
+          name: 'page-size',
+          required: false,
+          default: '10',
+          type: 'Number',
+          description: 'Starting page size, defaults to first in page-sizes'
         },
         {
           name: 'pagination-btn-group-classes',

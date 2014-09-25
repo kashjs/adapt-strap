@@ -41,7 +41,8 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
         // ---------- Local data ---------- //
         var listModels = scope[attrs.dropdownName],
           mainTemplate = $templateCache.get('infinitedropdown/infinitedropdown.tpl.html'),
-          lastRequestToken;
+          lastRequestToken,
+          watchers = [];
 
         // ---------- ui handlers ---------- //
         listModels.addRemoveItem = function(event, item, items) {
@@ -104,6 +105,7 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
         // ---------- initialization and event listeners ---------- //
         //We do the compile after injecting the name spacing into the template.
         listModels.loadPage(1);
+        // ---------- set watchers ---------- //
         // reset on parameter change
         if (attrs.ajaxConfig) {
           scope.$watch(attrs.ajaxConfig, function () {
@@ -111,10 +113,23 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
           }, true);
         }
         if (attrs.localDataSource) {
-          scope.$watch(attrs.localDataSource, function () {
-            listModels.loadPage(1);
-          }, true);
+          watchers.push(
+            scope.$watch(attrs.localDataSource, function () {
+              listModels.loadPage(1);
+            })
+          );
+          watchers.push(
+            scope.$watch(attrs.localDataSource + '.length', function () {
+              listModels.loadPage(1);
+            })
+          );
         }
+        // ---------- disable watchers ---------- //
+        scope.$on('$destroy', function () {
+          watchers.forEach(function (watcher) {
+            watcher();
+          });
+        });
 
         mainTemplate = mainTemplate.replace(/%=dropdownName%/g, attrs.dropdownName).
           replace(/%=displayProperty%/g, attrs.displayProperty).

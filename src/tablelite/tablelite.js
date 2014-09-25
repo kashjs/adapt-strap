@@ -45,14 +45,20 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           placeHolder = null,
           pageButtonElement = null,
           validDrop = false,
-          cacheDropElement = null,
-          initialPos;
+          initialPos,
+          watchers = [];
 
         function moveElementNode(nodeToMove, relativeNode, dragNode) {
-          if (relativeNode.next()[0] === nodeToMove[0] || relativeNode.next()[0] === dragNode[0]) {
+          if (relativeNode.next()[0] === nodeToMove[0]) {
             relativeNode.before(nodeToMove);
-          } else if (relativeNode.prev()[0] === nodeToMove[0] || relativeNode.prev()[0] === dragNode[0]) {
+          } else if (relativeNode.prev()[0] === nodeToMove[0]) {
             relativeNode.after(nodeToMove);
+          } else {
+            if (relativeNode.next()[0] === dragNode[0]) {
+              relativeNode.before(nodeToMove);
+            } else if (relativeNode.prev()[0] === dragNode[0]) {
+              relativeNode.after(nodeToMove);
+            }
           }
         }
 
@@ -139,15 +145,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
         tableModels.onDragOver = function(data, dragElement, dropElement) {
           if (placeHolder) {
             // Restricts valid drag to current table instance
-            if (cacheDropElement) {
-              if (cacheDropElement[0] !== dropElement[0]) {
-                moveElementNode(placeHolder, dropElement, dragElement);
-                cacheDropElement = dropElement;
-              }
-            } else {
-              moveElementNode(placeHolder, dropElement, dragElement);
-              cacheDropElement = dropElement;
-            }
+            moveElementNode(placeHolder, dropElement, dragElement);
           }
         };
 
@@ -228,9 +226,25 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           replace(/%=icon-draggable%/g, $adConfig.iconClasses.draggable);
         element.empty();
         element.append($compile(mainTemplate)(scope));
-        scope.$watch(attrs.localDataSource, function () {
-          tableModels.loadPage(tableModels.items.paging.currentPage);
-        }, true);
+
+        // ---------- set watchers ---------- //
+        watchers.push(
+          scope.$watch(attrs.localDataSource, function () {
+            tableModels.loadPage(tableModels.items.paging.currentPage);
+          })
+        );
+        watchers.push(
+          scope.$watch(attrs.localDataSource + '.length', function () {
+            tableModels.loadPage(tableModels.items.paging.currentPage);
+          })
+        );
+
+        // ---------- disable watchers ---------- //
+        scope.$on('$destroy', function () {
+          watchers.forEach(function (watcher) {
+            watcher();
+          });
+        });
       }
 
       return {

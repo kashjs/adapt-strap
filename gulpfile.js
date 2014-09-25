@@ -225,7 +225,7 @@ gulp.task('server', function () {
 });
 
 gulp.task('validate', ['jshint', 'jscs', 'htmlhint']);
-gulp.task('validate:fail', ['jshint:fail', 'htmlhint:fail']);
+gulp.task('validate:fail', ['jshint:fail', 'jscs', 'htmlhint:fail']);
 
 gulp.task('default', function(callback) {
   return runSequence('server','dist:unsafe', 'watch', callback);

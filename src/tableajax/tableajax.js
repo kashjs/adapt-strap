@@ -34,8 +34,8 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
           mainTemplate = $templateCache.get('tableajax/tableajax.tpl.html'),
           lastRequestToken;
 
-        if ( tableModels.items.paging.pageSizes.indexOf(tableModels.items.paging.pageSize) < 0 ) {
-           tableModels.items.paging.pageSize = tableModels.items.paging.pageSizes[0];
+        if (tableModels.items.paging.pageSizes.indexOf(tableModels.items.paging.pageSize) < 0) {
+          tableModels.items.paging.pageSize = tableModels.items.paging.pageSizes[0];
         }
 
         // ---------- ui handlers ---------- //
@@ -121,7 +121,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
 
         // reset on parameter change
         scope.$watch(attrs.ajaxConfig, function () {
-            tableModels.loadPage(1);
+          tableModels.loadPage(1);
         }, true);
 
         attrs.tableClasses = attrs.tableClasses || 'table';

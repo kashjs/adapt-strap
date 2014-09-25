@@ -6,6 +6,9 @@
     "validateLineBreaks": "LF",
     "requireCamelCaseOrUpperCaseIdentifiers": "ignoreProperties",
 
+    "disallowSpacesInAnonymousFunctionExpression": null,
+    "disallowMultipleVarDecl": null,
+
     "disallowKeywords": ["with"],
     "disallowSpacesInsideObjectBrackets": null,
     "disallowImplicitTypeConversion": ["string"]

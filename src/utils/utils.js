@@ -17,7 +17,7 @@ angular.module('adaptv.adaptStrap.utils', [])
           filterOptions;
 
         if (value && ('function' === typeof value)) {
-            return value(item);
+          return value(item);
         }
         if (filter) {
           parts = filter.split(':');
@@ -105,7 +105,7 @@ angular.module('adaptv.adaptStrap.utils', [])
         return itemsObject;
       },
       getObjectProperty = function (item, property) {
-        if ( property && ('function' === typeof property) ) {
+        if (property && ('function' === typeof property)) {
           return property(item);
         }
         var arr = property.split('.');

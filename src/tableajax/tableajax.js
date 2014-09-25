@@ -3,8 +3,8 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
  * Use this directive if you need to render a table that loads data from ajax.
  */
   .directive('adTableAjax',
-  ['$parse', '$compile', '$templateCache', '$timeout', '$adConfig', 'adLoadPage', 'adDebounce', 'adStrapUtils',
-    function ($parse, $compile, $templateCache, $timeout, $adConfig, adLoadPage, adDebounce, adStrapUtils) {
+  ['$parse', '$compile', '$templateCache', '$adConfig', 'adLoadPage', 'adDebounce', 'adStrapUtils',
+    function ($parse, $compile, $templateCache, $adConfig, adLoadPage, adDebounce, adStrapUtils) {
       'use strict';
       function _link(scope, element, attrs) {
         // We do the name spacing so the if there are multiple ad-table-ajax on the scope,
@@ -24,7 +24,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
             loadingData: false,
             tableMaxHeight: attrs.tableMaxHeight
           },
-          watchTimeout: attrs.watchTimeout || 2000,
+          watchTimeout: attrs.watchTimeout || 1000,
           ajaxConfig: scope.$eval(attrs.ajaxConfig),
           applyFilter: adStrapUtils.applyFilter,
           readProperty: adStrapUtils.getObjectProperty
@@ -119,10 +119,9 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
 
         // reset on parameter change
         scope.$watch(attrs.ajaxConfig, function () {
-            $timeout.cancel(timeoutWatchPromise);
-            timeoutWatchPromise = $timeout(function() {
+            adDebounce(function() {
                 tableModels.loadPage(1);
-            });
+            }, attrs.watchTimeout);
         }, true);
 
         attrs.tableClasses = attrs.tableClasses || 'table';

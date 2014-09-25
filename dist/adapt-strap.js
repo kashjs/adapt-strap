@@ -618,7 +618,7 @@ function _link(scope, element, attrs) {
           paging: {
             currentPage: 1,
             totalPages: undefined,
-            pageSize: undefined,
+            pageSize: Number(attrs.pageSize) || 10,
             pageSizes: $parse(attrs.pageSizes)() || [
               10,
               25,
@@ -631,14 +631,15 @@ function _link(scope, element, attrs) {
           loadingData: false,
           tableMaxHeight: attrs.tableMaxHeight
         },
-        watchTimeout: attrs.watchTimeout || 1000,
         ajaxConfig: scope.$eval(attrs.ajaxConfig),
         applyFilter: adStrapUtils.applyFilter,
         readProperty: adStrapUtils.getObjectProperty
       };
       // ---------- Local data ---------- //
       var tableModels = scope[attrs.tableName], mainTemplate = $templateCache.get('tableajax/tableajax.tpl.html'), lastRequestToken;
-      tableModels.items.paging.pageSize = tableModels.items.paging.pageSizes[0];
+      if (tableModels.items.paging.pageSizes.indexOf(tableModels.items.paging.pageSize) < 0) {
+        tableModels.items.paging.pageSize = tableModels.items.paging.pageSizes[0];
+      }
       // ---------- ui handlers ---------- //
       tableModels.loadPage = adDebounce(function (page) {
         lastRequestToken = Math.random();
@@ -711,9 +712,7 @@ function _link(scope, element, attrs) {
       tableModels.loadPage(1);
       // reset on parameter change
       scope.$watch(attrs.ajaxConfig, function () {
-        adDebounce(function () {
-          tableModels.loadPage(1);
-        }, attrs.watchTimeout);
+        tableModels.loadPage(1);
       }, true);
       attrs.tableClasses = attrs.tableClasses || 'table';
       attrs.paginationBtnGroupClasses = attrs.paginationBtnGroupClasses || 'btn-group btn-group-sm';
@@ -751,7 +750,7 @@ function _link(scope, element, attrs) {
           paging: {
             currentPage: 1,
             totalPages: undefined,
-            pageSize: undefined,
+            pageSize: Number(attrs.pageSize) || 10,
             pageSizes: $parse(attrs.pageSizes)() || [
               10,
               25,
@@ -785,7 +784,9 @@ function _link(scope, element, attrs) {
           relativeNode.after(nodeToMove);
         }
       }
-      tableModels.items.paging.pageSize = tableModels.items.paging.pageSizes[0];
+      if (tableModels.items.paging.pageSizes.indexOf(tableModels.items.paging.pageSize) < 0) {
+        tableModels.items.paging.pageSize = tableModels.items.paging.pageSizes[0];
+      }
       // ---------- ui handlers ---------- //
       tableModels.loadPage = adDebounce(function (page) {
         var itemsObject = tableModels.localConfig.localData = adStrapUtils.parse(scope.$eval(attrs.localDataSource)), params;

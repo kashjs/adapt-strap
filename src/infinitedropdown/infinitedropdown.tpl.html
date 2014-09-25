@@ -21,7 +21,7 @@
                           ng-include="'%=templateUrl%'"></span>
                 </a>
             </li>
-            <li ng-if="%=dropdownName%.localConfig.loadingData" class="text-overflow text-center" style="display: block">
+            <li ng-style="{'opacity': %=dropdownName%.localConfig.loadingData ? 1 : 0}" class="text-overflow text-center">
                 <a role="menuitem" tabindex="-1" href="">
                     <ad-loading-icon></ad-loading-icon>
                 </a>

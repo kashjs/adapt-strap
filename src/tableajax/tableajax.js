@@ -33,7 +33,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
         // ---------- Local data ---------- //
         var tableModels = scope[attrs.tableName],
           mainTemplate = $templateCache.get('tableajax/tableajax.tpl.html'),
-          lastRequestToken, timeoutWatchPromise;
+          lastRequestToken;
         tableModels.items.paging.pageSize = tableModels.items.paging.pageSizes[0];
 
         // ---------- ui handlers ---------- //

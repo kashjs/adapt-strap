@@ -9,6 +9,10 @@ var gulp = require('gulp'),
   fs = require('fs'),
   concat = require('gulp-concat-util'),
   runSequence = require('run-sequence'),
+  protractor = require('gulp-protractor').protractor,
+  webdriver = require('gulp-protractor').webdriver_standalone,
+  webdriver_update = require('gulp-protractor').webdriver_update,
+  baseUrl = require('yargs').argv.baseUrl || 'http://localhost:9003',
   src = {
     cwd: 'src',
     dist: 'dist_temp',
@@ -222,6 +226,27 @@ gulp.task('server', function () {
     port: 9003,
     livereload: true
   });
+});
+
+gulp.task('webdriver_update', webdriver_update);
+gulp.task('webdriver', webdriver);
+
+gulp.task('e2e', function() {
+  runSequence('webdriver_update', ['server', 'webdriver']);
+  return gulp.src(['./nothing'])
+    .pipe(protractor({
+      configFile: 'protractor.conf.js',
+      keepAlive: true,
+      args: ['--baseUrl', baseUrl]
+    }))
+    .on('end', function() {
+      console.log('E2E Testing complete');
+      process.exit();
+    })
+    .on('error', function(error) {
+      console.log('E2E Tests failed');
+      process.exit(1);
+    });
 });
 
 gulp.task('validate', ['jshint', 'jscs', 'htmlhint']);

@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v1.0.2-beta.1 - 2014-09-25
+ * @version v1.0.3 - 2014-09-25
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -392,16 +392,13 @@ angular.module('adaptv.adaptStrap.draggable', []).directive('adDrag', [
           elem = null;
         }
       }
-      function getCurrentDropElement(x, y, dragEl) {
+      function getCurrentDropElement(x, y) {
         var bounds = element.offset();
-        var vthold = Math.floor(element.outerHeight() / 3);
-        var xw, yh;
+        // set drag sensitivity
+        var vthold = Math.floor(element.outerHeight() / 6);
         x = x + $window.scrollLeft();
         y = y + $window.scrollTop();
-        xw = x + dragEl.outerWidth();
-        //xw => x + drag element width
-        yh = y + dragEl.outerHeight();
-        return y >= bounds.top + vthold && y <= bounds.top + element.outerHeight() - vthold && (x >= bounds.left && x <= bounds.left + element.outerWidth()) || yh >= bounds.top + vthold && yh <= bounds.top + element.outerHeight() - vthold && (x >= bounds.left && x <= bounds.left + element.outerWidth()) ? element : null;
+        return y >= bounds.top + vthold && y <= bounds.top + element.outerHeight() - vthold && (x >= bounds.left && x <= bounds.left + element.outerWidth()) && (x >= bounds.left && x <= bounds.left + element.outerWidth()) ? element : null;
       }
       init();
     }
@@ -458,7 +455,7 @@ function _link(scope, element, attrs) {
         isSelected: adStrapUtils.itemExistsInList
       };
       // ---------- Local data ---------- //
-      var listModels = scope[attrs.dropdownName], mainTemplate = $templateCache.get('infinitedropdown/infinitedropdown.tpl.html'), lastRequestToken;
+      var listModels = scope[attrs.dropdownName], mainTemplate = $templateCache.get('infinitedropdown/infinitedropdown.tpl.html'), lastRequestToken, watchers = [];
       // ---------- ui handlers ---------- //
       listModels.addRemoveItem = function (event, item, items) {
         event.stopPropagation();
@@ -513,6 +510,7 @@ function _link(scope, element, attrs) {
       // ---------- initialization and event listeners ---------- //
       //We do the compile after injecting the name spacing into the template.
       listModels.loadPage(1);
+      // ---------- set watchers ---------- //
       // reset on parameter change
       if (attrs.ajaxConfig) {
         scope.$watch(attrs.ajaxConfig, function () {
@@ -520,10 +518,19 @@ function _link(scope, element, attrs) {
         }, true);
       }
       if (attrs.localDataSource) {
-        scope.$watch(attrs.localDataSource, function () {
+        watchers.push(scope.$watch(attrs.localDataSource, function () {
           listModels.loadPage(1);
-        }, true);
+        }));
+        watchers.push(scope.$watch(attrs.localDataSource + '.length', function () {
+          listModels.loadPage(1);
+        }));
       }
+      // ---------- disable watchers ---------- //
+      scope.$on('$destroy', function () {
+        watchers.forEach(function (watcher) {
+          watcher();
+        });
+      });
       mainTemplate = mainTemplate.replace(/%=dropdownName%/g, attrs.dropdownName).replace(/%=displayProperty%/g, attrs.displayProperty).replace(/%=templateUrl%/g, attrs.templateUrl).replace(/%=template%/g, attrs.template).replace(/%=labelDisplayProperty%/g, attrs.labelDisplayProperty).replace(/%=btnClasses%/g, attrs.btnClasses || 'btn btn-default').replace(/%=icon-selectedItem%/g, $adConfig.iconClasses.selectedItem);
       element.empty();
       element.append($compile(mainTemplate)(scope));
@@ -604,12 +611,11 @@ angular.module('adaptv.adaptStrap.tableajax', [
   '$parse',
   '$compile',
   '$templateCache',
-  '$timeout',
   '$adConfig',
   'adLoadPage',
   'adDebounce',
   'adStrapUtils',
-  function ($parse, $compile, $templateCache, $timeout, $adConfig, adLoadPage, adDebounce, adStrapUtils) {
+  function ($parse, $compile, $templateCache, $adConfig, adLoadPage, adDebounce, adStrapUtils) {
 function _link(scope, element, attrs) {
       // We do the name spacing so the if there are multiple ad-table-ajax on the scope,
       // they don't fight with each other.
@@ -632,13 +638,12 @@ function _link(scope, element, attrs) {
           loadingData: false,
           tableMaxHeight: attrs.tableMaxHeight
         },
-        watchTimeout: attrs.watchTimeout || 1000,
         ajaxConfig: scope.$eval(attrs.ajaxConfig),
         applyFilter: adStrapUtils.applyFilter,
         readProperty: adStrapUtils.getObjectProperty
       };
       // ---------- Local data ---------- //
-      var tableModels = scope[attrs.tableName], mainTemplate = $templateCache.get('tableajax/tableajax.tpl.html'), lastRequestToken, timeoutWatchPromise;
+      var tableModels = scope[attrs.tableName], mainTemplate = $templateCache.get('tableajax/tableajax.tpl.html'), lastRequestToken;
       tableModels.items.paging.pageSize = tableModels.items.paging.pageSizes[0];
       // ---------- ui handlers ---------- //
       tableModels.loadPage = adDebounce(function (page) {
@@ -712,10 +717,7 @@ function _link(scope, element, attrs) {
       tableModels.loadPage(1);
       // reset on parameter change
       scope.$watch(attrs.ajaxConfig, function () {
-        $timeout.cancel(timeoutWatchPromise);
-        timeoutWatchPromise = $timeout(function () {
-          tableModels.loadPage(1);
-        });
+        tableModels.loadPage(1);
       }, true);
       attrs.tableClasses = attrs.tableClasses || 'table';
       attrs.paginationBtnGroupClasses = attrs.paginationBtnGroupClasses || 'btn-group btn-group-sm';
@@ -779,12 +781,18 @@ function _link(scope, element, attrs) {
         readProperty: adStrapUtils.getObjectProperty
       };
       // ---------- Local data ---------- //
-      var tableModels = scope[attrs.tableName], mainTemplate = $templateCache.get('tablelite/tablelite.tpl.html'), placeHolder = null, pageButtonElement = null, validDrop = false, cacheDropElement = null, initialPos;
+      var tableModels = scope[attrs.tableName], mainTemplate = $templateCache.get('tablelite/tablelite.tpl.html'), placeHolder = null, pageButtonElement = null, validDrop = false, initialPos, watchers = [];
       function moveElementNode(nodeToMove, relativeNode, dragNode) {
-        if (relativeNode.next()[0] === nodeToMove[0] || relativeNode.next()[0] === dragNode[0]) {
+        if (relativeNode.next()[0] === nodeToMove[0]) {
           relativeNode.before(nodeToMove);
-        } else if (relativeNode.prev()[0] === nodeToMove[0] || relativeNode.prev()[0] === dragNode[0]) {
+        } else if (relativeNode.prev()[0] === nodeToMove[0]) {
           relativeNode.after(nodeToMove);
+        } else {
+          if (relativeNode.next()[0] === dragNode[0]) {
+            relativeNode.before(nodeToMove);
+          } else if (relativeNode.prev()[0] === dragNode[0]) {
+            relativeNode.after(nodeToMove);
+          }
         }
       }
       tableModels.items.paging.pageSize = tableModels.items.paging.pageSizes[0];
@@ -856,15 +864,7 @@ function _link(scope, element, attrs) {
       tableModels.onDragOver = function (data, dragElement, dropElement) {
         if (placeHolder) {
           // Restricts valid drag to current table instance
-          if (cacheDropElement) {
-            if (cacheDropElement[0] !== dropElement[0]) {
-              moveElementNode(placeHolder, dropElement, dragElement);
-              cacheDropElement = dropElement;
-            }
-          } else {
-            moveElementNode(placeHolder, dropElement, dragElement);
-            cacheDropElement = dropElement;
-          }
+          moveElementNode(placeHolder, dropElement, dragElement);
         }
       };
       tableModels.onDropEnd = function (data, dragElement) {
@@ -927,9 +927,19 @@ function _link(scope, element, attrs) {
       mainTemplate = mainTemplate.replace(/%=tableName%/g, attrs.tableName).replace(/%=columnDefinition%/g, attrs.columnDefinition).replace(/%=paginationBtnGroupClasses%/g, attrs.paginationBtnGroupClasses).replace(/%=tableClasses%/g, attrs.tableClasses).replace(/%=icon-firstPage%/g, $adConfig.iconClasses.firstPage).replace(/%=icon-previousPage%/g, $adConfig.iconClasses.previousPage).replace(/%=icon-nextPage%/g, $adConfig.iconClasses.nextPage).replace(/%=icon-lastPage%/g, $adConfig.iconClasses.lastPage).replace(/%=icon-sortAscending%/g, $adConfig.iconClasses.sortAscending).replace(/%=icon-sortDescending%/g, $adConfig.iconClasses.sortDescending).replace(/%=icon-sortable%/g, $adConfig.iconClasses.sortable).replace(/%=icon-draggable%/g, $adConfig.iconClasses.draggable);
       element.empty();
       element.append($compile(mainTemplate)(scope));
-      scope.$watch(attrs.localDataSource, function () {
+      // ---------- set watchers ---------- //
+      watchers.push(scope.$watch(attrs.localDataSource, function () {
         tableModels.loadPage(tableModels.items.paging.currentPage);
-      }, true);
+      }));
+      watchers.push(scope.$watch(attrs.localDataSource + '.length', function () {
+        tableModels.loadPage(tableModels.items.paging.currentPage);
+      }));
+      // ---------- disable watchers ---------- //
+      scope.$on('$destroy', function () {
+        watchers.forEach(function (watcher) {
+          watcher();
+        });
+      });
     }
     return {
       restrict: 'E',
@@ -1012,8 +1022,11 @@ angular.module('adaptv.adaptStrap.utils', []).factory('adStrapUtils', [
           }
         }
         return obj;
-      }, applyFilter = function (value, filter) {
+      }, applyFilter = function (value, filter, item) {
         var parts, filterOptions;
+        if (value && 'function' === typeof value) {
+          return value(item);
+        }
         if (filter) {
           parts = filter.split(':');
           filterOptions = parts[1];

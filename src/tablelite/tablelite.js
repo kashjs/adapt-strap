@@ -17,7 +17,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
             paging: {
               currentPage: 1,
               totalPages: undefined,
-              pageSize: undefined,
+              pageSize: Number(attrs.pageSize) || 10,
               pageSizes: $parse(attrs.pageSizes)() || [10, 25, 50]
             }
           },
@@ -62,7 +62,9 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           }
         }
 
-        tableModels.items.paging.pageSize = tableModels.items.paging.pageSizes[0];
+        if (tableModels.items.paging.pageSizes.indexOf(tableModels.items.paging.pageSize) < 0) {
+          tableModels.items.paging.pageSize = tableModels.items.paging.pageSizes[0];
+        }
 
         // ---------- ui handlers ---------- //
         tableModels.loadPage = adDebounce(function (page) {

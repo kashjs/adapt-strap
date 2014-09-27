@@ -7,48 +7,37 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
     function ($parse, $compile, $templateCache, $adConfig, adLoadPage, adDebounce, adStrapUtils, adLoadLocalPage) {
       'use strict';
       function _link(scope, element, attrs) {
-        // We do the name spacing so the if there are multiple ad-table-ajax on the scope,
-        // they don't fight with each other.
-        scope[attrs.dropdownName] = {
-          items: {
-            list: [],
+        // scope initialization
+        scope.attrs = attrs;
+        scope.adStrapUtils = adStrapUtils;
+        scope.items = {
+          list: [],
             paging: {
-              currentPage: 1,
+            currentPage: 1,
               totalPages: undefined,
               pageSize: Number(attrs.pageSize) || 10
-            }
-          },
-          localConfig: {
-            loadingData: false,
-            showDisplayProperty: attrs.displayProperty ? true : false,
-            showTemplate: attrs.template ? true : false,
-            loadTemplate: attrs.templateUrl ? true : false,
-            initialLabel: attrs.initialLabel || 'Select',
-            singleSelectionMode: $parse(attrs.singleSelectionMode)() ? true : false,
-            dynamicLabel: attrs.labelDisplayProperty ? true : false,
-            dimensions: {
-              'max-height': attrs.maxHeight || '200px',
-              'max-width': attrs.maxWidth || 'auto'
-            }
-          },
-          selectedItems: scope.$eval(attrs.selectedItems) || [],
-          ajaxConfig: scope.$eval(attrs.ajaxConfig),
-          applyFilter: adStrapUtils.applyFilter,
-          readProperty: adStrapUtils.getObjectProperty,
-          isSelected: adStrapUtils.itemExistsInList
+          }
         };
+        scope.localConfig = {
+          loadingData: false,
+          singleSelectionMode: $parse(attrs.singleSelectionMode)() ? true : false,
+          dimensions: {
+            'max-height': attrs.maxHeight || '200px',
+            'max-width': attrs.maxWidth || 'auto'
+          }
+        };
+        scope.selectedItems = scope.$eval(attrs.selectedItems) || [];
+        scope.ajaxConfig = scope.$eval(attrs.ajaxConfig) || {};
 
         // ---------- Local data ---------- //
-        var listModels = scope[attrs.dropdownName],
-          mainTemplate = $templateCache.get('infinitedropdown/infinitedropdown.tpl.html'),
-          lastRequestToken,
-          watchers = [];
+        var lastRequestToken,
+            watchers = [];
 
         // ---------- ui handlers ---------- //
-        listModels.addRemoveItem = function(event, item, items) {
+        scope.addRemoveItem = function(event, item, items) {
           event.stopPropagation();
-          if (listModels.localConfig.singleSelectionMode) {
-            listModels.selectedItems[0] = item;
+          if (scope.localConfig.singleSelectionMode) {
+            scope.selectedItems[0] = item;
           } else {
             adStrapUtils.addRemoveItemFromList(item, items);
           }
@@ -58,33 +47,33 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
           }
         };
 
-        listModels.loadPage = adDebounce(function (page) {
+        scope.loadPage = adDebounce(function (page) {
           lastRequestToken = Math.random();
-          listModels.localConfig.loadingData = true;
+          scope.localConfig.loadingData = true;
           var pageLoader = scope.$eval(attrs.pageLoader) || adLoadPage,
             params = {
               pageNumber: page,
-              pageSize: listModels.items.paging.pageSize,
-              sortKey: listModels.localConfig.predicate,
-              sortDirection: listModels.localConfig.reverse,
-              ajaxConfig: listModels.ajaxConfig,
+              pageSize: scope.items.paging.pageSize,
+              sortKey: scope.localConfig.predicate,
+              sortDirection: scope.localConfig.reverse,
+              ajaxConfig: scope.ajaxConfig,
               token: lastRequestToken
             },
             successHandler = function (response) {
               if (response.token === lastRequestToken) {
                 if (page === 1) {
-                  listModels.items.list = response.items;
+                  scope.items.list = response.items;
                 } else {
-                  listModels.items.list = listModels.items.list.concat(response.items);
+                  scope.items.list = scope.items.list.concat(response.items);
                 }
 
-                listModels.items.paging.totalPages = response.totalPages;
-                listModels.items.paging.currentPage = response.currentPage;
-                listModels.localConfig.loadingData = false;
+                scope.items.paging.totalPages = response.totalPages;
+                scope.items.paging.currentPage = response.currentPage;
+                scope.localConfig.loadingData = false;
               }
             },
             errorHandler = function () {
-              listModels.localConfig.loadingData = false;
+              scope.localConfig.loadingData = false;
             };
           if (attrs.localDataSource) {
             params.localData = scope.$eval(attrs.localDataSource);
@@ -94,33 +83,39 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
           }
         }, 10);
 
-        listModels.loadNextPage = function () {
-          if (!listModels.localConfig.loadingData) {
-            if (listModels.items.paging.currentPage + 1 <= listModels.items.paging.totalPages) {
-              listModels.loadPage(listModels.items.paging.currentPage + 1);
+        scope.loadNextPage = function () {
+          if (!scope.localConfig.loadingData) {
+            if (scope.items.paging.currentPage + 1 <= scope.items.paging.totalPages) {
+              scope.loadPage(scope.items.paging.currentPage + 1);
             }
           }
         };
 
         // ---------- initialization and event listeners ---------- //
         //We do the compile after injecting the name spacing into the template.
-        listModels.loadPage(1);
+        scope.loadPage(1);
         // ---------- set watchers ---------- //
         // reset on parameter change
         if (attrs.ajaxConfig) {
-          scope.$watch(attrs.ajaxConfig, function () {
-            listModels.loadPage(1);
+          scope.$watch(attrs.ajaxConfig, function (value) {
+            if (value){
+              scope.loadPage(1);
+            }
           }, true);
         }
         if (attrs.localDataSource) {
           watchers.push(
-            scope.$watch(attrs.localDataSource, function () {
-              listModels.loadPage(1);
+            scope.$watch(attrs.localDataSource, function (value) {
+              if (value) {
+                scope.loadPage(1);
+              }
             })
           );
           watchers.push(
-            scope.$watch(attrs.localDataSource + '.length', function () {
-              listModels.loadPage(1);
+            scope.$watch(attrs.localDataSource + '.length', function (value) {
+              if (value) {
+                scope.loadPage(1);
+              }
             })
           );
         }
@@ -131,23 +126,13 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
           });
         });
 
-        mainTemplate = mainTemplate.replace(/%=dropdownName%/g, attrs.dropdownName).
-          replace(/%=displayProperty%/g, attrs.displayProperty).
-          replace(/%=templateUrl%/g, attrs.templateUrl).
-          replace(/%=template%/g, attrs.template).
-          replace(/%=labelDisplayProperty%/g, attrs.labelDisplayProperty).
-          replace(/%=btnClasses%/g, attrs.btnClasses || 'btn btn-default').
-          replace(/%=icon-selectedItem%/g, $adConfig.iconClasses.selectedItem);
-
-        element.empty();
-        element.append($compile(mainTemplate)(scope));
         var listContainer = angular.element(element).find('ul')[0];
         // infinite scroll handler
         var loadFunction = adDebounce(function () {
           // This is for infinite scrolling.
           // When the scroll gets closer to the bottom, load more items.
           if (listContainer.scrollTop + listContainer.offsetHeight >= listContainer.scrollHeight - 300) {
-            listModels.loadNextPage();
+            scope.loadNextPage();
           }
         }, 50);
         angular.element(listContainer).bind('mousewheel', function (event) {
@@ -159,8 +144,11 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
           loadFunction();
         });
       }
+
       return {
         restrict: 'E',
-        link: _link
+        scope: true,
+        link: _link,
+        templateUrl: 'infinitedropdown/infinitedropdown.tpl.html'
       };
     }]);

@@ -12,10 +12,10 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
         scope.adStrapUtils = adStrapUtils;
         scope.items = {
           list: [],
-            paging: {
+          paging: {
             currentPage: 1,
-              totalPages: undefined,
-              pageSize: Number(attrs.pageSize) || 10
+            totalPages: undefined,
+            pageSize: Number(attrs.pageSize) || 10
           }
         };
         scope.localConfig = {
@@ -98,7 +98,7 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
         // reset on parameter change
         if (attrs.ajaxConfig) {
           scope.$watch(attrs.ajaxConfig, function (value) {
-            if (value){
+            if (value) {
               scope.loadPage(1);
             }
           }, true);

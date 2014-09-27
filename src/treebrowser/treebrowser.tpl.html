@@ -1,53 +1,53 @@
-<!--
-    This is the base template for adTreeBrowser directive.
-    All the hooke that look like %=xxxxx% are replaced with the directive attribute values in treeBrowser.js.
--->
-
-<div class="ad-tree-browser-container" ng-class="{'tree-bordered': %=bordered%}">
-    <div id="segment-tree" data-level="0" class="tree-view">
+<div class="ad-tree-browser-container"
+     ng-class="{'tree-bordered': attrs.bordered}">
+    <div data-level="0" class="tree-view">
         <div class="tree">
-            <script type="text/ng-template" id="%=treeName%-tree-renderer.html">
-                <div class="content" ng-style="{'padding-left': level * %=childrenPadding% + 'px'}"
-                     ng-class="%=rowNgClass%">
+            <script type="text/ng-template" id="{{ localConfig.rendererTemplateId }}">
+                <div class="content"
+                     ng-style="{'padding-left': level * (attrs.childrenPadding || 15) + 'px'}"
+                     ng-class="{{ attrs.rowNgClass }}">
                     <div class="content-holder">
                         <div class="toggle">
-                            <!--todo: create a callback api to handle the expand and collapse functions-->
-                            <i ng-show="!item._ad_expanded && %=treeName%.hasChildren(item) && !item._ad_loading"
-                               class="%=icon-expand%" ng-click="%=treeName%.toggle($event,item)"></i>
-                            <i ng-show="item._ad_expanded && !item._ad_loading"
-                               class="%=icon-collapse%" ng-click="%=treeName%.toggle($event,item)"></i>
-                            <span ng-show="item._ad_loading">
-                                <i class="%=icon-loadingSpinner%"></i>
+                            <i ng-if="!item._ad_expanded && hasChildren(item) && !item._ad_loading"
+                               ng-class="iconClasses.expand"
+                               ng-click="toggle($event,item)"></i>
+                            <i ng-if="item._ad_expanded && !item._ad_loading"
+                               ng-class="iconClasses.collapse"
+                               ng-click="toggle($event,item)"></i>
+                            <span ng-if="item._ad_loading">
+                                <i ng-class="iconClasses.loadingSpinner"></i>
                             </span>
                         </div>
                         <div class="node-content">
-                            <!--this is the template supplied as an attribute.-->
-                            %=nodeTemplate%
+                          <ng-include ng-if="attrs.nodeTemplateUrl" src="attrs.nodeTemplateUrl"></ng-include>
+                          <span ng-if="!attrs.nodeTemplateUrl">{{ item.name || "" }}</span>
                         </div>
                     </div>
                 </div>
                 <div ng-show="item._ad_expanded">
-                    <div ng-repeat="item in item.%=childNodeName%" class="tree-level tree-sub-level"
-                         ng-include="'%=treeName%-tree-renderer.html'" onLoad="level=level+1">
+                    <div class="tree-level tree-sub-level"
+                         onLoad="level=level+1"
+                         ng-repeat="item in item[attrs.childNode]"
+                         ng-include="'{{ localConfig.rendererTemplateId }}'">
                     </div>
                 </div>
             </script>
             <div>
                 <div class="tree-level tree-header-level border"
-                     ng-show="%=treeName%.localConfig.showHeader">
-                    <div class="content" ng-style="{'padding-left': %=childrenPadding% + 'px'}">
+                     ng-if="attrs.nodeHeaderUrl">
+                    <div class="content"
+                         ng-style="{'padding-left': (attrs.childrenPadding || 15) + 'px'}">
                         <div class="content-holder">
-                            <div class="toggle">
-                            </div>
-                            <div class="node-content ad-user-select-none">
-                                <!--this is the template supplied as an attribute.-->
-                                %=nodeHeaderTemplate%
-                            </div>
+                            <div class="toggle"></div>
+                            <div class="node-content ad-user-select-none"
+                                 ng-include="attrs.nodeHeaderUrl"></div>
                         </div>
                     </div>
                 </div>
-                <div class="tree-level tree-top-level border" ng-repeat="item in %=treeRootName%.%=childNodeName%"
-                     ng-include="'%=treeName%-tree-renderer.html'" onload="level = 1">
+                <div class="tree-level tree-top-level border"
+                     onload="level = 1"
+                     ng-repeat="item in treeRoot[attrs.childNode]"
+                     ng-include="'{{ localConfig.rendererTemplateId }}'">
                 </div>
             </div>
         </div>

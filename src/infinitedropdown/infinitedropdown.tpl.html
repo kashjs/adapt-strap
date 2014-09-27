@@ -1,27 +1,35 @@
 <div class="ad-infinite-list-container">
     <div class="dropdown">
-        <button class="%=btnClasses% dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
-            <span ng-if="!%=dropdownName%.localConfig.dynamicLabel || !%=dropdownName%.selectedItems.length">{{ %=dropdownName%.localConfig.initialLabel }}</span>
-            <span ng-if="%=dropdownName%.localConfig.dynamicLabel && %=dropdownName%.selectedItems.length">
-                {{ %=dropdownName%.readProperty(%=dropdownName%.selectedItems[%=dropdownName%.selectedItems.length - 1], '%=labelDisplayProperty%') }}
+        <button type="button" 
+                class="dropdown-toggle" 
+                ng-class="attrs.btnClasses || 'btn btn-default'" 
+                data-toggle="dropdown">
+            <span ng-if="!attrs.labelDisplayProperty || !selectedItems.length">
+              {{ attrs.initialLabel || 'Select' }}
+            </span>
+            <span ng-if="attrs.labelDisplayProperty && selectedItems.length">
+                {{ readProperty(selectedItems[selectedItems.length - 1], attrs.labelDisplayProperty) }}
             </span>
             <span class="caret"></span>
         </button>
-        <ul class="dropdown-menu" ng-style="%=dropdownName%.localConfig.dimensions" role="menu" aria-labelledby="dropdownMenu1">
-            <li class="text-overflow" data-ng-repeat="item in %=dropdownName%.items.list"
-                ng-class="{'active': %=dropdownName%.isSelected(item, %=dropdownName%.selectedItems)}"
-                ng-click="%=dropdownName%.addRemoveItem($event, item, %=dropdownName%.selectedItems)">
+        <ul class="dropdown-menu"
+            role="menu"
+            ng-style="localConfig.dimensions">
+            <li class="text-overflow" data-ng-repeat="item in items.list"
+                ng-class="{'active': adStrapUtils.itemExistsInList(item, selectedItems)}"
+                ng-click="addRemoveItem($event, item, selectedItems)">
                 <a role="menuitem" tabindex="-1" href="">
-                    <span ng-if="%=dropdownName%.localConfig.showDisplayProperty">
-                        {{ %=dropdownName%.readProperty(item, '%=displayProperty%') }}
+                    <span ng-if="attrs.displayProperty">
+                        {{ adStrapUtils.getObjectProperty(item, attrs.displayProperty) }}
                     </span>
-                    <span ng-if="%=dropdownName%.localConfig.showTemplate"
-                          ad-compile-template="%=template%"></span>
-                    <span ng-if="%=dropdownName%.localConfig.loadTemplate"
-                          ng-include="'%=templateUrl%'"></span>
+                    <span ng-if="attrs.template"
+                          ad-compile-template="{{ attrs.template }}"></span>
+                    <span ng-if="attrs.templateUrl"
+                          ng-include="attrs.templateUrl"></span>
                 </a>
             </li>
-            <li ng-style="{'opacity': %=dropdownName%.localConfig.loadingData ? 1 : 0}" class="text-overflow text-center">
+            <li class="text-overflow text-center"
+                ng-style="{'opacity': localConfig.loadingData ? 1 : 0}">
                 <a role="menuitem" tabindex="-1" href="">
                     <ad-loading-icon></ad-loading-icon>
                 </a>

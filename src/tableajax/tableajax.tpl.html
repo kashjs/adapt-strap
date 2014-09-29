@@ -1,16 +1,16 @@
 <div class="ad-table-ajax-container">
-  <table class="%=tableClasses% ad-sticky-table" ng-if="%=tableName%.localConfig.tableMaxHeight">
+  <table class="ad-sticky-table" ng-class="attrs.tableClasses || 'table'" ng-if="localConfig.tableMaxHeight">
     <tr class="ad-user-select-none">
-      <th data-ng-repeat="definition in %=columnDefinition%"
-          ng-click="%=tableName%.sortByColumn(definition)"
+      <th data-ng-repeat="definition in columnDefinition"
+          ng-click="sortByColumn(definition)"
           ng-class="{'ad-cursor-pointer': definition.sortKey}"
           ng-style="{'width': definition.width}">
-        <div class="pull-right" ng-if="definition.sortKey && %=tableName%.localConfig.predicate == definition.sortKey">
-          <i class="%=icon-sortAscending%" ng-hide="%=tableName%.localConfig.reverse"></i>
-          <i class="%=icon-sortDescending%" ng-show="%=tableName%.localConfig.reverse"></i>
+        <div class="pull-right" ng-if="definition.sortKey && localConfig.predicate == definition.sortKey">
+          <i ng-class="iconClasses.sortAscending" ng-hide="localConfig.reverse"></i>
+          <i ng-class="iconClasses.sortDescending" ng-show="localConfig.reverse"></i>
         </div>
-        <div class="pull-right" ng-if="definition.sortKey && %=tableName%.localConfig.predicate != definition.sortKey">
-          <i class="%=icon-sortable%"></i>
+        <div class="pull-right" ng-if="definition.sortKey && localConfig.predicate != definition.sortKey">
+          <i ng-class="iconClasses.sortable"></i>
         </div>
         <div ng-if="definition.columnHeaderTemplate"
              ng-bind-html="definition.columnHeaderTemplate"></div>
@@ -19,21 +19,21 @@
       </th>
     </tr>
   </table>
-  <div class="ad-table-container" ng-style="{'max-height': %=tableName%.localConfig.tableMaxHeight}">
-    <table class="%=tableClasses%">
-      <tr class="ad-user-select-none" ng-if="!%=tableName%.localConfig.tableMaxHeight">
-        <th data-ng-repeat="definition in %=columnDefinition%"
-            ng-click="%=tableName%.sortByColumn(definition)"
+  <div class="ad-table-container" ng-style="{'max-height': localConfig.tableMaxHeight}">
+    <table ng-class="attrs.tableClasses || 'table'">
+      <tr class="ad-user-select-none" ng-if="!localConfig.tableMaxHeight">
+        <th data-ng-repeat="definition in columnDefinition"
+            ng-click="sortByColumn(definition)"
             ng-class="{'ad-cursor-pointer': definition.sortKey}"
             ng-style="{'width': definition.width}">
           <div class="pull-right"
-               ng-if="definition.sortKey && %=tableName%.localConfig.predicate == definition.sortKey">
-            <i class="%=icon-sortAscending%" ng-hide="%=tableName%.localConfig.reverse"></i>
-            <i class="%=icon-sortDescending%" ng-show="%=tableName%.localConfig.reverse"></i>
+               ng-if="definition.sortKey && localConfig.predicate == definition.sortKey">
+            <i ng-class="iconClasses.sortAscending" ng-hide="localConfig.reverse"></i>
+            <i ng-class="iconClasses.sortDescending" ng-show="localConfig.reverse"></i>
           </div>
           <div class="pull-right"
-               ng-if="definition.sortKey && %=tableName%.localConfig.predicate != definition.sortKey">
-            <i class="%=icon-sortable%"></i>
+               ng-if="definition.sortKey && localConfig.predicate != definition.sortKey">
+            <i ng-class="iconClasses.sortable"></i>
           </div>
           <div ng-if="definition.columnHeaderTemplate"
                ng-bind-html="definition.columnHeaderTemplate"></div>
@@ -41,8 +41,8 @@
                ng-bind="definition.columnHeaderDisplayName"></div>
         </th>
       </tr>
-      <tr data-ng-repeat="item in %=tableName%.items.list">
-        <td data-ng-repeat="definition in %=columnDefinition%"
+      <tr data-ng-repeat="item in items.list">
+        <td data-ng-repeat="definition in columnDefinition"
             ng-style="{'width': definition.width}">
           <div ng-if="definition.templateUrl">
             <ng-include src="definition.templateUrl"></ng-include>
@@ -51,60 +51,57 @@
             <span ad-compile-template="definition.template"></span>
           </div>
           <div ng-if="!definition.templateUrl && !definition.template">
-            {{ %=tableName%.applyFilter(%=tableName%.readProperty(item, definition.displayProperty, item),
-            definition.cellFilter) }}
+            {{ adStrapUtils.applyFilter(adStrapUtils.getObjectProperty(item, definition.displayProperty, item), definition.cellFilter) }}
           </div>
         </td>
       </tr>
     </table>
-    <ad-loading-overlay loading="%=tableName%.localConfig.loadingData"></ad-loading-overlay>
+    <ad-loading-overlay loading="localConfig.loadingData"></ad-loading-overlay>
   </div>
   <div class="row">
     <div class="col-md-8 col-sm-8">
-      <div class="%=paginationBtnGroupClasses% pull-left"
-           ng-show="%=tableName%.items.paging.totalPages > 1">
+      <div class="pull-left"
+           ng-class="attrs.paginationBtnGroupClasses || 'btn-group btn-group-sm'"
+           ng-show="items.paging.totalPages > 1">
         <button type="button"
                 class="btn btn-default"
-                ng-click="%=tableName%.loadPage(1)"
-                ng-disabled="%=tableName%.items.paging.currentPage == 1">
-          <i class="%=icon-firstPage%"></i>
-        </button>
-        <button type="button"
-                class="btn btn-default"
-                ng-click="%=tableName%.loadPreviousPage()"
-                ng-disabled="%=tableName%.items.paging.currentPage == 1">
-          <i class="%=icon-previousPage%"></i>
+                ng-click="loadPage(1)"
+                ng-disabled="items.paging.currentPage == 1">
+          <i ng-class="iconClasses.firstPage"></i>
         </button>
         <button type="button"
                 class="btn btn-default"
-                ng-repeat="page in %=tableName%.localConfig.pagingArray"
-                ng-class="{active: %=tableName%.items.paging.currentPage == page}"
-                ng-click="%=tableName%.loadPage(page)">{{ page }}
+                ng-click="loadPreviousPage()"
+                ng-disabled="items.paging.currentPage == 1">
+          <i ng-class="iconClasses.previousPage"></i>
         </button>
-        <button
-          type="button"
-          class="btn btn-default"
-          ng-click="%=tableName%.loadNextPage()"
-          ng-disabled="%=tableName%.items.paging.currentPage == %=tableName%.items.paging.totalPages">
-          <i class="%=icon-nextPage%"></i>
+        <button type="button"
+                class="btn btn-default"
+                ng-repeat="page in localConfig.pagingArray"
+                ng-class="{active: items.paging.currentPage == page}"
+                ng-click="loadPage(page)">{{ page }}
         </button>
-        <button
-          type="button"
-          class="btn btn-default"
-          ng-click="%=tableName%.loadLastPage()"
-          ng-disabled="%=tableName%.items.paging.currentPage == %=tableName%.items.paging.totalPages">
-          <i class="%=icon-lastPage%"></i>
+        <button type="button"
+                class="btn btn-default"
+                ng-click="loadNextPage()"
+                ng-disabled="items.paging.currentPage == items.paging.totalPages">
+          <i ng-class="iconClasses.nextPage"></i>
+        </button>
+        <button type="button"
+                class="btn btn-default"
+                ng-click="loadLastPage()"
+                ng-disabled="items.paging.currentPage == items.paging.totalPages">
+          <i ng-class="iconClasses.lastPage"></i>
         </button>
       </div>
     </div>
     <div class="col-md-4 col-sm-4">
-      <div class="%=paginationBtnGroupClasses% pull-right">
+      <div class="pull-right" ng-class="attrs.paginationBtnGroupClasses || 'btn-group btn-group-sm'">
         <button type="button"
                 class="btn btn-default"
-                ng-repeat="size in %=tableName%.items.paging.pageSizes"
-                ng-class="{active: %=tableName%.items.paging.pageSize == size}"
-                ng-click="%=tableName%.pageSizeChanged(size)">
-          {{ size }}
+                ng-repeat="size in items.paging.pageSizes"
+                ng-class="{active: items.paging.pageSize == size}"
+                ng-click="pageSizeChanged(size)">{{ size }}
         </button>
       </div>
     </div>

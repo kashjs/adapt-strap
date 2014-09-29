@@ -7,7 +7,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
     function ($parse, $adConfig, adLoadPage, adDebounce, adStrapUtils) {
       'use strict';
       function _controller($scope, $attrs) {
-        // $scope initialization
+        // ---------- $scope initialization ---------- //
         $scope.attrs = $attrs;
         $scope.iconClasses = $adConfig.iconClasses;
         $scope.adStrapUtils = adStrapUtils;
@@ -113,7 +113,6 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
         };
 
         // ---------- initialization and event listeners ---------- //
-        //We do the compile after injecting the name spacing into the template.
         $scope.loadPage(1);
 
         // reset on parameter change

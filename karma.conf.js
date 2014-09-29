@@ -43,8 +43,7 @@ module.exports = function(config) {
     preprocessors: {
       'src/**/!(*.test).js': 'coverage',
       '!sec/**/test/*.js': 'coverage',
-      '!src/**/(*.e2e).js': 'coverage',
-      '!dist/**/*.*': 'coverage'
+      '!src/**/(*.e2e).js': 'coverage'
     },
 
     junitReporter: {

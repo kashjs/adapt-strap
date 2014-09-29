@@ -6,7 +6,7 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
   ['$parse', '$compile', '$templateCache', '$adConfig', 'adLoadPage', 'adDebounce', 'adStrapUtils', 'adLoadLocalPage',
     function ($parse, $compile, $templateCache, $adConfig, adLoadPage, adDebounce, adStrapUtils, adLoadLocalPage) {
       'use strict';
-      function _link(scope, element, attrs) {
+      function linkFunction(scope, element, attrs) {
         // scope initialization
         scope.attrs = attrs;
         scope.adStrapUtils = adStrapUtils;
@@ -148,7 +148,7 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
       return {
         restrict: 'E',
         scope: true,
-        link: _link,
+        link: linkFunction,
         templateUrl: 'infinitedropdown/infinitedropdown.tpl.html'
       };
     }]);

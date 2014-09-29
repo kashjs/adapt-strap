@@ -7,7 +7,7 @@ angular.module('adaptv.adaptStrap.treebrowser', [])
  */
   .directive('adTreeBrowser', ['$adConfig',
     function ($adConfig) {
-      function _controller($scope, $attrs) {
+      function controllerFunction($scope, $attrs) {
         var templateToken = Math.random();
         // scope initialization
         $scope.attrs = $attrs;
@@ -40,7 +40,7 @@ angular.module('adaptv.adaptStrap.treebrowser', [])
       return {
         restrict: 'E',
         scope: true,
-        controller: _controller,
+        controller: controllerFunction,
         templateUrl: 'treebrowser/treebrowser.tpl.html'
       };
     }]);

@@ -1,7 +1,7 @@
 
 angular.module('adaptv.adaptStrap.draggable', [])
   .directive('adDrag', ['$rootScope', '$parse', '$timeout', function ($rootScope, $parse, $timeout) {
-    function _link(scope, element, attrs) {
+    function linkFunction(scope, element, attrs) {
       scope.draggable = attrs.adDrag;
       scope.hasHandle = attrs.adDragHandle === 'false' || typeof attrs.adDragHandle === 'undefined' ? false : true;
       scope.onDragStartCallback = $parse(attrs.adDragBegin) || null;
@@ -292,11 +292,11 @@ angular.module('adaptv.adaptStrap.draggable', [])
     }
     return {
       restrict: 'A',
-      link: _link
+      link: linkFunction
     };
   }])
   .directive('adDrop', ['$rootScope', '$parse', function ($rootScope, $parse) {
-    function _link(scope, element, attrs) {
+    function linkFunction(scope, element, attrs) {
       scope.droppable = attrs.adDrop;
       scope.onDropCallback = $parse(attrs.adDropEnd) || null;
       scope.onDropOverCallback = $parse(attrs.adDropOver) || null;
@@ -401,6 +401,6 @@ angular.module('adaptv.adaptStrap.draggable', [])
     }
     return {
       restrict: 'A',
-      link: _link
+      link: linkFunction
     };
   }]);

@@ -6,7 +6,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
   ['$parse', '$adConfig', 'adLoadPage', 'adDebounce', 'adStrapUtils',
     function ($parse, $adConfig, adLoadPage, adDebounce, adStrapUtils) {
       'use strict';
-      function _controller($scope, $attrs) {
+      function controllerFunction($scope, $attrs) {
         // ---------- $scope initialization ---------- //
         $scope.attrs = $attrs;
         $scope.iconClasses = $adConfig.iconClasses;
@@ -125,6 +125,6 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
         restrict: 'E',
         $scope: true,
         templateUrl: 'tableajax/tableajax.tpl.html',
-        controller: _controller
+        controller: controllerFunction
       };
     }]);

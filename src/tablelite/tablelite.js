@@ -7,7 +7,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
     '$adConfig', 'adStrapUtils', 'adDebounce', 'adLoadLocalPage',
     function ($parse, $http, $compile, $filter, $templateCache, $adConfig, adStrapUtils, adDebounce, adLoadLocalPage) {
       'use strict';
-      function _controller($scope, $attrs) {
+      function controllerFunction($scope, $attrs) {
         // ---------- $$scope initialization ---------- //
         $scope.attrs = $attrs;
         $scope.iconClasses = $adConfig.iconClasses;
@@ -226,6 +226,6 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
         restrict: 'E',
         templateUrl: 'tablelite/tablelite.tpl.html',
         $scope: true,
-        controller: _controller
+        controller: controllerFunction
       };
     }]);

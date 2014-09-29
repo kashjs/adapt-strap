@@ -199,6 +199,16 @@ gulp.task('unit', function() {
     }));
 });
 
+gulp.task('unit:travis', function() {
+  return gulp.src('./nothing')
+    .pipe(karma({
+      configFile: 'karma.conf.js',
+      reporters: ['dots', 'coverage'],
+      action: 'run',
+      singleRun: true
+    }));
+});
+
 // ========== DEFAULT TASKS ========== //
 gulp.task('dist', function(callback) {
   runSequence(['jshint:fail', 'htmlhint:fail'],'clean:dist', ['templates:dist', 'scripts:dist', 'style:dist'], callback);

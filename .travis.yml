@@ -3,7 +3,7 @@ node_js:
   - "0.10"
 
 before_script:
-  - npm install -gq bower
+  - npm install -gq bower codeclimate-test-reporter
   - bower install --dev --config.interactive=0
   - gulp --version
   - bower --version
@@ -12,4 +12,11 @@ script:
   - gulp validate:fail
   - gulp dist:unsafe
   - sleep 10
-  - gulp unit
+  - gulp unit:travis
+
+after_script:
+  - cat coverage/*/lcov.info | codeclimate
+
+addons:
+  code_climate:
+    repo_token: d5b71c46e2ad990ae91adb06e783ad0e17b5652172578fe28b009e38fc6e336a

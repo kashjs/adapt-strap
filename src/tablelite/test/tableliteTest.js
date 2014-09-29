@@ -28,14 +28,13 @@ describe('tablelite component', function () {
         '</ad-table-lite>'
     )($rootScope);
 
-    // we are just making sure that table is initializing correctly.
-    $timeout(function () {
-      expect($rootScope.carsForSale.items.paging.currentPage).toEqual(1);
-      expect($rootScope.carsForSale.items.paging.totalPages).toEqual(2);
-      expect($rootScope.carsForSale.items.paging.pageSize).toEqual(7);
-      expect($rootScope.carsForSale.items.list.length).toEqual(7);
-    }, 1000);
-
-    $timeout.flush();
+    expect($rootScope.models).toBeDefined();
+    expect($rootScope.models.selectedCars).toBeDefined();
+    expect($rootScope.models.changeInfo).toBeDefined();
+    expect($rootScope.carsTableColumnDefinition).toBeDefined();
+    expect($rootScope.onChange).toBeDefined();
+    expect($rootScope.buyCar).toBeDefined();
+    expect($rootScope.models.carsForSale.length).toEqual(12);
+    expect($rootScope.models.selectedCars.length).toEqual(1);
   }));
 });

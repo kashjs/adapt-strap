@@ -5,8 +5,9 @@ angular.module('adaptv.adaptStrap.utils', [])
         var arr = property.split('.');
         if (obj) {
           while (arr.length) {
+            var key = arr.shift();
             if (obj) {
-              obj = obj[arr.shift()];
+              obj = obj[key];
             }
           }
         }
@@ -187,6 +188,7 @@ angular.module('adaptv.adaptStrap.utils', [])
         angular.extend(pagingConfig.response, ajaxConfig.paginationConfig.response);
       }
 
+      ajaxConfig.params = ajaxConfig.params ? ajaxConfig.params : {};
       ajaxConfig.params[pagingConfig.request.start] = start;
       ajaxConfig.params[pagingConfig.request.pageSize] = options.pageSize;
       ajaxConfig.params[pagingConfig.request.page] = options.pageNumber;

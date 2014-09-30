@@ -1,4 +1,4 @@
-<div class="ad-table-lite-container">
+<div class="ad-table-lite-container" ng-if="items.allItems.length || !attrs.itemsNotFoundMessage">
   <table class="ad-sticky-table"
          ng-class="attrs.tableClasses || 'table'" ng-if="attrs.tableMaxHeight">
     <tr class="ad-user-select-none">
@@ -190,4 +190,7 @@
       </div>
     </div>
   </div>
+</div>
+<div ng-if="!items.allItems.length && attrs.itemsNotFoundMessage">
+  <div class="alert alert-info" role="alert">{{ attrs.itemsNotFoundMessage }}</div>
 </div>

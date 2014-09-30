@@ -1,4 +1,4 @@
-<div class="ad-table-ajax-container">
+<div class="ad-table-ajax-container" ng-if="items.paging.totalPages || localConfig.loadingData || !attrs.itemsNotFoundMessage">
   <table class="ad-sticky-table" ng-class="attrs.tableClasses || 'table'" ng-if="localConfig.tableMaxHeight">
     <tr class="ad-user-select-none">
       <th data-ng-repeat="definition in columnDefinition"
@@ -106,4 +106,7 @@
       </div>
     </div>
   </div>
+</div>
+<div ng-if="!items.paging.totalPages && !localConfig.loadingData && attrs.itemsNotFoundMessage">
+  <div class="alert alert-info" role="alert">{{ attrs.itemsNotFoundMessage }}</div>
 </div>

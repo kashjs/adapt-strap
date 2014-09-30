@@ -118,6 +118,13 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
           type: 'String',
           description: 'This property makes the table scrollable. The header becomes fixed at top. ' +
             'Pass in any css max-height property. EX: <code>table-max-height="157px"</code>'
+        },
+        {
+          name: 'items-not-found-message',
+          required: false,
+          default: 'NA',
+          type: 'String',
+          description: 'Message that will be shown in case of empty table'
         }
       ]
     }]
@@ -209,6 +216,13 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
           type: 'String',
           description: 'This property makes the table scrollable. The header becomes fixed at top. ' +
             'Pass in any css max-height property. EX: <code>table-max-height="157px"</code>'
+        },
+        {
+          name: 'items-not-found-message',
+          required: false,
+          default: 'NA',
+          type: 'String',
+          description: 'Message that will be shown in case of empty table'
         }
       ]
     }]

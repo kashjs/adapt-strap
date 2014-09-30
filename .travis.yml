@@ -13,6 +13,7 @@ script:
   - gulp dist:unsafe
   - sleep 10
   - gulp unit:travis
+  - gulp e2e
 
 after_script:
   - cat coverage/*/lcov.info | codeclimate

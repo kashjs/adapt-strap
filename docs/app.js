@@ -96,7 +96,11 @@ angular.module('adaptv.adaptStrapDocs', [
     return {
       restrict: 'E',
       template: '<p style="padding-left:10px; color: rgba(255,255,255,.5)">' +
-        '<img src="//travis-ci.org/Adaptv/adapt-strap.svg"> | current v{{ version }}</p>',
+        '<img src="//travis-ci.org/Adaptv/adapt-strap.svg"> | current v{{ version }}</p>' +
+        '<p style="padding-left:10px;"><a href="https://codeclimate.com/github/Adaptv/adapt-strap">' +
+        '<img src="https://codeclimate.com/github/Adaptv/adapt-strap/badges/coverage.svg" /></a></p>' +
+        '<p style="padding-left:10px;"><a href="https://codeclimate.com/github/Adaptv/adapt-strap">' +
+        '<img src="https://codeclimate.com/github/Adaptv/adapt-strap/badges/gpa.svg" /></a></p>',
       link: function (scope) {
         $http.get('bower.json').success(function (response) {
           scope.version = response.version;

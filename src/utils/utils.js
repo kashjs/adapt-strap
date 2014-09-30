@@ -187,7 +187,7 @@ angular.module('adaptv.adaptStrap.utils', [])
         angular.extend(pagingConfig.response, ajaxConfig.paginationConfig.response);
       }
 
-      ajaxConfig.params ||= {};
+      ajaxConfig.params = ajaxConfig.params ? ajaxConfig.params : {};
       ajaxConfig.params[pagingConfig.request.start] = start;
       ajaxConfig.params[pagingConfig.request.pageSize] = options.pageSize;
       ajaxConfig.params[pagingConfig.request.page] = options.pageNumber;

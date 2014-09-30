@@ -27,6 +27,7 @@ body {
     background-color: transparent;
     border-color: #6C7A89;
     margin: 10px;
+    margin-right: 0;
 }
 
 .btn-outline-inverse:hover, .btn-outline-inverse:focus, .btn-outline-inverse:active {

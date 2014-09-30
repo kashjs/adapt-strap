@@ -5,8 +5,9 @@ angular.module('adaptv.adaptStrap.utils', [])
         var arr = property.split('.');
         if (obj) {
           while (arr.length) {
+            var key = arr.shift();
             if (obj) {
-              obj = obj[arr.shift()];
+              obj = obj[key];
             }
           }
         }

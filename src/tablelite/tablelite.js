@@ -224,8 +224,8 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
 
       return {
         restrict: 'E',
+        controller: controllerFunction,
         templateUrl: 'tablelite/tablelite.tpl.html',
-        $scope: true,
-        controller: controllerFunction
+        scope: true
       };
     }]);

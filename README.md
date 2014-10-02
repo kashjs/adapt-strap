@@ -28,7 +28,7 @@ bootstrap
 <script src="bower_components/angular/angular.js"></script>
 <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
 <script src="bower_components/bootstrap/js/bootstrap.js"></script>
-<link rel="stylesheet" href="libs/bootstrap/css/bootstrap.css"/>
+<link rel="stylesheet" href="bower_components/bootstrap/css/bootstrap.css"/>
 
 <!-- adapt-strap -->
 <script src="bower_components/adapt-strap/dist/adapt-strap.min.js"></script>

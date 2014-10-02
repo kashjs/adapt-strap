@@ -123,7 +123,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
 
       return {
         restrict: 'E',
-        $scope: true,
+        scope: true,
         templateUrl: 'tableajax/tableajax.tpl.html',
         controller: controllerFunction
       };

@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v2.0.0 - 2014-10-01
+ * @version v2.0.1 - 2014-10-02
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -716,7 +716,7 @@ function controllerFunction($scope, $attrs) {
     }
     return {
       restrict: 'E',
-      $scope: true,
+      scope: true,
       templateUrl: 'tableajax/tableajax.tpl.html',
       controller: controllerFunction
     };
@@ -920,9 +920,9 @@ function controllerFunction($scope, $attrs) {
     }
     return {
       restrict: 'E',
+      controller: controllerFunction,
       templateUrl: 'tablelite/tablelite.tpl.html',
-      $scope: true,
-      controller: controllerFunction
+      scope: true
     };
   }
 ]);

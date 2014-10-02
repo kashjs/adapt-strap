@@ -15,7 +15,7 @@ exports.config = {
   exclude: [],
 
   capabilities: {
-    'browserName': 'chrome'
+    'browserName': 'firefox'
   },
 
   rootElement: 'body',

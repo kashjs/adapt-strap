@@ -26,8 +26,8 @@ bootstrap
 <!-- dependencies -->
 <script src="bower_components/jquery/dist/jquery.js"></script>
 <script src="bower_components/angular/angular.js"></script>
-<script src="bower_components/bootstrap/js/bootstrap.js"></script>
 <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+<script src="bower_components/bootstrap/js/bootstrap.js"></script>
 <link rel="stylesheet" href="libs/bootstrap/css/bootstrap.css"/>
 
 <!-- adapt-strap -->

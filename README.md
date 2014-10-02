@@ -11,16 +11,32 @@
 - **Global configuration** - all the components are globally configurable to use your set of icons and pagination/sorting configuration
 - **Customizable** - all the components are highly customizable.
 
+###dependencies:
+```
+jquery
+angularjs
+angular-sanitize
+bootstrap
+```
+
 ###Usage
 * Install the library using `bower install adapt-strap --save`
 * Include the library files in your index.html file:
-```
+```html
+<!-- dependencies -->
+<script src="bower_components/jquery/dist/jquery.js"></script>
+<script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/bootstrap/js/bootstrap.js"></script>
+<script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+<link rel="stylesheet" href="libs/bootstrap/css/bootstrap.css"/>
+
+<!-- adapt-strap -->
 <script src="bower_components/adapt-strap/dist/adapt-strap.min.js"></script>
 <script src="bower_components/adapt-strap/dist/adapt-strap.tpl.min.js"></script>
 <link rel="stylesheet" href="bower_components/adapt-strap/dist/adapt-strap.min.css"/>
 ```
 * Add adaptv.adaptStrap module as a dependency to you main app module:
-```
+```javascript
 angular.module('myApp', [
     'ngSanitize', // adapt-strap requires ngSanitize
     'adaptv.adaptStrap'

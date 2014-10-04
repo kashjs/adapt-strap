@@ -23,9 +23,9 @@ angular.module('adaptv.adaptStrap.treebrowser', [])
             item._ad_expanded = !item._ad_expanded;
           }
         };
+        var hasChildren = $scope.$eval($attrs.hasChildren);
         $scope.hasChildren = function (item) {
-          var hasChildren = $scope.$eval($attrs.hasChildren),
-            found = item[$attrs.childNode] && item[$attrs.childNode].length > 0;
+          var found = item[$attrs.childNode] && item[$attrs.childNode].length > 0;
           if (hasChildren) {
             found = hasChildren(item);
           }

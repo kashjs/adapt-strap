@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v2.0.1 - 2014-10-02
+ * @version v2.0.2 - 2014-10-04
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -947,8 +947,9 @@ angular.module('adaptv.adaptStrap.treebrowser', []).directive('adTreeBrowser', [
           item._ad_expanded = !item._ad_expanded;
         }
       };
+      var hasChildren = $scope.$eval($attrs.hasChildren);
       $scope.hasChildren = function (item) {
-        var hasChildren = $scope.$eval($attrs.hasChildren), found = item[$attrs.childNode] && item[$attrs.childNode].length > 0;
+        var found = item[$attrs.childNode] && item[$attrs.childNode].length > 0;
         if (hasChildren) {
           found = hasChildren(item);
         }

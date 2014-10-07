@@ -76,8 +76,11 @@
           <div ng-if="definition.templateUrl">
             <ng-include src="definition.templateUrl"></ng-include>
           </div>
-          <div ng-if="!definition.templateUrl">
-            {{ adStrapUtils.applyFilter(item[definition.displayProperty], definition.cellFilter, item) }}
+          <div ng-if="definition.template">
+            <span ad-compile-template="definition.template"></span>
+          </div>
+          <div ng-if="!definition.templateUrl && !definition.template">
+            {{ adStrapUtils.applyFilter(adStrapUtils.getObjectProperty(item, definition.displayProperty), definition.cellFilter) }}
           </div>
         </td>
       </tr>

@@ -123,7 +123,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           var parent = dragElement.parent();
           placeHolder = $('<tr><td colspan=' + dragElement.find('td').length + '>&nbsp;</td></tr>');
           initialPos = dragElement.index() + (($scope.items.paging.currentPage - 1) *
-              $scope.items.paging.pageSize) - 1;
+            $scope.items.paging.pageSize) - 1;
           if (dragElement[0] !== parent.children().last()[0]) {
             dragElement.next().before(placeHolder);
           } else {
@@ -211,6 +211,11 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
         watchers.push(
           $scope.$watch($attrs.localDataSource + '.length', function () {
             $scope.loadPage($scope.items.paging.currentPage);
+          })
+        );
+        watchers.push(
+          $scope.$watchCollection($attrs.columnDefinition, function () {
+            $scope.columnDefinition = $scope.$eval($attrs.columnDefinition);
           })
         );
 

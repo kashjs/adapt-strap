@@ -29,7 +29,8 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
         $scope.columnDefinition = $scope.$eval($attrs.columnDefinition);
 
         // ---------- Local data ---------- //
-        var lastRequestToken;
+        var lastRequestToken,
+          watchers = [];
 
         if ($scope.items.paging.pageSizes.indexOf($scope.items.paging.pageSize) < 0) {
           $scope.items.paging.pageSize = $scope.items.paging.pageSizes[0];
@@ -116,9 +117,23 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
         $scope.loadPage(1);
 
         // reset on parameter change
-        $scope.$watch($attrs.ajaxConfig, function () {
-          $scope.loadPage(1);
-        }, true);
+        watchers.push(
+          $scope.$watch($attrs.ajaxConfig, function () {
+            $scope.loadPage(1);
+          }, true)
+        );
+        watchers.push(
+          $scope.$watchCollection($attrs.columnDefinition, function () {
+            $scope.columnDefinition = $scope.$eval($attrs.columnDefinition);
+          })
+        );
+
+        // ---------- disable watchers ---------- //
+        $scope.$on('$destroy', function () {
+          watchers.forEach(function (watcher) {
+            watcher();
+          });
+        });
       }
 
       return {

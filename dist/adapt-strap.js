@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v2.0.3 - 2014-10-07
+ * @version v2.0.4 - 2014-10-08
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -409,6 +409,50 @@ angular.module('adaptv.adaptStrap.draggable', []).directive('adDrag', [
   }
 ]);
 
+// Source: loadingindicator.js
+angular.module('adaptv.adaptStrap.loadingindicator', []).directive('adLoadingIcon', [
+  '$adConfig',
+  '$compile',
+  function ($adConfig, $compile) {
+    return {
+      restrict: 'E',
+      compile: function compile() {
+        return {
+          pre: function preLink(scope, element, attrs) {
+            var loadingIconClass = attrs.loadingIconClass || $adConfig.iconClasses.loadingSpinner, ngStyleTemplate = attrs.loadingIconSize ? 'ng-style="{\'font-size\': \'' + attrs.loadingIconSize + '\'}"' : '', template = '<i class="' + loadingIconClass + '" ' + ngStyleTemplate + '></i>';
+            element.empty();
+            element.append($compile(template)(scope));
+          }
+        };
+      }
+    };
+  }
+]).directive('adLoadingOverlay', [
+  '$adConfig',
+  function ($adConfig) {
+    return {
+      restrict: 'E',
+      templateUrl: 'loadingindicator/loadingindicator.tpl.html',
+      scope: {
+        loading: '=',
+        zIndex: '@',
+        position: '@',
+        containerClasses: '@',
+        loadingIconClass: '@',
+        loadingIconSize: '@'
+      },
+      compile: function compile() {
+        return {
+          pre: function preLink(scope) {
+            scope.loadingIconClass = scope.loadingIconClass || $adConfig.iconClasses.loading;
+            scope.loadingIconSize = scope.loadingIconSize || '3em';
+          }
+        };
+      }
+    };
+  }
+]);
+
 // Source: infinitedropdown.js
 angular.module('adaptv.adaptStrap.infinitedropdown', [
   'adaptv.adaptStrap.utils',
@@ -555,50 +599,6 @@ function linkFunction(scope, element, attrs) {
   }
 ]);
 
-// Source: loadingindicator.js
-angular.module('adaptv.adaptStrap.loadingindicator', []).directive('adLoadingIcon', [
-  '$adConfig',
-  '$compile',
-  function ($adConfig, $compile) {
-    return {
-      restrict: 'E',
-      compile: function compile() {
-        return {
-          pre: function preLink(scope, element, attrs) {
-            var loadingIconClass = attrs.loadingIconClass || $adConfig.iconClasses.loadingSpinner, ngStyleTemplate = attrs.loadingIconSize ? 'ng-style="{\'font-size\': \'' + attrs.loadingIconSize + '\'}"' : '', template = '<i class="' + loadingIconClass + '" ' + ngStyleTemplate + '></i>';
-            element.empty();
-            element.append($compile(template)(scope));
-          }
-        };
-      }
-    };
-  }
-]).directive('adLoadingOverlay', [
-  '$adConfig',
-  function ($adConfig) {
-    return {
-      restrict: 'E',
-      templateUrl: 'loadingindicator/loadingindicator.tpl.html',
-      scope: {
-        loading: '=',
-        zIndex: '@',
-        position: '@',
-        containerClasses: '@',
-        loadingIconClass: '@',
-        loadingIconSize: '@'
-      },
-      compile: function compile() {
-        return {
-          pre: function preLink(scope) {
-            scope.loadingIconClass = scope.loadingIconClass || $adConfig.iconClasses.loading;
-            scope.loadingIconSize = scope.loadingIconSize || '3em';
-          }
-        };
-      }
-    };
-  }
-]);
-
 // Source: tableajax.js
 angular.module('adaptv.adaptStrap.tableajax', [
   'adaptv.adaptStrap.utils',
@@ -636,7 +636,7 @@ function controllerFunction($scope, $attrs) {
       $scope.ajaxConfig = $scope.$eval($attrs.ajaxConfig);
       $scope.columnDefinition = $scope.$eval($attrs.columnDefinition);
       // ---------- Local data ---------- //
-      var lastRequestToken;
+      var lastRequestToken, watchers = [];
       if ($scope.items.paging.pageSizes.indexOf($scope.items.paging.pageSize) < 0) {
         $scope.items.paging.pageSize = $scope.items.paging.pageSizes[0];
       }
@@ -710,9 +710,18 @@ function controllerFunction($scope, $attrs) {
       // ---------- initialization and event listeners ---------- //
       $scope.loadPage(1);
       // reset on parameter change
-      $scope.$watch($attrs.ajaxConfig, function () {
+      watchers.push($scope.$watch($attrs.ajaxConfig, function () {
         $scope.loadPage(1);
-      }, true);
+      }, true));
+      watchers.push($scope.$watchCollection($attrs.columnDefinition, function () {
+        $scope.columnDefinition = $scope.$eval($attrs.columnDefinition);
+      }));
+      // ---------- disable watchers ---------- //
+      $scope.$on('$destroy', function () {
+        watchers.forEach(function (watcher) {
+          watcher();
+        });
+      });
     }
     return {
       restrict: 'E',
@@ -910,6 +919,9 @@ function controllerFunction($scope, $attrs) {
       }));
       watchers.push($scope.$watch($attrs.localDataSource + '.length', function () {
         $scope.loadPage($scope.items.paging.currentPage);
+      }));
+      watchers.push($scope.$watchCollection($attrs.columnDefinition, function () {
+        $scope.columnDefinition = $scope.$eval($attrs.columnDefinition);
       }));
       // ---------- disable watchers ---------- //
       $scope.$on('$destroy', function () {

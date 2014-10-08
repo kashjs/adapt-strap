@@ -6,7 +6,8 @@ angular.module('adaptv.adaptStrap.uipermissions', []).
       enabled: true,
       permissionsPrefix: '_ui_.p',
       unAuthorizedPath: '/analytics'
-    };
+    },
+    uiPermissions = {};
     this.$get = [
       '$rootScope',
       '$location',
@@ -32,7 +33,7 @@ angular.module('adaptv.adaptStrap.uipermissions', []).
          * @param {Object} scope - the isolated scope
          */
         function populatePermissions(scope) {
-          scope[options.nameSpace[0]] = options[options.nameSpace[0]];
+          scope[options.nameSpace[0]] = uiPermissions;
         }
 
         /**
@@ -52,7 +53,7 @@ angular.module('adaptv.adaptStrap.uipermissions', []).
             }
           });
           if (valid) {
-            options[options.nameSpace[0]][options.nameSpace[1]] = Object.freeze(permissionsObject);
+            uiPermissions[options.nameSpace[1]] = Object.freeze(permissionsObject);
             route = $route.routes[$location.$$path];
             checkRoutePermission(route);
           }
@@ -64,8 +65,7 @@ angular.module('adaptv.adaptStrap.uipermissions', []).
           options.nameSpace = nameSpace;
           options[nameSpace[0]] = {};
           options[nameSpace[0]][nameSpace[1]] = false;
-
-          $rootScope[nameSpace[0]] = options[nameSpace[0]];
+          $rootScope[nameSpace[0]] = uiPermissions;
           $rootScope.$on('$routeChangeStart', function (event, data) {
             checkRoutePermission(data.$$route);
           });

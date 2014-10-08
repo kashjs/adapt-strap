@@ -5,7 +5,8 @@ angular.module('adaptv.adaptStrap', [
   'adaptv.adaptStrap.tableajax',
   'adaptv.adaptStrap.loadingindicator',
   'adaptv.adaptStrap.draggable',
-  'adaptv.adaptStrap.infinitedropdown'
+  'adaptv.adaptStrap.infinitedropdown',
+  'adaptv.adaptStrap.uipermissions'
 ])
   .provider('$adConfig', function () {
     var iconClasses = this.iconClasses = {

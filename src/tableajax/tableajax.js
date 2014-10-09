@@ -140,6 +140,6 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
         restrict: 'E',
         scope: true,
         templateUrl: 'tableajax/tableajax.tpl.html',
-        controller: controllerFunction
+        controller: ['$scope', '$attrs', controllerFunction]
       };
     }]);

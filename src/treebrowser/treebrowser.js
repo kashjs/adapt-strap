@@ -40,7 +40,7 @@ angular.module('adaptv.adaptStrap.treebrowser', [])
       return {
         restrict: 'E',
         scope: true,
-        controller: controllerFunction,
+        controller: ['$scope', '$attrs', controllerFunction],
         templateUrl: 'treebrowser/treebrowser.tpl.html'
       };
     }]);

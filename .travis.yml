@@ -3,6 +3,11 @@ node_js:
   - "0.10"
 
 before_script:
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+  - ./node_modules/protractor/bin/install_selenium_standalone
+  - java -jar selenium/selenium-server-standalone-2.35.0.jar -Dwebdriver.chrome.driver=./selenium/chromedriver &
+  - sleep 3
   - npm install -gq bower codeclimate-test-reporter
   - bower install --dev --config.interactive=0
   - gulp --version
@@ -13,6 +18,7 @@ script:
   - gulp dist:unsafe
   - sleep 10
   - gulp unit:travis
+  - gulp e2e
 
 after_script:
   - cat coverage/*/lcov.info | codeclimate

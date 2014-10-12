@@ -15,7 +15,6 @@ script:
   - gulp dist:unsafe
   - sleep 10
   - gulp unit:travis
-  - gulp
   - protractor protractor.conf.js
 
 after_script:

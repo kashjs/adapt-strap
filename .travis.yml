@@ -15,7 +15,8 @@ script:
   - gulp dist:unsafe
   - sleep 10
   - gulp unit:travis
-  - gulp e2e
+  - gulp
+  - protractor protractor.conf.js
 
 after_script:
   - cat coverage/*/lcov.info | codeclimate

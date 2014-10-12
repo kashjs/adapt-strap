@@ -2,6 +2,8 @@ exports.config = {
 
   chromeDriver: null,
 
+  baseUrl: 'http://localhost:9003',
+
   chromeOnly: false,
 
   seleniumArgs: [],
@@ -9,7 +11,7 @@ exports.config = {
   allScriptsTimeout: 11000,
 
   specs: [
-    'src/**/test/*.e2e.js',
+    'src/**/test/*.e2e.js'
   ],
 
   exclude: [],

@@ -1,6 +1,8 @@
 ## adaptStrap lightweight UI Components/utilities based on AngularJs 1.2+ & Bootstrap 3 - [demo](http://adaptv.github.io/adapt-strap/) 
 [![Build Status](https://travis-ci.org/Adaptv/adapt-strap.svg)](https://travis-ci.org/Adaptv/adapt-strap) [![Test Coverage](https://codeclimate.com/github/Adaptv/adapt-strap/badges/coverage.svg)] (https://codeclimate.com/github/Adaptv/adapt-strap) [![Code Climate](https://codeclimate.com/github/Adaptv/adapt-strap/badges/gpa.svg)](https://codeclimate.com/github/Adaptv/adapt-strap)
 ---
+[![Banner](http://adaptv.github.io/adapt-strap/docs/images/adapt-strap.png)](http://adaptv.github.io/adapt-strap/)
+
 ### Available components/features:
 - **Table Lite** - simple table UI that renders your local data models and does local pagination/sorting
 - **Table AJAX** - advanced table UI that renders remote data models and does remote pagination/sorting

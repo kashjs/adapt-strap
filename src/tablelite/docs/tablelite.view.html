@@ -1,7 +1,7 @@
 <div ng-controller="tableliteCtrl">
   <p class="text-muted">
     Cars Selected: <span class="badge" ng-bind="models.selectedCars.length"></span>
-  </p>
+    &nbsp;&nbsp;&nbsp;&nbsp;Search: <input type="text" placeholder=" enter search text " ng-model="models.searchText"/></p>
 
   <!-- ========== Usage ========== -->
   <ad-table-lite table-name="carsForSale"
@@ -13,7 +13,8 @@
                  draggable="true"
                  on-drag-change="onChange"
                  items-not-found-message="Cars Not Found"
-                 selected-items="models.selectedCars">
+                 selected-items="models.selectedCars"
+                 search-text="models.searchText">
     </ad-table-lite>
 
   <h3 class="text-muted">Selected Items:</h3>

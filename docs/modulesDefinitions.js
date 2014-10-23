@@ -103,6 +103,15 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
 
         },
         {
+          name: 'search-text',
+          required: false,
+          default: 'NA',
+          type: 'String',
+          description: 'The text to search by' +
+            '<code>ex: search-content="models.searchText"</code>. If speecified, the rows' +
+            ' will be searched and filtered by the content and the search enabled columns '
+        },
+        {
           name: 'btn-classes',
           required: false,
           default: 'btn btn-default',

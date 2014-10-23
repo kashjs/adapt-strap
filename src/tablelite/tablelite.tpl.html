@@ -63,7 +63,7 @@
                ng-bind="definition.columnHeaderDisplayName"></div>
         </th>
       </tr>
-      <tr ng-if="!attrs.draggable" data-ng-repeat="item in items.list"
+      <tr ng-if="!attrs.draggable" data-ng-repeat="item in items.list | filter:searchText"
           ng-class="{'ad-selected': attrs.selectedItems && adStrapUtils.itemExistsInList(item, selectedItems)}">
         <td class="ad-select-cell" ng-if="attrs.selectedItems">
           <input type="checkbox"
@@ -93,7 +93,7 @@
           ad-drop-end="onDropEnd($data, $dragElement, $dropElement, $event)"
           ad-drag-begin="onDragStart($data, $dragElement, $event)"
           ad-drag-end="onDragEnd($data, $dragElement, $event)"
-          data-ng-repeat="item in items.list"
+          data-ng-repeat="item in items.list | filter:searchText"
           ng-class="{'ad-selected': attrs.selectedItems && adStrapUtils.itemExistsInList(item, selectedItems)}">
         <td class="ad-select-cell ad-drag-handle" ng-if="attrs.draggable">
           <i ng-class="iconClasses.draggable"></i>
@@ -128,7 +128,7 @@
                 class="btn btn-default"
                 ng-click="loadPage(1)"
                 ng-disabled="items.paging.currentPage == 1">
-          <i ng-class="iconClasses.firstPage"></i>
+                <i ng-class="iconClasses.firstPage"></i>
         </button>
         <button type="button"
                 class="btn btn-default"

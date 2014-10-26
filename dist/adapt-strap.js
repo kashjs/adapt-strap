@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v2.0.5 - 2014-10-09
+ * @version v2.0.6 - 2014-10-26
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -325,6 +325,7 @@ angular.module('adaptv.adaptStrap.draggable', []).directive('adDrag', [
       scope.droppable = attrs.adDrop;
       scope.onDropCallback = $parse(attrs.adDropEnd) || null;
       scope.onDropOverCallback = $parse(attrs.adDropOver) || null;
+      scope.onDropLeaveCallback = $parse(attrs.adDropLeave) || null;
       var dropEnabled = false;
       var elem = null;
       var $window = $(window);
@@ -364,6 +365,7 @@ angular.module('adaptv.adaptStrap.draggable', []).directive('adDrag', [
         var el = getCurrentDropElement(obj.tx, obj.ty, obj.el);
         if (el !== null) {
           elem = el;
+          obj.el.lastDropElement = elem;
           scope.$apply(function () {
             scope.onDropOverCallback(scope, {
               $data: obj.data,
@@ -372,7 +374,21 @@ angular.module('adaptv.adaptStrap.draggable', []).directive('adDrag', [
               $event: evt
             });
           });
+          element.addClass('ad-drop-over');
           $rootScope.$broadcast('draggable:change', { el: elem });
+        } else {
+          if (obj.el.lastDropElement === element) {
+            scope.$apply(function () {
+              scope.onDropLeaveCallback(scope, {
+                $data: obj.data,
+                $dragElement: obj.el,
+                $dropElement: obj.el.lastDropElement,
+                $event: evt
+              });
+            });
+            obj.el.lastDropElement.removeClass('ad-drop-over');
+            delete obj.el.lastDropElement;
+          }
         }
       }
       function onDragEnd(evt, obj) {
@@ -844,6 +860,10 @@ function controllerFunction($scope, $attrs) {
           $scope.loadPage($scope.items.paging.currentPage);
         }
       };
+      $scope.unSortTable = function () {
+        $scope.localConfig.reverse = undefined;
+        $scope.localConfig.predicate = undefined;
+      };
       $scope.onDragStart = function (data, dragElement) {
         var parent = dragElement.parent();
         placeHolder = $('<tr><td colspan=' + dragElement.find('td').length + '>&nbsp;</td></tr>');
@@ -876,6 +896,7 @@ function controllerFunction($scope, $attrs) {
           validDrop = true;
           endPos = dragElement.index() + ($scope.items.paging.currentPage - 1) * $scope.items.paging.pageSize - 1;
           adStrapUtils.moveItemInList(initialPos, endPos, $scope.localConfig.localData);
+          $scope.unSortTable();
           if ($scope.localConfig.dragChange) {
             $scope.localConfig.dragChange(initialPos, endPos, data);
           }

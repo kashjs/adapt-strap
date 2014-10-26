@@ -119,6 +119,11 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           }
         };
 
+        $scope.unSortTable = function () {
+          $scope.localConfig.reverse = undefined;
+          $scope.localConfig.predicate = undefined;
+        };
+
         $scope.onDragStart = function(data, dragElement) {
           var parent = dragElement.parent();
           placeHolder = $('<tr><td colspan=' + dragElement.find('td').length + '>&nbsp;</td></tr>');
@@ -156,7 +161,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
             endPos = dragElement.index() + (($scope.items.paging.currentPage - 1) *
               $scope.items.paging.pageSize) - 1;
             adStrapUtils.moveItemInList(initialPos, endPos, $scope.localConfig.localData);
-
+            $scope.unSortTable();
             if ($scope.localConfig.dragChange) {
               $scope.localConfig.dragChange(initialPos, endPos, data);
             }

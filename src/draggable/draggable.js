@@ -300,6 +300,7 @@ angular.module('adaptv.adaptStrap.draggable', [])
       scope.droppable = attrs.adDrop;
       scope.onDropCallback = $parse(attrs.adDropEnd) || null;
       scope.onDropOverCallback = $parse(attrs.adDropOver) || null;
+      scope.onDropLeaveCallback = $parse(attrs.adDropLeave) || null;
 
       var dropEnabled = false;
       var elem = null;
@@ -350,6 +351,7 @@ angular.module('adaptv.adaptStrap.draggable', [])
 
         if (el !== null) {
           elem = el;
+          obj.el.lastDropElement = elem;
           scope.$apply(function() {
             scope.onDropOverCallback(scope, {
               $data: obj.data,
@@ -358,10 +360,24 @@ angular.module('adaptv.adaptStrap.draggable', [])
               $event: evt
             });
           });
+          element.addClass('ad-drop-over');
 
           $rootScope.$broadcast('draggable:change', {
             el: elem
           });
+        } else {
+          if (obj.el.lastDropElement === element) {
+            scope.$apply(function() {
+              scope.onDropLeaveCallback(scope, {
+                $data: obj.data,
+                $dragElement: obj.el,
+                $dropElement: obj.el.lastDropElement,
+                $event: evt
+              });
+            });
+            obj.el.lastDropElement.removeClass('ad-drop-over');
+            delete obj.el.lastDropElement;
+          }
         }
       }
 

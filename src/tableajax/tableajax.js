@@ -16,6 +16,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
           paging: {
             currentPage: 1,
             totalPages: undefined,
+            totalItems: undefined,
             pageSize: Number($attrs.pageSize) || 10,
             pageSizes: $parse($attrs.pageSizes)() || [10, 25, 50]
           }
@@ -53,6 +54,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
               if (response.token === lastRequestToken) {
                 $scope.items.list = response.items;
                 $scope.items.paging.totalPages = response.totalPages;
+                $scope.items.paging.totalItems = response.totalItems;
                 $scope.items.paging.currentPage = response.currentPage;
                 $scope.localConfig.pagingArray = response.pagingArray;
                 $scope.localConfig.loadingData = false;

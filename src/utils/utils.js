@@ -218,7 +218,7 @@ angular.module('adaptv.adaptStrap.utils', [])
               adStrapUtils.evalObjectProperty(result.data, pagingConfig.response.totalItems) /
               options.pageSize
           ),
-          totalItems: adStrapUtils.evalObjectProperty(result.data, pagingConfig.response.totalItems),
+          totalItems: Math.ceil(adStrapUtils.evalObjectProperty(result.data, pagingConfig.response.totalItems)),
           pagingArray: [],
           token: options.token
         };

@@ -223,6 +223,14 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
           default: 'NA',
           type: 'String',
           description: 'Message that will be shown in case of empty table'
+        },
+        {
+          name: 'ad-data-load',
+          required: false,
+          default: 'NA',
+          type: 'Function',
+          description: 'Callback for the data load event. It fires when the request finishes' +
+          'It should take 2 parameters <code>$success, $response</code>.'
         }
       ]
     }]

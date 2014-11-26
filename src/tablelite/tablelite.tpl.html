@@ -137,15 +137,16 @@
                 ng-disabled="items.paging.currentPage == 1">
           <i ng-class="iconClasses.previousPage"></i>
         </button>
-        <button type="button"
-                id="btnPrev"
-                class="btn btn-default"
-                ng-if="attrs.draggable"
-                ad-drop="true"
-                ad-drop-over="onNextPageButtonOver($data, $dragElement, $dropElement, $event)"
-                ad-drop-end="onNextPageButtonDrop($data, $dragElement, $dropElement, $event)"
-                ng-click="loadPreviousPage()"
-                ng-disabled="items.paging.currentPage == 1">
+      <button type="button"
+              id="btnPrev"
+              class="btn btn-default"
+              ng-if="attrs.draggable"
+              ad-drop="true"
+              ad-drop-over="onNextPageButtonOver($data, $dragElement, $dropElement, $event)"
+              ad-drop-leave="onNextPageButtonLeave($data, $dragElement, $dropElement, $event)"
+              ad-drop-end="onNextPageButtonDrop($data, $dragElement, $dropElement, $event)"
+              ng-click="loadPreviousPage()"
+              ng-disabled="items.paging.currentPage == 1">
           <i ng-class="iconClasses.previousPage"></i>
         </button>
         <button type="button"
@@ -168,6 +169,7 @@
                 ng-if="attrs.draggable"
                 ad-drop="true"
                 ad-drop-over="onNextPageButtonOver($data, $dragElement, $dropElement, $event)"
+                ad-drop-leave="onNextPageButtonLeave($data, $dragElement, $dropElement, $event)"
                 ad-drop-end="onNextPageButtonDrop($data, $dragElement, $dropElement, $event)"
                 ng-click="loadNextPage()"
                 ng-disabled="items.paging.currentPage == items.paging.totalPages">

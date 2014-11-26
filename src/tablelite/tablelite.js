@@ -166,20 +166,19 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
               $scope.localConfig.dragChange(initialPos, endPos, data);
             }
           }
-          if (pageButtonElement) {
-            pageButtonElement.removeClass('btn-primary');
-            pageButtonElement = null;
-          }
         };
 
         $scope.onNextPageButtonOver = function(data, dragElement, dropElement) {
-          if (pageButtonElement) {
-            pageButtonElement.removeClass('btn-primary');
-            pageButtonElement = null;
-          }
           if (dropElement.attr('disabled') !== 'disabled') {
             pageButtonElement = dropElement;
             pageButtonElement.addClass('btn-primary');
+          }
+        };
+
+        $scope.onNextPageButtonLeave = function(data, dragElement, dropElement) {
+          if (pageButtonElement && pageButtonElement === dropElement) {
+            pageButtonElement.removeClass('btn-primary');
+            pageButtonElement = null;
           }
         };
 
@@ -194,6 +193,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
               endPos = $scope.items.paging.pageSize * $scope.items.paging.currentPage;
             }
             adStrapUtils.moveItemInList(initialPos, endPos, $scope.localConfig.localData);
+            $scope.loadPage($scope.items.paging.currentPage);
             placeHolder.remove();
             dragElement.remove();
             if ($scope.localConfig.dragChange) {

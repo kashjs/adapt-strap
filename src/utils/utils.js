@@ -255,7 +255,7 @@ angular.module('adaptv.adaptStrap.utils', [])
         end = start + options.pageSize,
         i,
         itemsObject = options.localData,
-        localItems;
+        localItems = itemsObject;
 
       if (options.sortKey) {
         localItems = $filter('orderBy')(
@@ -264,6 +264,7 @@ angular.module('adaptv.adaptStrap.utils', [])
           options.sortDirection
         );
       }
+
       response.items = localItems.slice(start, end);
       response.allItems = itemsObject;
       response.currentPage = options.pageNumber;

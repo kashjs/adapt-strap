@@ -11,11 +11,13 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
         $scope.attrs = $attrs;
         $scope.iconClasses = $adConfig.iconClasses;
         $scope.adStrapUtils = adStrapUtils;
+        $scope.onDataLoadedCallback = $parse($attrs.onDataLoaded) || null;
         $scope.items = {
           list: undefined,
           paging: {
             currentPage: 1,
             totalPages: undefined,
+            totalItems: undefined,
             pageSize: Number($attrs.pageSize) || 10,
             pageSizes: $parse($attrs.pageSizes)() || [10, 25, 50]
           }
@@ -53,13 +55,27 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
               if (response.token === lastRequestToken) {
                 $scope.items.list = response.items;
                 $scope.items.paging.totalPages = response.totalPages;
+                $scope.items.paging.totalItems = response.totalItems;
                 $scope.items.paging.currentPage = response.currentPage;
                 $scope.localConfig.pagingArray = response.pagingArray;
                 $scope.localConfig.loadingData = false;
               }
+
+              if ($scope.onDataLoadedCallback) {
+                $scope.onDataLoadedCallback($scope, {
+                  $success: true,
+                  $response: response
+                });
+              }
             },
             errorHandler = function () {
               $scope.localConfig.loadingData = false;
+              if ($scope.onDataLoadedCallback) {
+                $scope.onDataLoadedCallback($scope, {
+                  $success: false,
+                  $response: null
+                });
+              }
             };
 
           pageLoader(params).then(successHandler, errorHandler);

@@ -225,7 +225,7 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
           description: 'Message that will be shown in case of empty table'
         },
         {
-          name: 'ad-data-load',
+          name: 'on-data-loaded',
           required: false,
           default: 'NA',
           type: 'Function',

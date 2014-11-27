@@ -3,15 +3,15 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
  * Use this directive if you need to render a table that loads data from ajax.
  */
   .directive('adTableAjax',
-  ['$parse', '$adConfig', '$rootScope', 'adLoadPage', 'adDebounce', 'adStrapUtils',
-    function ($parse, $adConfig, $rootScope, adLoadPage, adDebounce, adStrapUtils) {
+  ['$parse', '$adConfig', 'adLoadPage', 'adDebounce', 'adStrapUtils',
+    function ($parse, $adConfig, adLoadPage, adDebounce, adStrapUtils) {
       'use strict';
       function controllerFunction($scope, $attrs) {
         // ---------- $scope initialization ---------- //
         $scope.attrs = $attrs;
         $scope.iconClasses = $adConfig.iconClasses;
         $scope.adStrapUtils = adStrapUtils;
-        $scope.onDataLoadCallback = $parse($attrs.adDataLoad) || null;
+        $scope.onDataLoadedCallback = $parse($attrs.onDataLoaded) || null;
         $scope.items = {
           list: undefined,
           paging: {
@@ -61,8 +61,8 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
                 $scope.localConfig.loadingData = false;
               }
 
-              if ($scope.onDataLoadCallback) {
-                $scope.onDataLoadCallback($scope, {
+              if ($scope.onDataLoadedCallback) {
+                $scope.onDataLoadedCallback($scope, {
                   $success: true,
                   $response: response
                 });
@@ -70,8 +70,8 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
             },
             errorHandler = function () {
               $scope.localConfig.loadingData = false;
-              if ($scope.onDataLoadCallback) {
-                $scope.onDataLoadCallback($scope, {
+              if ($scope.onDataLoadedCallback) {
+                $scope.onDataLoadedCallback($scope, {
                   $success: false,
                   $response: null
                 });

@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v2.0.6 - 2014-10-26
+ * @version v2.0.7 - 2014-12-04
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -631,11 +631,13 @@ function controllerFunction($scope, $attrs) {
       $scope.attrs = $attrs;
       $scope.iconClasses = $adConfig.iconClasses;
       $scope.adStrapUtils = adStrapUtils;
+      $scope.onDataLoadedCallback = $parse($attrs.onDataLoaded) || null;
       $scope.items = {
         list: undefined,
         paging: {
           currentPage: 1,
           totalPages: undefined,
+          totalItems: undefined,
           pageSize: Number($attrs.pageSize) || 10,
           pageSizes: $parse($attrs.pageSizes)() || [
             10,
@@ -671,12 +673,25 @@ function controllerFunction($scope, $attrs) {
             if (response.token === lastRequestToken) {
               $scope.items.list = response.items;
               $scope.items.paging.totalPages = response.totalPages;
+              $scope.items.paging.totalItems = response.totalItems;
               $scope.items.paging.currentPage = response.currentPage;
               $scope.localConfig.pagingArray = response.pagingArray;
               $scope.localConfig.loadingData = false;
             }
+            if ($scope.onDataLoadedCallback) {
+              $scope.onDataLoadedCallback($scope, {
+                $success: true,
+                $response: response
+              });
+            }
           }, errorHandler = function () {
             $scope.localConfig.loadingData = false;
+            if ($scope.onDataLoadedCallback) {
+              $scope.onDataLoadedCallback($scope, {
+                $success: false,
+                $response: null
+              });
+            }
           };
         pageLoader(params).then(successHandler, errorHandler);
       });
@@ -708,13 +723,17 @@ function controllerFunction($scope, $attrs) {
         }
       };
       $scope.sortByColumn = function (column) {
+        var initialSortDirection = true;
+        if ($attrs.onClickSortDirection === 'DEC') {
+          initialSortDirection = false;
+        }
         if (column.sortKey) {
           if (column.sortKey !== $scope.localConfig.predicate) {
             $scope.localConfig.predicate = column.sortKey;
-            $scope.localConfig.reverse = true;
+            $scope.localConfig.reverse = initialSortDirection;
           } else {
-            if ($scope.localConfig.reverse === true) {
-              $scope.localConfig.reverse = false;
+            if ($scope.localConfig.reverse === initialSortDirection) {
+              $scope.localConfig.reverse = !initialSortDirection;
             } else {
               $scope.localConfig.reverse = undefined;
               $scope.localConfig.predicate = undefined;
@@ -845,13 +864,17 @@ function controllerFunction($scope, $attrs) {
         $scope.loadPage(1);
       };
       $scope.sortByColumn = function (column) {
+        var initialSortDirection = true;
+        if ($attrs.onClickSortDirection === 'DEC') {
+          initialSortDirection = false;
+        }
         if (column.sortKey) {
           if (column.sortKey !== $scope.localConfig.predicate) {
             $scope.localConfig.predicate = column.sortKey;
-            $scope.localConfig.reverse = true;
+            $scope.localConfig.reverse = initialSortDirection;
           } else {
-            if ($scope.localConfig.reverse === true) {
-              $scope.localConfig.reverse = false;
+            if ($scope.localConfig.reverse === initialSortDirection) {
+              $scope.localConfig.reverse = !initialSortDirection;
             } else {
               $scope.localConfig.reverse = undefined;
               $scope.localConfig.predicate = undefined;
@@ -901,19 +924,17 @@ function controllerFunction($scope, $attrs) {
             $scope.localConfig.dragChange(initialPos, endPos, data);
           }
         }
-        if (pageButtonElement) {
-          pageButtonElement.removeClass('btn-primary');
-          pageButtonElement = null;
-        }
       };
       $scope.onNextPageButtonOver = function (data, dragElement, dropElement) {
-        if (pageButtonElement) {
-          pageButtonElement.removeClass('btn-primary');
-          pageButtonElement = null;
-        }
         if (dropElement.attr('disabled') !== 'disabled') {
           pageButtonElement = dropElement;
           pageButtonElement.addClass('btn-primary');
+        }
+      };
+      $scope.onNextPageButtonLeave = function (data, dragElement, dropElement) {
+        if (pageButtonElement && pageButtonElement === dropElement) {
+          pageButtonElement.removeClass('btn-primary');
+          pageButtonElement = null;
         }
       };
       $scope.onNextPageButtonDrop = function (data, dragElement) {
@@ -927,6 +948,7 @@ function controllerFunction($scope, $attrs) {
             endPos = $scope.items.paging.pageSize * $scope.items.paging.currentPage;
           }
           adStrapUtils.moveItemInList(initialPos, endPos, $scope.localConfig.localData);
+          $scope.loadPage($scope.items.paging.currentPage);
           placeHolder.remove();
           dragElement.remove();
           if ($scope.localConfig.dragChange) {
@@ -1204,6 +1226,7 @@ var deb = function (func, delay, immediate, ctx) {
             items: adStrapUtils.evalObjectProperty(result.data, pagingConfig.response.itemsLocation),
             currentPage: options.pageNumber,
             totalPages: Math.ceil(adStrapUtils.evalObjectProperty(result.data, pagingConfig.response.totalItems) / options.pageSize),
+            totalItems: Math.ceil(adStrapUtils.evalObjectProperty(result.data, pagingConfig.response.totalItems)),
             pagingArray: [],
             token: options.token
           };
@@ -1236,8 +1259,10 @@ var deb = function (func, delay, immediate, ctx) {
           pagingArray: [],
           token: options.token
         };
-      var start = (options.pageNumber - 1) * options.pageSize, end = start + options.pageSize, i, itemsObject = options.localData, localItems;
-      localItems = $filter('orderBy')(itemsObject, options.sortKey, options.sortDirection);
+      var start = (options.pageNumber - 1) * options.pageSize, end = start + options.pageSize, i, itemsObject = options.localData, localItems = itemsObject;
+      if (options.sortKey) {
+        localItems = $filter('orderBy')(itemsObject, options.sortKey, options.sortDirection);
+      }
       response.items = localItems.slice(start, end);
       response.allItems = itemsObject;
       response.currentPage = options.pageNumber;

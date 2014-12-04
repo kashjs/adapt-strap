@@ -133,6 +133,14 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
           type: 'String',
           description: 'Which direction to sort first when column is clicked. ' +
             'EX: <code>on-click-sort-direction="DEC"</code>'
+        },
+        {
+          name: 'snug-sort-icons',
+          required: false,
+          default: 'false',
+          type: 'Boolean',
+          description: 'If true, the sort icons will be right next to header text. ' +
+            'Good for limited real estate scenarios.'
         }
       ]
     }]
@@ -247,6 +255,14 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
           type: 'String',
           description: 'Which direction to sort first when column is clicked. ' +
             'EX: <code>on-click-sort-direction="DEC"</code>'
+        },
+        {
+          name: 'snug-sort-icons',
+          required: false,
+          default: 'false',
+          type: 'Boolean',
+          description: 'If true, the sort icons will be right next to header text. ' +
+            'Good for limited real estate scenarios.'
         }
       ]
     }]

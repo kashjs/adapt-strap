@@ -13,7 +13,7 @@
           <i ng-class="iconClasses.sortable"></i>
         </div>
         <div ng-if="definition.columnHeaderTemplate"
-             ng-bind-html="definition.columnHeaderTemplate"></div>
+             ad-compile-template="definition.columnHeaderTemplate"></div>
         <div ng-if="definition.columnHeaderDisplayName"
              ng-bind="definition.columnHeaderDisplayName"></div>
       </th>
@@ -36,7 +36,7 @@
             <i ng-class="iconClasses.sortable"></i>
           </div>
           <div ng-if="definition.columnHeaderTemplate"
-               ng-bind-html="definition.columnHeaderTemplate"></div>
+               ad-compile-template="definition.columnHeaderTemplate"></div>
           <div ng-if="definition.columnHeaderDisplayName"
                ng-bind="definition.columnHeaderDisplayName"></div>
         </th>

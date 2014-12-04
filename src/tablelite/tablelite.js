@@ -103,13 +103,17 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
         };
 
         $scope.sortByColumn = function (column) {
+          var initialSortDirection = true;
+          if ($attrs.onClickSortDirection === 'DEC') {
+            initialSortDirection = false;
+          }
           if (column.sortKey) {
             if (column.sortKey !== $scope.localConfig.predicate) {
               $scope.localConfig.predicate = column.sortKey;
-              $scope.localConfig.reverse = true;
+              $scope.localConfig.reverse = initialSortDirection;
             } else {
-              if ($scope.localConfig.reverse === true) {
-                $scope.localConfig.reverse = false;
+              if ($scope.localConfig.reverse === initialSortDirection) {
+                $scope.localConfig.reverse = !initialSortDirection;
               } else {
                 $scope.localConfig.reverse = undefined;
                 $scope.localConfig.predicate = undefined;

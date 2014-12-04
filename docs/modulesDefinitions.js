@@ -125,6 +125,14 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
           default: 'NA',
           type: 'String',
           description: 'Message that will be shown in case of empty table'
+        },
+        {
+          name: 'on-click-sort-direction',
+          required: false,
+          default: 'ASC',
+          type: 'String',
+          description: 'Which direction to sort first when column is clicked. ' +
+            'EX: <code>on-click-sort-direction="DEC"</code>'
         }
       ]
     }]
@@ -231,6 +239,14 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
           type: 'Function',
           description: 'Callback for the data load event. It fires when the request finishes' +
           'It should take 2 parameters <code>$success, $response</code>.'
+        },
+        {
+          name: 'on-click-sort-direction',
+          required: false,
+          default: 'ASC',
+          type: 'String',
+          description: 'Which direction to sort first when column is clicked. ' +
+            'EX: <code>on-click-sort-direction="DEC"</code>'
         }
       ]
     }]

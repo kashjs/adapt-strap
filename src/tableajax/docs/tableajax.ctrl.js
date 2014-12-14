@@ -6,7 +6,7 @@ angular.module('adaptv.adaptStrapDocs')
       $scope.artistsColumnDef = [
         {
           columnHeaderDisplayName: 'Image',
-          template: '<img class="thumbnail ad-margin-bottom-none" ng-src="{{item.image[1][\'#text\']}}">',
+          template: '<img class="thumbnail ad-margin-bottom-none" height="40" ng-src="{{item.image[1][\'#text\']}}">',
           width: '7em'
         },
         {

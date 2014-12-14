@@ -1,8 +1,9 @@
 <div ng-controller="tableajaxCtrl">
 
-  <!-- ========== Simple Table Implementation ========== -->
   <div class="panel panel-default">
     <div class="panel-body">
+      <!-- ad_example_start -->
+      <!-- ========== Simple Table Implementation ========== -->
       <ad-table-ajax table-name="artistsTable"
                      column-definition="artistsColumnDef"
                      table-classes="table table-bordered"
@@ -11,9 +12,11 @@
                      items-not-found-message="Artists Not Found"
                      ajax-config="artistsAjaxConfig">
       </ad-table-ajax>
+      <!-- ad_example_end -->
     </div>
   </div>
 
+  <!-- ad_example_start -->
   <!--========== Advanced Implementation with search ========== -->
   <div class="panel panel-default">
     <div class="panel-heading">
@@ -39,4 +42,5 @@
       </ad-table-ajax>
     </div>
   </div>
+  <!-- ad_example_end -->
 </div>

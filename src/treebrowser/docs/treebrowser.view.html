@@ -1,25 +1,29 @@
 <div ng-controller="treebrowserCtrl">
-    <!-- ===== Usage with border & header ===== -->
-    <p>With Border & header</p>
-    <ad-tree-browser class="ad-border-default"
-                     tree-name="treeDemoBordered"
-                     row-ng-class="{added:item._selected}"
-                     tree-root="root"
-                     child-node="children"
-                     children-padding="15"
-                     bordered="true"
-                     node-header-url="src/treebrowser/docs/treeHeader.html"
-                     node-template-url="src/treebrowser/docs/treeNode.html">
-    </ad-tree-browser>
-    <hr>
-    <!-- ===== Usage ===== -->
-    <p>Simple tree without border</p>
-    <ad-tree-browser class="ad-border-default"
-         tree-name="treeDemo"
-         row-ng-class="{added:item._selected}"
-         tree-root="root"
-         child-node="children"
-         children-padding="15"
-         node-template-url="src/treebrowser/docs/treeNode.html">
-    </ad-tree-browser>
+  <p>With Border & header</p>
+  <!-- ad_example_start -->
+  <!-- ===== Usage with border & header ===== -->
+  <ad-tree-browser class="ad-border-default"
+                   tree-name="treeDemoBordered"
+                   row-ng-class="{added:item._selected}"
+                   tree-root="root"
+                   child-node="children"
+                   children-padding="15"
+                   bordered="true"
+                   node-header-url="src/treebrowser/docs/treeHeader.html"
+                   node-template-url="src/treebrowser/docs/treeNode.html">
+  </ad-tree-browser>
+  <!-- ad_example_end -->
+  <hr>
+  <p>Simple tree without border</p>
+  <!-- ad_example_start -->
+  <!-- ===== Usage Simple ===== -->
+  <ad-tree-browser class="ad-border-default"
+                   tree-name="treeDemo"
+                   row-ng-class="{added:item._selected}"
+                   tree-root="root"
+                   child-node="children"
+                   children-padding="15"
+                   node-template-url="src/treebrowser/docs/treeNode.html">
+  </ad-tree-browser>
+  <!-- ad_example_end -->
 </div>

@@ -31,13 +31,38 @@ angular.module('adaptv.adaptStrapDocs', [
       restrict: 'E',
       replace: true,
       link: function (scope, element, attrs) {
+        function extractExamples(content) {
+          var matchStartKey = '<!-- ad_example_start -->';
+          function doMatch(regexp, content) {
+            var match, matches = [];
+            while ((match = regexp.exec(content)) !== null) {
+              matches.push(match.index);
+            }
+            return matches;
+          }
+          var starts = doMatch(/<!-- ad_example_start -->/g, content);
+          var ends = doMatch(/<!-- ad_example_end -->/g, content);
+          var tempContent = '';
+          if (starts.length === ends.length) {
+            for (var i = 0; i < starts.length; i++) {
+              tempContent += content.substring(starts[i] + matchStartKey.length, ends[i]);
+            }
+          }
+          return (tempContent) ? tempContent : content;
+        }
+
         function load() {
           if ('src' in attrs) {
             $http.get(attrs.src).then(function (data) {
               var format = attrs.src.split('.');
               if (format[format.length - 1] === 'js' || format[format.length - 1] === 'html' ||
                 format[format.length - 1] === 'css') {
-                data.data = '```\n' + data.data + '\n```';
+                if (format[format.length - 1] === 'html') {
+                  data.data = '```\n' + extractExamples(data.data) + '\n```';
+                } else {
+                  data.data = '```\n' + data.data + '\n```';
+                }
+
               }
               element.html(converter.makeHtml(data.data));
               element.find('pre code').each(function (i, block) {

@@ -27,6 +27,6 @@
   </div>
   <ng-include src="'tablelite/pagination.html'"></ng-include>
 </div>
-<div ng-if="!items.allItems.length && attrs.itemsNotFoundMessage">
+<div ng-if="!localConfig.localData.length && attrs.itemsNotFoundMessage">
   <div class="alert alert-info" role="alert">{{ attrs.itemsNotFoundMessage }}</div>
 </div>

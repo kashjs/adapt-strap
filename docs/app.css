@@ -41,8 +41,7 @@ body {
     border-right: 0;
     -webkit-border-radius: 0;
     -moz-border-radius: 0;
-    border: 1px solid #ddd;
-    border-top: none;
+    border: none;
     background: white;
 }
 
@@ -79,4 +78,10 @@ pre {
 .another-cell {
     margin-left: 10px;
     color: lightseagreen;
+}
+
+.hljs {
+    background: #fff;
+    padding-left: 10px;
+    border-left: 5px solid #efefef;
 }

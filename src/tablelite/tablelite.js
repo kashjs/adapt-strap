@@ -130,7 +130,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
 
         $scope.onDragStart = function(data, dragElement) {
           var parent = dragElement.parent();
-          placeHolder = $('<tr><td colspan=' + dragElement.find('td').length + '>&nbsp;</td></tr>');
+          placeHolder = $('<tr class="ad-placeholder-row"><td colspan=' + dragElement.find('td').length + '>&nbsp;</td></tr>');
           initialPos = dragElement.index() + (($scope.items.paging.currentPage - 1) *
             $scope.items.paging.pageSize) - 1;
           if (dragElement[0] !== parent.children().last()[0]) {

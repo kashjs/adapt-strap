@@ -1,11 +1,20 @@
 <div class="ad-table-ajax-container" ng-if="items.paging.totalPages || localConfig.loadingData || !attrs.itemsNotFoundMessage">
-  <table class="ad-sticky-table" ng-class="attrs.tableClasses || 'table'" ng-if="localConfig.tableMaxHeight">
-    <tr class="ad-user-select-none" ng-include="'tableajax/headerRowContent.html'"></tr>
+  <table class="ad-sticky-table {{ attrs.tableClasses || 'table' }}"
+         ng-if="attrs.tableMaxHeight"
+         ng-class="{'ad-fixed-layout': attrs.tableMaxHeight}">
+    <thead>
+      <tr class="ad-user-select-none" ng-include="'tableajax/headerRowContent.html'"></tr>
+    </thead>
   </table>
   <div class="ad-table-container" ng-style="{'max-height': localConfig.tableMaxHeight}">
-    <table ng-class="attrs.tableClasses || 'table'">
-      <tr class="ad-user-select-none" ng-if="!localConfig.tableMaxHeight" ng-include="'tableajax/headerRowContent.html'"></tr>
-      <tr data-ng-repeat="item in items.list" ng-include="'tableajax/rowContent.html'"></tr>
+    <table class="{{ attrs.tableClasses || 'table' }}"
+           ng-class="{'ad-fixed-layout': attrs.tableMaxHeight}">
+      <thead>
+        <tr class="ad-user-select-none" ng-if="!localConfig.tableMaxHeight" ng-include="'tableajax/headerRowContent.html'"></tr>
+      </thead>
+      <tbody>
+        <tr data-ng-repeat="item in items.list" ng-include="'tableajax/rowContent.html'"></tr>
+      </tbody>
     </table>
     <ad-loading-overlay loading="localConfig.loadingData"></ad-loading-overlay>
   </div>

@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v2.0.9 - 2014-12-27
+ * @version v2.1.0 - 2015-01-01
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -649,7 +649,8 @@ function controllerFunction($scope, $attrs) {
       $scope.localConfig = {
         pagingArray: [],
         loadingData: false,
-        tableMaxHeight: $attrs.tableMaxHeight
+        tableMaxHeight: $attrs.tableMaxHeight,
+        expandedItems: []
       };
       $scope.ajaxConfig = $scope.$eval($attrs.ajaxConfig);
       $scope.columnDefinition = $scope.$eval($attrs.columnDefinition);
@@ -660,6 +661,7 @@ function controllerFunction($scope, $attrs) {
       }
       // ---------- ui handlers ---------- //
       $scope.loadPage = adDebounce(function (page) {
+        $scope.collapseAll();
         lastRequestToken = Math.random();
         $scope.localConfig.loadingData = true;
         var pageLoader = $scope.$eval($attrs.pageLoader) || adLoadPage, params = {
@@ -742,6 +744,9 @@ function controllerFunction($scope, $attrs) {
           $scope.loadPage($scope.items.paging.currentPage);
         }
       };
+      $scope.collapseAll = function () {
+        $scope.localConfig.expandedItems.length = 0;
+      };
       // ---------- initialization and event listeners ---------- //
       $scope.loadPage(1);
       // reset on parameter change
@@ -806,7 +811,8 @@ function controllerFunction($scope, $attrs) {
       $scope.localConfig = {
         localData: adStrapUtils.parse($scope.$eval($attrs.localDataSource)),
         pagingArray: [],
-        dragChange: $scope.$eval($attrs.onDragChange)
+        dragChange: $scope.$eval($attrs.onDragChange),
+        expandedItems: []
       };
       $scope.selectedItems = $scope.$eval($attrs.selectedItems);
       // ---------- Local data ---------- //
@@ -829,6 +835,7 @@ function controllerFunction($scope, $attrs) {
       }
       // ---------- ui handlers ---------- //
       $scope.loadPage = adDebounce(function (page) {
+        $scope.collapseAll();
         var itemsObject = $scope.localConfig.localData = adStrapUtils.parse($scope.$eval($attrs.localDataSource)), params;
         params = {
           pageNumber: page,
@@ -887,10 +894,14 @@ function controllerFunction($scope, $attrs) {
         $scope.localConfig.reverse = undefined;
         $scope.localConfig.predicate = undefined;
       };
+      $scope.collapseAll = function () {
+        $scope.localConfig.expandedItems.length = 0;
+      };
       $scope.onDragStart = function (data, dragElement) {
+        $scope.localConfig.expandedItems.length = 0;
         var parent = dragElement.parent();
         placeHolder = $('<tr><td colspan=' + dragElement.find('td').length + '>&nbsp;</td></tr>');
-        initialPos = dragElement.index() + ($scope.items.paging.currentPage - 1) * $scope.items.paging.pageSize - 1;
+        initialPos = dragElement.index() + ($scope.items.paging.currentPage - 1) * $scope.items.paging.pageSize;
         if (dragElement[0] !== parent.children().last()[0]) {
           dragElement.next().before(placeHolder);
         } else {
@@ -917,12 +928,13 @@ function controllerFunction($scope, $attrs) {
           }
           placeHolder.remove();
           validDrop = true;
-          endPos = dragElement.index() + ($scope.items.paging.currentPage - 1) * $scope.items.paging.pageSize - 1;
+          endPos = dragElement.index() + ($scope.items.paging.currentPage - 1) * $scope.items.paging.pageSize;
           adStrapUtils.moveItemInList(initialPos, endPos, $scope.localConfig.localData);
-          $scope.unSortTable();
           if ($scope.localConfig.dragChange) {
             $scope.localConfig.dragChange(initialPos, endPos, data);
           }
+          $scope.unSortTable();
+          $scope.loadPage($scope.items.paging.currentPage);
         }
       };
       $scope.onNextPageButtonOver = function (data, dragElement, dropElement) {
@@ -942,7 +954,7 @@ function controllerFunction($scope, $attrs) {
         if (pageButtonElement) {
           validDrop = true;
           if (pageButtonElement.attr('id') === 'btnPrev') {
-            endPos = $scope.items.paging.pageSize * ($scope.items.paging.currentPage - 1) - 1;
+            endPos = $scope.items.paging.pageSize * ($scope.items.paging.currentPage - 1);
           }
           if (pageButtonElement.attr('id') === 'btnNext') {
             endPos = $scope.items.paging.pageSize * $scope.items.paging.currentPage;

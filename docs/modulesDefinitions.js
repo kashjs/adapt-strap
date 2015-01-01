@@ -9,7 +9,8 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
     docFiles: [
       'tablelite.view.html',
       'tablelite.ctrl.js',
-      'buyCell.html'
+      'buyCell.html',
+      'carMoreInfo.html'
     ],
     directives: [{
       name: 'ad-table-lite',
@@ -141,6 +142,13 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
           type: 'Boolean',
           description: 'If true, the sort icons will be right next to header text. ' +
             'Good for limited real estate scenarios.'
+        },
+        {
+          name: 'row-expand-template',
+          required: false,
+          default: 'NA',
+          type: 'String',
+          description: 'Template for row expand. Generally used for more info or in-place edit.'
         }
       ]
     }]
@@ -154,7 +162,8 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
     docFiles: [
       'tableajax.view.html',
       'tableajax.ctrl.js',
-      'artistPicture.html'
+      'artistPicture.html',
+      'artistMoreInfo.html'
     ],
     directives: [{
       name: 'ad-table-ajax',
@@ -263,6 +272,13 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
           type: 'Boolean',
           description: 'If true, the sort icons will be right next to header text. ' +
             'Good for limited real estate scenarios.'
+        },
+        {
+          name: 'row-expand-template',
+          required: false,
+          default: 'NA',
+          type: 'String',
+          description: 'Template for row expand. Generally used for more info or in-place edit.'
         }
       ]
     }]

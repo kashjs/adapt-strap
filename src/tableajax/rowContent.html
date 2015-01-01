@@ -1,3 +1,9 @@
+<td class="ad-select-cell ad-cursor-pointer"
+    ng-if="attrs.rowExpandTemplate"
+    ng-click="adStrapUtils.addRemoveItemFromList($index, localConfig.expandedItems)">
+  <i ng-class="iconClasses.expand" ng-if="!adStrapUtils.itemExistsInList($index, localConfig.expandedItems)"></i>
+  <i ng-class="iconClasses.collapse" ng-if="adStrapUtils.itemExistsInList($index, localConfig.expandedItems)"></i>
+</td>
 <td data-ng-repeat="definition in columnDefinition"
     ng-style="{'width': definition.width}">
   <div ng-if="definition.templateUrl">

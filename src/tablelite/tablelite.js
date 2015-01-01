@@ -5,7 +5,8 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
   .directive('adTableLite', [
     '$parse', '$http', '$compile', '$filter', '$templateCache',
     '$adConfig', 'adStrapUtils', 'adDebounce', 'adLoadLocalPage',
-    function ($parse, $http, $compile, $filter, $templateCache, $adConfig, adStrapUtils, adDebounce, adLoadLocalPage) {
+    function ($parse, $http, $compile, $filter, $templateCache,
+              $adConfig, adStrapUtils, adDebounce, adLoadLocalPage) {
       'use strict';
       function controllerFunction($scope, $attrs) {
         // ---------- $$scope initialization ---------- //
@@ -29,7 +30,8 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
         $scope.localConfig = {
           localData: adStrapUtils.parse($scope.$eval($attrs.localDataSource)),
           pagingArray: [],
-          dragChange: $scope.$eval($attrs.onDragChange)
+          dragChange: $scope.$eval($attrs.onDragChange),
+          expandedItems: []
         };
 
         $scope.selectedItems = $scope.$eval($attrs.selectedItems);
@@ -61,6 +63,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
 
         // ---------- ui handlers ---------- //
         $scope.loadPage = adDebounce(function (page) {
+          $scope.collapseAll();
           var itemsObject = $scope.localConfig.localData = adStrapUtils.parse($scope.$eval($attrs.localDataSource)),
               params;
           params = {
@@ -128,11 +131,16 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           $scope.localConfig.predicate = undefined;
         };
 
+        $scope.collapseAll = function () {
+          $scope.localConfig.expandedItems.length = 0;
+        };
+
         $scope.onDragStart = function(data, dragElement) {
+          $scope.localConfig.expandedItems.length = 0;
           var parent = dragElement.parent();
           placeHolder = $('<tr><td colspan=' + dragElement.find('td').length + '>&nbsp;</td></tr>');
           initialPos = dragElement.index() + (($scope.items.paging.currentPage - 1) *
-            $scope.items.paging.pageSize) - 1;
+            $scope.items.paging.pageSize);
           if (dragElement[0] !== parent.children().last()[0]) {
             dragElement.next().before(placeHolder);
           } else {
@@ -163,12 +171,13 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
             placeHolder.remove();
             validDrop = true;
             endPos = dragElement.index() + (($scope.items.paging.currentPage - 1) *
-              $scope.items.paging.pageSize) - 1;
+              $scope.items.paging.pageSize);
             adStrapUtils.moveItemInList(initialPos, endPos, $scope.localConfig.localData);
-            $scope.unSortTable();
             if ($scope.localConfig.dragChange) {
               $scope.localConfig.dragChange(initialPos, endPos, data);
             }
+            $scope.unSortTable();
+            $scope.loadPage($scope.items.paging.currentPage);
           }
         };
 
@@ -191,7 +200,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           if (pageButtonElement) {
             validDrop = true;
             if (pageButtonElement.attr('id') === 'btnPrev') {
-              endPos = ($scope.items.paging.pageSize * ($scope.items.paging.currentPage - 1)) - 1;
+              endPos = ($scope.items.paging.pageSize * ($scope.items.paging.currentPage - 1));
             }
             if (pageButtonElement.attr('id') === 'btnNext') {
               endPos = $scope.items.paging.pageSize * $scope.items.paging.currentPage;

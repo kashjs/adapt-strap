@@ -25,7 +25,8 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
         $scope.localConfig = {
           pagingArray: [],
           loadingData: false,
-          tableMaxHeight: $attrs.tableMaxHeight
+          tableMaxHeight: $attrs.tableMaxHeight,
+          expandedItems: []
         };
         $scope.ajaxConfig = $scope.$eval($attrs.ajaxConfig);
         $scope.columnDefinition = $scope.$eval($attrs.columnDefinition);
@@ -40,6 +41,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
 
         // ---------- ui handlers ---------- //
         $scope.loadPage = adDebounce(function (page) {
+          $scope.collapseAll();
           lastRequestToken = Math.random();
           $scope.localConfig.loadingData = true;
           var pageLoader = $scope.$eval($attrs.pageLoader) || adLoadPage,
@@ -131,6 +133,10 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
             }
             $scope.loadPage($scope.items.paging.currentPage);
           }
+        };
+
+        $scope.collapseAll = function () {
+          $scope.localConfig.expandedItems.length = 0;
         };
 
         // ---------- initialization and event listeners ---------- //

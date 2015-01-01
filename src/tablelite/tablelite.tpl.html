@@ -12,25 +12,8 @@
       <thead>
         <tr class="ad-user-select-none" ng-if="!attrs.tableMaxHeight" ng-include="'tablelite/headerRowContent.html'"></tr>
       </thead>
-      <tbody>
-        <tr ng-if="!attrs.draggable" data-ng-repeat="item in items.list"
-            ng-class="{'ad-selected': attrs.selectedItems && adStrapUtils.itemExistsInList(item, selectedItems)}"
-            ng-include="'tablelite/rowContent.html'">
-        </tr>
-        <tr ng-if="attrs.draggable"
-            ad-drag="true"
-            ad-drag-handle="true"
-            ad-drop="true"
-            ad-drag-data="item"
-            ad-drop-over="onDragOver($data, $dragElement, $dropElement, $event)"
-            ad-drop-end="onDropEnd($data, $dragElement, $dropElement, $event)"
-            ad-drag-begin="onDragStart($data, $dragElement, $event)"
-            ad-drag-end="onDragEnd($data, $dragElement, $event)"
-            data-ng-repeat="item in items.list"
-            ng-class="{'ad-selected': attrs.selectedItems && adStrapUtils.itemExistsInList(item, selectedItems)}"
-            ng-include="'tablelite/rowContent.html'">
-        </tr>
-      </tbody>
+      <tbody ng-if="!attrs.draggable" ng-include="'tablelite/defaultRow.html'"></tbody>
+      <tbody ng-if="attrs.draggable" ng-include="'tablelite/draggableRow.html'"></tbody>
     </table>
   </div>
   <ng-include src="'tablelite/pagination.html'"></ng-include>

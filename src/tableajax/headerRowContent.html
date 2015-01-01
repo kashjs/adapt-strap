@@ -1,3 +1,6 @@
+<th class="ad-select-cell" ng-if="attrs.rowExpandTemplate">
+  <i></i>
+</th>
 <th data-ng-repeat="definition in columnDefinition"
     ng-click="sortByColumn(definition)"
     ng-class="{'ad-cursor-pointer': definition.sortKey}"

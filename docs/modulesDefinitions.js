@@ -9,7 +9,8 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
     docFiles: [
       'tablelite.view.html',
       'tablelite.ctrl.js',
-      'buyCell.html'
+      'buyCell.html',
+      'carMoreInfo.html'
     ],
     directives: [{
       name: 'ad-table-lite',
@@ -134,6 +135,29 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
           default: 'NA',
           type: 'String',
           description: 'Message that will be shown in case of empty table'
+        },
+        {
+          name: 'on-click-sort-direction',
+          required: false,
+          default: 'ASC',
+          type: 'String',
+          description: 'Which direction to sort first when column is clicked. ' +
+            'EX: <code>on-click-sort-direction="DEC"</code>'
+        },
+        {
+          name: 'snug-sort-icons',
+          required: false,
+          default: 'false',
+          type: 'Boolean',
+          description: 'If true, the sort icons will be right next to header text. ' +
+            'Good for limited real estate scenarios.'
+        },
+        {
+          name: 'row-expand-template',
+          required: false,
+          default: 'NA',
+          type: 'String',
+          description: 'Template for row expand. Generally used for more info or in-place edit.'
         }
       ]
     }]
@@ -147,7 +171,8 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
     docFiles: [
       'tableajax.view.html',
       'tableajax.ctrl.js',
-      'artistPicture.html'
+      'artistPicture.html',
+      'artistMoreInfo.html'
     ],
     directives: [{
       name: 'ad-table-ajax',
@@ -232,6 +257,37 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
           default: 'NA',
           type: 'String',
           description: 'Message that will be shown in case of empty table'
+        },
+        {
+          name: 'on-data-loaded',
+          required: false,
+          default: 'NA',
+          type: 'Function',
+          description: 'Callback for the data load event. It fires when the request finishes' +
+          'It should take 2 parameters <code>$success, $response</code>.'
+        },
+        {
+          name: 'on-click-sort-direction',
+          required: false,
+          default: 'ASC',
+          type: 'String',
+          description: 'Which direction to sort first when column is clicked. ' +
+            'EX: <code>on-click-sort-direction="DEC"</code>'
+        },
+        {
+          name: 'snug-sort-icons',
+          required: false,
+          default: 'false',
+          type: 'Boolean',
+          description: 'If true, the sort icons will be right next to header text. ' +
+            'Good for limited real estate scenarios.'
+        },
+        {
+          name: 'row-expand-template',
+          required: false,
+          default: 'NA',
+          type: 'String',
+          description: 'Template for row expand. Generally used for more info or in-place edit.'
         }
       ]
     }]

@@ -1,4 +1,6 @@
 <div ng-controller="tableliteCtrl">
+
+  <!-- ad_example_start -->
   <p class="text-muted">
     Cars Selected: <span class="badge" ng-bind="models.selectedCars.length"></span>
     &nbsp;&nbsp;&nbsp;&nbsp;Search: <input type="text" placeholder=" enter search text " ng-model="models.searchText"/></p>
@@ -12,18 +14,22 @@
                  table-classes="table table-bordered"
                  draggable="true"
                  on-drag-change="onChange"
+                 on-click-sort-direction="DEC"
                  items-not-found-message="Cars Not Found"
-                 selected-items="models.selectedCars"
-                 search-text="models.searchText">
-    </ad-table-lite>
+                 selected-items="models.selectedCars"=
+                 snug-sort-icons="true"
+                 row-expand-template="src/tablelite/docs/carMoreInfo.html">
+  </ad-table-lite>
 
   <h3 class="text-muted">Selected Items:</h3>
-
   <div class="well">
     <span>{{ models.selectedCars }}</span>
   </div>
+
   <h3 class="text-muted">Drag Data Change Log:</h3>
   <div class="well">
     <span>{{ models.changeInfo }}</span>
   </div>
+  <!-- ad_example_end -->
+
 </div>

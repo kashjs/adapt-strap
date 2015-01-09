@@ -3,6 +3,7 @@
     <div class="panel panel-default">
         <div class="panel-body">
             <h4 class="text-muted">Multi Selection Mode</h4>
+            <!-- ad_example_start -->
             <!-- ========== Usage Multi Select ========== -->
             <ad-infinite-dropdown dropdown-name="artistsList"
                               display-property="name"
@@ -16,7 +17,9 @@
             <span>
                 {{ selectedArtists }}
             </span>
+            <!-- ad_example_end -->
             <h4 class="text-muted">Single Selection Mode</h4>
+            <!-- ad_example_start -->
             <!-- ========== Usage Single Select ========== -->
             <ad-infinite-dropdown dropdown-name="artistList"
                                   template-url="src/infinitedropdown/docs/artist.html"
@@ -33,7 +36,9 @@
             <span>
                 {{ selectedArtist }}
             </span>
+            <!-- ad_example_end -->
             <h4 class="text-muted">Local Data Source Mode</h4>
+            <!-- ad_example_start -->
             <!-- ========== Usage Local Data Source ========== -->
             <ad-infinite-dropdown dropdown-name="artistListLocal"
                                   template="artistListTemplate"
@@ -47,6 +52,7 @@
             <span>
                 {{ localSelectedArtists }}
             </span>
+            <!-- ad_example_end -->
         </div>
     </div>
 </div>

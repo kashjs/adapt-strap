@@ -1,11 +1,17 @@
 /**
  * adapt-strap
- * @version v2.0.6 - 2014-10-26
+ * @version v2.1.0 - 2015-01-01
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
  */
 /* Style: modules.css*/
+.ad-display-inline-block {
+  display: inline-block;
+}
+.ad-fixed-layout {
+  table-layout: fixed;
+}
 .ad-margin-none {
   margin: 0;
 }
@@ -181,6 +187,9 @@
 }
 .ad-table-lite-container .ad-table-container > table {
   margin-bottom: 0;
+}
+.ad-table-lite-container .ad-dragging + tr td {
+  border-top: 0;
 }
 .ad-table-ajax-container .ad-sticky-table {
   margin-bottom: 0;

@@ -11,11 +11,13 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
         $scope.attrs = $attrs;
         $scope.iconClasses = $adConfig.iconClasses;
         $scope.adStrapUtils = adStrapUtils;
+        $scope.onDataLoadedCallback = $parse($attrs.onDataLoaded) || null;
         $scope.items = {
           list: undefined,
           paging: {
             currentPage: 1,
             totalPages: undefined,
+            totalItems: undefined,
             pageSize: Number($attrs.pageSize) || 10,
             pageSizes: $parse($attrs.pageSizes)() || [10, 25, 50]
           }
@@ -23,7 +25,8 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
         $scope.localConfig = {
           pagingArray: [],
           loadingData: false,
-          tableMaxHeight: $attrs.tableMaxHeight
+          tableMaxHeight: $attrs.tableMaxHeight,
+          expandedItems: []
         };
         $scope.ajaxConfig = $scope.$eval($attrs.ajaxConfig);
         $scope.columnDefinition = $scope.$eval($attrs.columnDefinition);
@@ -38,6 +41,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
 
         // ---------- ui handlers ---------- //
         $scope.loadPage = adDebounce(function (page) {
+          $scope.collapseAll();
           lastRequestToken = Math.random();
           $scope.localConfig.loadingData = true;
           var pageLoader = $scope.$eval($attrs.pageLoader) || adLoadPage,
@@ -53,13 +57,27 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
               if (response.token === lastRequestToken) {
                 $scope.items.list = response.items;
                 $scope.items.paging.totalPages = response.totalPages;
+                $scope.items.paging.totalItems = response.totalItems;
                 $scope.items.paging.currentPage = response.currentPage;
                 $scope.localConfig.pagingArray = response.pagingArray;
                 $scope.localConfig.loadingData = false;
               }
+
+              if ($scope.onDataLoadedCallback) {
+                $scope.onDataLoadedCallback($scope, {
+                  $success: true,
+                  $response: response
+                });
+              }
             },
             errorHandler = function () {
               $scope.localConfig.loadingData = false;
+              if ($scope.onDataLoadedCallback) {
+                $scope.onDataLoadedCallback($scope, {
+                  $success: false,
+                  $response: null
+                });
+              }
             };
 
           pageLoader(params).then(successHandler, errorHandler);
@@ -97,13 +115,17 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
         };
 
         $scope.sortByColumn = function (column) {
+          var initialSortDirection = true;
+          if ($attrs.onClickSortDirection === 'DEC') {
+            initialSortDirection = false;
+          }
           if (column.sortKey) {
             if (column.sortKey !== $scope.localConfig.predicate) {
               $scope.localConfig.predicate = column.sortKey;
-              $scope.localConfig.reverse = true;
+              $scope.localConfig.reverse = initialSortDirection;
             } else {
-              if ($scope.localConfig.reverse === true) {
-                $scope.localConfig.reverse = false;
+              if ($scope.localConfig.reverse === initialSortDirection) {
+                $scope.localConfig.reverse = !initialSortDirection;
               } else {
                 $scope.localConfig.reverse = undefined;
                 $scope.localConfig.predicate = undefined;
@@ -111,6 +133,10 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
             }
             $scope.loadPage($scope.items.paging.currentPage);
           }
+        };
+
+        $scope.collapseAll = function () {
+          $scope.localConfig.expandedItems.length = 0;
         };
 
         // ---------- initialization and event listeners ---------- //

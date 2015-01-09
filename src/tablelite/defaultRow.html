@@ -1,0 +1,8 @@
+<tr ng-repeat-start="item in items.list"
+    ng-class="{'ad-selected': attrs.selectedItems && adStrapUtils.itemExistsInList(item, selectedItems)}"
+    ng-include="'tablelite/rowContent.html'">
+</tr>
+<tr ng-if="attrs.rowExpandTemplate && adStrapUtils.itemExistsInList($index, localConfig.expandedItems)" ng-repeat-end>
+  <td colspan="{{ columnDefinition.length + !!attrs.draggable + !!attrs.selectedItems + 1}}"
+      ng-include="attrs.rowExpandTemplate"></td>
+</tr>

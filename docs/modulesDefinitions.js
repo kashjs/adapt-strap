@@ -1,6 +1,26 @@
 // ========== modules documentation configuration ========== //
 angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
   {
+    moduleName: 'alerts',
+    displayName: 'Alerts',
+    controllerName: 'alertCtrl',
+    description: 'shows notification messages to the user.',
+    docFiles: [
+      'alerts.view.html',
+      'alerts.ctrl.js'
+    ],
+    directives: [{
+      name: 'ad-alerts',
+      options: [{
+        name: 'timeout',
+        required: false,
+        default: 'NA',
+        type: 'String/Number',
+        description: 'The number of milliseconds the alert is visible, before it auto closes'
+      }]
+    }]
+  },
+  {
     moduleName: 'tablelite',
     displayName: 'Table Lite',
     controllerName: 'tableliteCtrl',

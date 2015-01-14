@@ -438,7 +438,8 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             default: 'NA',
             type: 'Function',
             description: 'Callback for drag begin event. It fires when a drag starts. it should take 3' +
-              'parameters <code>$data, $dragElement, $event</code>.'
+              'parameters <code>$data, $dragElement, $event</code>.Note: Use <code>$dragElement.el</code>' +
+              ' to get the element.'
           },
           {
             name: 'ad-drag-end',
@@ -446,7 +447,8 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             default: 'NA',
             type: 'Function',
             description: 'Callback for drag end event. It fires when a drag has ended, always after the' +
-              'drop end. It should take 3 parameters <code>$data, $dragElement, $event</code>.'
+              'drop end. It should take 3 parameters <code>$data, $dragElement, $event</code>.' +
+              '<strong>Note:</strong> Use <code>$dragElement.el</code> to get the actual element.'
           }
         ]
       },
@@ -466,7 +468,8 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             default: 'NA',
             type: 'Function',
             description: 'Callback for the drop over event. It fires on drag over a valid drop element. ' +
-              'It takes 4 parameters <code>$data, $dragElement, $dropElement, $event</code>.'
+              'It takes 4 parameters <code>$data, $dragElement, $dropElement, $event</code>.' +
+              '<strong>Note:</strong> Use <code>$dragElement/$dropElement.el</code> to get the element.'
           },
           {
             name: 'ad-drop-end',
@@ -474,7 +477,8 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             default: 'NA',
             type: 'Function',
             description: 'Callback for the drop end event. It fires on a valid drop. It takes 4 parameters' +
-              '<code>$data, $dragElement, $dropElement, $event</code>.'
+              '<code>$data, $dragElement, $dropElement, $event</code>. <strong>Note:</strong> Use <code>' +
+              '$dragElement/$dropElement.el</code> to get the element.'
           },
           {
             name: 'ad-drop-leave',
@@ -484,7 +488,8 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             description: 'Callback for the drop leave event. It fires drag element leaves drop element. ' +
               'It takes 4 parameters <code>$data, $dragElement, $dropElement, $event</code>.' +
               'For simple styling for drop hover, instead of using this callback, ' +
-              'simply target <code>ad-drop-over</code> class.'
+              'simply target <code>ad-drop-over</code> class. <strong>Note:</strong> Use <code>' +
+              '$dragElement/$dropElement.el</code> to get the element.'
           }
         ]
       }

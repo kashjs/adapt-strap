@@ -1,12 +1,12 @@
 angular.module('adaptv.adaptStrap.alerts', [])
   .directive('adAlerts', [function() {
     'use strict';
-    function controllerFunction($scope, $attrs, $timeout, alerts) {
+    function controllerFunction($scope, $attrs, $timeout, $adConfig, alerts) {
       $scope.iconMap = {
-        'info': 'info-sign',
-        'success': 'ok',
-        'warning': 'warning-sign',
-        'danger': 'exclamation-sign'
+        'info': $adConfig.iconClasses.alertInfoSign,
+        'success': $adConfig.iconClasses.alertSuccessSign,
+        'warning': $adConfig.iconClasses.alertWarningSign,
+        'danger': $adConfig.iconClasses.alertDangerSign
       };
 
       var timeout = $scope.timeout && !Number(timeout).isNAN ? $scope.timeout : 0;
@@ -38,6 +38,6 @@ angular.module('adaptv.adaptStrap.alerts', [])
         timeout: '=' //ms
       },
       templateUrl: 'alerts/alerts.tpl.html',
-      controller: ['$scope', '$attrs', '$timeout', 'alerts', controllerFunction]
+      controller: ['$scope', '$attrs', '$timeout', '$adConfig', 'alerts', controllerFunction]
     };
   }]);

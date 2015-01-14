@@ -1,4 +1,4 @@
-describe('alerts component', function() {
+describe('adAlerts component', function() {
   var controller, $timeout, $scope;
 
   beforeEach(function() {

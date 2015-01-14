@@ -109,7 +109,7 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
           default: 'NA',
           type: 'String',
           description: 'The text to search by' +
-            '<code>ex: search-content="models.searchText"</code>. If speecified, the rows' +
+            '<code>ex: search-text="models.searchText"</code>. If speecified, the rows' +
             ' will be searched and filtered by the content and the search enabled columns '
         },
         {

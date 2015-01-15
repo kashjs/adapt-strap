@@ -35,7 +35,6 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
         };
 
         $scope.selectedItems = $scope.$eval($attrs.selectedItems);
-        $scope.searchText = $scope.$eval($attrs.searchText);
 
         // ---------- Local data ---------- //
         var placeHolder = null,
@@ -138,7 +137,6 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
 
         $scope.onDragStart = function(data, dragElement) {
           $scope.localConfig.expandedItems.length = 0;
-          dragElement = dragElement.el;
           var parent = dragElement.parent();
           placeHolder = $('<tr><td colspan=' + dragElement.find('td').length + '>&nbsp;</td></tr>');
           initialPos = dragElement.index() + (($scope.items.paging.currentPage - 1) *
@@ -157,13 +155,12 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
         $scope.onDragOver = function(data, dragElement, dropElement) {
           if (placeHolder) {
             // Restricts valid drag to current table instance
-            moveElementNode(placeHolder, dropElement.el, dragElement.el);
+            moveElementNode(placeHolder, dropElement, dragElement);
           }
         };
 
         $scope.onDropEnd = function(data, dragElement) {
           var endPos;
-          dragElement = dragElement.el;
           if (placeHolder) {
             // Restricts drop to current table instance
             if (placeHolder.next()[0]) {
@@ -179,21 +176,20 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
             if ($scope.localConfig.dragChange) {
               $scope.localConfig.dragChange(initialPos, endPos, data);
             }
-
             $scope.unSortTable();
             $scope.loadPage($scope.items.paging.currentPage);
           }
         };
 
         $scope.onNextPageButtonOver = function(data, dragElement, dropElement) {
-          if (dropElement.el.attr('disabled') !== 'disabled') {
-            pageButtonElement = dropElement.el;
+          if (dropElement.attr('disabled') !== 'disabled') {
+            pageButtonElement = dropElement;
             pageButtonElement.addClass('btn-primary');
           }
         };
 
         $scope.onNextPageButtonLeave = function(data, dragElement, dropElement) {
-          if (pageButtonElement && pageButtonElement === dropElement.el) {
+          if (pageButtonElement && pageButtonElement === dropElement) {
             pageButtonElement.removeClass('btn-primary');
             pageButtonElement = null;
           }
@@ -212,7 +208,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
             adStrapUtils.moveItemInList(initialPos, endPos, $scope.localConfig.localData);
             $scope.loadPage($scope.items.paging.currentPage);
             placeHolder.remove();
-            dragElement.el.remove();
+            dragElement.remove();
             if ($scope.localConfig.dragChange) {
               $scope.localConfig.dragChange(initialPos, endPos, data);
             }
@@ -238,12 +234,6 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
         watchers.push(
           $scope.$watchCollection($attrs.columnDefinition, function () {
             $scope.columnDefinition = $scope.$eval($attrs.columnDefinition);
-          })
-        );
-
-        watchers.push(
-          $scope.$watch($attrs.searchText, function() {
-            $scope.searchText = $scope.$eval($attrs.searchText);
           })
         );
 

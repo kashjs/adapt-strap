@@ -2,7 +2,6 @@ angular.module('adaptv.adaptStrapDocs')
   .controller('tableliteCtrl', ['$scope', function ($scope) {
     $scope.models = {
       changeInfo: [],
-      searchText: '',
       selectedCars: [
         {
           id: 1,

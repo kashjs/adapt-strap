@@ -235,7 +235,7 @@ angular.module('adaptv.adaptStrap.draggable', [])
         scope.$apply(function() {
           scope.onDragStartCallback(scope, {
             $data: scope.data,
-            $dragElement: { el: element },
+            $dragElement: element,
             $event: evt
           });
         });
@@ -252,7 +252,7 @@ angular.module('adaptv.adaptStrap.draggable', [])
           scope.$apply(function () {
             scope.onDragEndCallback(scope, {
               $data: scope.data,
-              $dragElement: { el: element },
+              $dragElement: element,
               $event: evt
             });
           });
@@ -355,8 +355,8 @@ angular.module('adaptv.adaptStrap.draggable', [])
           scope.$apply(function() {
             scope.onDropOverCallback(scope, {
               $data: obj.data,
-              $dragElement: { el: obj.el },
-              $dropElement: { el: elem },
+              $dragElement: obj.el,
+              $dropElement: elem,
               $event: evt
             });
           });
@@ -370,8 +370,8 @@ angular.module('adaptv.adaptStrap.draggable', [])
             scope.$apply(function() {
               scope.onDropLeaveCallback(scope, {
                 $data: obj.data,
-                $dragElement: { el: obj.el },
-                $dropElement: { el: obj.el.lastDropElement },
+                $dragElement: obj.el,
+                $dropElement: obj.el.lastDropElement,
                 $event: evt
               });
             });
@@ -392,8 +392,8 @@ angular.module('adaptv.adaptStrap.draggable', [])
           scope.$apply(function () {
             scope.onDropCallback(scope, {
               $data: obj.data,
-              $dragElement: { el: obj.el },
-              $dropElement: { el: elem },
+              $dragElement: obj.el,
+              $dropElement: elem,
               $event: evt
             });
           });

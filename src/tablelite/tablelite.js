@@ -35,7 +35,6 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
         };
 
         $scope.selectedItems = $scope.$eval($attrs.selectedItems);
-        $scope.searchText = $scope.$eval($attrs.searchText);
 
         // ---------- Local data ---------- //
         var placeHolder = null,
@@ -238,12 +237,6 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
         watchers.push(
           $scope.$watchCollection($attrs.columnDefinition, function () {
             $scope.columnDefinition = $scope.$eval($attrs.columnDefinition);
-          })
-        );
-
-        watchers.push(
-          $scope.$watch($attrs.searchText, function() {
-            $scope.searchText = $scope.$eval($attrs.searchText);
           })
         );
 

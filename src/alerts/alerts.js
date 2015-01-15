@@ -3,6 +3,9 @@ angular.module('adaptv.adaptStrap.alerts', [])
     'use strict';
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 7addba2... alerts component changes
 =======
 >>>>>>> 7addba2... alerts component changes
     function controllerFunction($scope, $attrs, $timeout, $adConfig, alerts) {
@@ -12,6 +15,7 @@ angular.module('adaptv.adaptStrap.alerts', [])
         'warning': $adConfig.iconClasses.alertWarningSign,
         'danger': $adConfig.iconClasses.alertDangerSign
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     function controllerFunction($scope, $attrs, $timeout, alerts) {
       $scope.iconMap = {
@@ -20,6 +24,8 @@ angular.module('adaptv.adaptStrap.alerts', [])
         'warning': 'warning-sign',
         'danger': 'exclamation-sign'
 >>>>>>> e8c1a0e...  New alert component
+=======
+>>>>>>> 7addba2... alerts component changes
 =======
 >>>>>>> 7addba2... alerts component changes
       };
@@ -55,10 +61,14 @@ angular.module('adaptv.adaptStrap.alerts', [])
       templateUrl: 'alerts/alerts.tpl.html',
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
       controller: ['$scope', '$attrs', '$timeout', '$adConfig', 'alerts', controllerFunction]
 =======
       controller: ['$scope', '$attrs', '$timeout', 'alerts', controllerFunction]
 >>>>>>> e8c1a0e...  New alert component
+=======
+      controller: ['$scope', '$attrs', '$timeout', '$adConfig', 'alerts', controllerFunction]
+>>>>>>> 7addba2... alerts component changes
 =======
       controller: ['$scope', '$attrs', '$timeout', '$adConfig', 'alerts', controllerFunction]
 >>>>>>> 7addba2... alerts component changes

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 describe('adAlerts component', function() {
+=======
+describe('alerts component', function() {
+>>>>>>> e8c1a0e...  New alert component
   var controller, $timeout, $scope;
 
   beforeEach(function() {

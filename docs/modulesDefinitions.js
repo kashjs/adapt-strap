@@ -1,6 +1,26 @@
 // ========== modules documentation configuration ========== //
 angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
   {
+    moduleName: 'alerts',
+    displayName: 'Alerts',
+    controllerName: 'alertCtrl',
+    description: 'shows notification messages to the user.',
+    docFiles: [
+      'alerts.view.html',
+      'alerts.ctrl.js'
+    ],
+    directives: [{
+      name: 'ad-alerts',
+      options: [{
+        name: 'timeout',
+        required: false,
+        default: 'NA',
+        type: 'String/Number',
+        description: 'The number of milliseconds the alert is visible, before it auto closes'
+      }]
+    }]
+  },
+  {
     moduleName: 'tablelite',
     displayName: 'Table Lite',
     controllerName: 'tableliteCtrl',
@@ -102,6 +122,15 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             ' selectable by checkbox. selected rows will have <code>ad-selected</code> class on it. ' +
             'You can target this class in your css to apply custom styling to the selected rows.'
 
+        },
+        {
+          name: 'search-text',
+          required: false,
+          default: 'NA',
+          type: 'String',
+          description: 'The text to search by' +
+            '<code>ex: search-text="models.searchText"</code>. If speecified, the rows' +
+            ' will be searched and filtered by the content and the search enabled columns '
         },
         {
           name: 'btn-classes',
@@ -468,8 +497,7 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             default: 'NA',
             type: 'Function',
             description: 'Callback for the drop end event. It fires on a valid drop. It takes 4 parameters' +
-              '<code>$data, $dragElement, $dropElement, $event</code>. <strong>Note:</strong> Use <code>' +
-              '$dragElement/$dropElement.el</code> to get the element.'
+              '<code>$data, $dragElement, $dropElement, $event</code>.'
           },
           {
             name: 'ad-drop-leave',
@@ -479,8 +507,7 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             description: 'Callback for the drop leave event. It fires drag element leaves drop element. ' +
               'It takes 4 parameters <code>$data, $dragElement, $dropElement, $event</code>.' +
               'For simple styling for drop hover, instead of using this callback, ' +
-              'simply target <code>ad-drop-over</code> class. <strong>Note:</strong> Use <code>' +
-              '$dragElement/$dropElement.el</code> to get the element.'
+              'simply target <code>ad-drop-over</code> class.'
           }
         ]
       }

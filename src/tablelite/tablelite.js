@@ -35,6 +35,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
         };
 
         $scope.selectedItems = $scope.$eval($attrs.selectedItems);
+        $scope.searchText = $scope.$eval($attrs.searchText);
 
         // ---------- Local data ---------- //
         var placeHolder = null,
@@ -64,8 +65,12 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
         // ---------- ui handlers ---------- //
         $scope.loadPage = adDebounce(function (page) {
           $scope.collapseAll();
-          var itemsObject = $scope.localConfig.localData = adStrapUtils.parse($scope.$eval($attrs.localDataSource)),
-              params;
+          var itemsObject,
+              params,
+              parsedData = adStrapUtils.parse($scope.$eval($attrs.localDataSource));
+
+          $scope.localConfig.localData = $filter('filter')(parsedData, $scope.searchText);
+          itemsObject = $scope.localConfig.localData;
           params = {
             pageNumber: page,
             pageSize: (!$attrs.disablePaging) ? $scope.items.paging.pageSize : itemsObject.length,
@@ -178,14 +183,13 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
             if ($scope.localConfig.dragChange) {
               $scope.localConfig.dragChange(initialPos, endPos, data);
             }
-
             $scope.unSortTable();
             $scope.loadPage($scope.items.paging.currentPage);
           }
         };
 
         $scope.onNextPageButtonOver = function(data, dragElement, dropElement) {
-          if (dropElement.el.attr('disabled') !== 'disabled') {
+          if (dropElement.attr('disabled') !== 'disabled') {
             pageButtonElement = dropElement.el;
             pageButtonElement.addClass('btn-primary');
           }
@@ -237,6 +241,12 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
         watchers.push(
           $scope.$watchCollection($attrs.columnDefinition, function () {
             $scope.columnDefinition = $scope.$eval($attrs.columnDefinition);
+          })
+        );
+        watchers.push(
+          $scope.$watch($attrs.searchText, function() {
+            $scope.searchText = $scope.$eval($attrs.searchText);
+            $scope.loadPage($scope.items.paging.currentPage);
           })
         );
 

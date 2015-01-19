@@ -1,5 +1,5 @@
 angular.module('adaptv.adaptStrap.alerts')
-  .factory('alerts', [function() {
+  .factory('adAlerts', [function() {
     var _settings = {
       type: '',
       caption: '',

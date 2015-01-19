@@ -2,7 +2,7 @@
 angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
   {
     moduleName: 'alerts',
-    displayName: 'Alerts',
+    displayName: 'Global Alerts',
     controllerName: 'alertCtrl',
     description: 'shows notification messages to the user.',
     docFiles: [

@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v2.1.0 - 2015-01-01
+ * @version v2.1.1 - 2015-01-19
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -15,7 +15,8 @@ angular.module('adaptv.adaptStrap', [
   'adaptv.adaptStrap.tableajax',
   'adaptv.adaptStrap.loadingindicator',
   'adaptv.adaptStrap.draggable',
-  'adaptv.adaptStrap.infinitedropdown'
+  'adaptv.adaptStrap.infinitedropdown',
+  'adaptv.adaptStrap.alerts'
 ]).provider('$adConfig', function () {
   var iconClasses = this.iconClasses = {
       expand: 'glyphicon glyphicon-plus-sign',
@@ -29,7 +30,11 @@ angular.module('adaptv.adaptStrap', [
       sortDescending: 'glyphicon glyphicon-chevron-down',
       sortable: 'glyphicon glyphicon-resize-vertical',
       draggable: 'glyphicon glyphicon-align-justify',
-      selectedItem: 'glyphicon glyphicon-ok'
+      selectedItem: 'glyphicon glyphicon-ok',
+      alertInfoSign: 'glyphicon glyphicon-info-sign',
+      alertSuccessSign: 'glyphicon glyphicon-ok',
+      alertWarningSign: 'glyphicon glyphicon-warning-sign',
+      alertDangerSign: 'glyphicon glyphicon-exclamation-sign'
     }, paging = this.paging = {
       request: {
         start: 'skip',
@@ -257,7 +262,7 @@ angular.module('adaptv.adaptStrap.draggable', []).directive('adDrag', [
         scope.$apply(function () {
           scope.onDragStartCallback(scope, {
             $data: scope.data,
-            $dragElement: element,
+            $dragElement: { el: element },
             $event: evt
           });
         });
@@ -273,7 +278,7 @@ angular.module('adaptv.adaptStrap.draggable', []).directive('adDrag', [
           scope.$apply(function () {
             scope.onDragEndCallback(scope, {
               $data: scope.data,
-              $dragElement: element,
+              $dragElement: { el: element },
               $event: evt
             });
           });
@@ -369,8 +374,8 @@ angular.module('adaptv.adaptStrap.draggable', []).directive('adDrag', [
           scope.$apply(function () {
             scope.onDropOverCallback(scope, {
               $data: obj.data,
-              $dragElement: obj.el,
-              $dropElement: elem,
+              $dragElement: { el: obj.el },
+              $dropElement: { el: elem },
               $event: evt
             });
           });
@@ -381,8 +386,8 @@ angular.module('adaptv.adaptStrap.draggable', []).directive('adDrag', [
             scope.$apply(function () {
               scope.onDropLeaveCallback(scope, {
                 $data: obj.data,
-                $dragElement: obj.el,
-                $dropElement: obj.el.lastDropElement,
+                $dragElement: { el: obj.el },
+                $dropElement: { el: obj.el.lastDropElement },
                 $event: evt
               });
             });
@@ -400,8 +405,8 @@ angular.module('adaptv.adaptStrap.draggable', []).directive('adDrag', [
           scope.$apply(function () {
             scope.onDropCallback(scope, {
               $data: obj.data,
-              $dragElement: obj.el,
-              $dropElement: elem,
+              $dragElement: { el: obj.el },
+              $dropElement: { el: elem },
               $event: evt
             });
           });
@@ -424,6 +429,89 @@ angular.module('adaptv.adaptStrap.draggable', []).directive('adDrag', [
     };
   }
 ]);
+
+// Source: alerts.js
+angular.module('adaptv.adaptStrap.alerts', []).directive('adAlerts', [function () {
+function controllerFunction($scope, $attrs, $timeout, $adConfig, adAlerts) {
+      $scope.iconMap = {
+        'info': $adConfig.iconClasses.alertInfoSign,
+        'success': $adConfig.iconClasses.alertSuccessSign,
+        'warning': $adConfig.iconClasses.alertWarningSign,
+        'danger': $adConfig.iconClasses.alertDangerSign
+      };
+      var timeout = $scope.timeout && !Number(timeout).isNAN ? $scope.timeout : 0;
+      var timeoutPromise;
+      $scope.close = function () {
+        adAlerts.clear();
+        if (timeoutPromise) {
+          $timeout.cancel(timeoutPromise);
+        }
+      };
+      $scope.settings = adAlerts.settings;
+      if (timeout !== 0) {
+        $scope.$watch('settings.type', function (type) {
+          if (type !== '') {
+            if (timeoutPromise) {
+              $timeout.cancel(timeoutPromise);
+            }
+            timeoutPromise = $timeout($scope.close, timeout);
+          }
+        });
+      }
+    }
+    return {
+      restrict: 'AE',
+      scope: { timeout: '=' },
+      templateUrl: 'alerts/alerts.tpl.html',
+      controller: [
+        '$scope',
+        '$attrs',
+        '$timeout',
+        '$adConfig',
+        'adAlerts',
+        controllerFunction
+      ]
+    };
+  }]);
+
+// Source: alerts.svc.js
+angular.module('adaptv.adaptStrap.alerts').factory('adAlerts', [function () {
+    var _settings = {
+        type: '',
+        caption: '',
+        message: ''
+      };
+    function _warning(cap, msg) {
+      _updateSettings('warning', cap, msg);
+    }
+    function _info(cap, msg) {
+      _updateSettings('info', cap, msg);
+    }
+    function _success(cap, msg) {
+      _updateSettings('success', cap, msg);
+    }
+    function _error(cap, msg) {
+      _updateSettings('danger', cap, msg);
+    }
+    function _updateSettings(type, caption, msg) {
+      _settings.type = type;
+      _settings.caption = caption;
+      _settings.message = msg;
+    }
+    function _clearSettings() {
+      _settings.type = '';
+      _settings.caption = '';
+      _settings.message = '';
+    }
+    return {
+      settings: _settings,
+      warning: _warning,
+      info: _info,
+      success: _success,
+      error: _error,
+      clear: _clearSettings
+    };
+  }]);
 
 // Source: infinitedropdown.js
 angular.module('adaptv.adaptStrap.infinitedropdown', [
@@ -649,6 +737,7 @@ function controllerFunction($scope, $attrs) {
       $scope.localConfig = {
         pagingArray: [],
         loadingData: false,
+        showNoDataFoundMessage: false,
         tableMaxHeight: $attrs.tableMaxHeight,
         expandedItems: []
       };
@@ -664,6 +753,7 @@ function controllerFunction($scope, $attrs) {
         $scope.collapseAll();
         lastRequestToken = Math.random();
         $scope.localConfig.loadingData = true;
+        $scope.localConfig.showNoDataFoundMessage = false;
         var pageLoader = $scope.$eval($attrs.pageLoader) || adLoadPage, params = {
             pageNumber: page,
             pageSize: $scope.items.paging.pageSize,
@@ -680,6 +770,9 @@ function controllerFunction($scope, $attrs) {
               $scope.localConfig.pagingArray = response.pagingArray;
               $scope.localConfig.loadingData = false;
             }
+            if (!response.totalPages) {
+              $scope.localConfig.showNoDataFoundMessage = true;
+            }
             if ($scope.onDataLoadedCallback) {
               $scope.onDataLoadedCallback($scope, {
                 $success: true,
@@ -688,6 +781,7 @@ function controllerFunction($scope, $attrs) {
             }
           }, errorHandler = function () {
             $scope.localConfig.loadingData = false;
+            $scope.localConfig.showNoDataFoundMessage = true;
             if ($scope.onDataLoadedCallback) {
               $scope.onDataLoadedCallback($scope, {
                 $success: false,
@@ -815,6 +909,7 @@ function controllerFunction($scope, $attrs) {
         expandedItems: []
       };
       $scope.selectedItems = $scope.$eval($attrs.selectedItems);
+      $scope.searchText = $scope.$eval($attrs.searchText);
       // ---------- Local data ---------- //
       var placeHolder = null, pageButtonElement = null, validDrop = false, initialPos, watchers = [];
       function moveElementNode(nodeToMove, relativeNode, dragNode) {
@@ -836,7 +931,9 @@ function controllerFunction($scope, $attrs) {
       // ---------- ui handlers ---------- //
       $scope.loadPage = adDebounce(function (page) {
         $scope.collapseAll();
-        var itemsObject = $scope.localConfig.localData = adStrapUtils.parse($scope.$eval($attrs.localDataSource)), params;
+        var itemsObject, params, parsedData = adStrapUtils.parse($scope.$eval($attrs.localDataSource));
+        $scope.localConfig.localData = $filter('filter')(parsedData, $scope.searchText);
+        itemsObject = $scope.localConfig.localData;
         params = {
           pageNumber: page,
           pageSize: !$attrs.disablePaging ? $scope.items.paging.pageSize : itemsObject.length,
@@ -899,6 +996,7 @@ function controllerFunction($scope, $attrs) {
       };
       $scope.onDragStart = function (data, dragElement) {
         $scope.localConfig.expandedItems.length = 0;
+        dragElement = dragElement.el;
         var parent = dragElement.parent();
         placeHolder = $('<tr><td colspan=' + dragElement.find('td').length + '>&nbsp;</td></tr>');
         initialPos = dragElement.index() + ($scope.items.paging.currentPage - 1) * $scope.items.paging.pageSize;
@@ -914,11 +1012,12 @@ function controllerFunction($scope, $attrs) {
       $scope.onDragOver = function (data, dragElement, dropElement) {
         if (placeHolder) {
           // Restricts valid drag to current table instance
-          moveElementNode(placeHolder, dropElement, dragElement);
+          moveElementNode(placeHolder, dropElement.el, dragElement.el);
         }
       };
       $scope.onDropEnd = function (data, dragElement) {
         var endPos;
+        dragElement = dragElement.el;
         if (placeHolder) {
           // Restricts drop to current table instance
           if (placeHolder.next()[0]) {
@@ -939,12 +1038,12 @@ function controllerFunction($scope, $attrs) {
       };
       $scope.onNextPageButtonOver = function (data, dragElement, dropElement) {
         if (dropElement.attr('disabled') !== 'disabled') {
-          pageButtonElement = dropElement;
+          pageButtonElement = dropElement.el;
           pageButtonElement.addClass('btn-primary');
         }
       };
       $scope.onNextPageButtonLeave = function (data, dragElement, dropElement) {
-        if (pageButtonElement && pageButtonElement === dropElement) {
+        if (pageButtonElement && pageButtonElement === dropElement.el) {
           pageButtonElement.removeClass('btn-primary');
           pageButtonElement = null;
         }
@@ -962,7 +1061,7 @@ function controllerFunction($scope, $attrs) {
           adStrapUtils.moveItemInList(initialPos, endPos, $scope.localConfig.localData);
           $scope.loadPage($scope.items.paging.currentPage);
           placeHolder.remove();
-          dragElement.remove();
+          dragElement.el.remove();
           if ($scope.localConfig.dragChange) {
             $scope.localConfig.dragChange(initialPos, endPos, data);
           }
@@ -981,6 +1080,10 @@ function controllerFunction($scope, $attrs) {
       }));
       watchers.push($scope.$watchCollection($attrs.columnDefinition, function () {
         $scope.columnDefinition = $scope.$eval($attrs.columnDefinition);
+      }));
+      watchers.push($scope.$watch($attrs.searchText, function () {
+        $scope.searchText = $scope.$eval($attrs.searchText);
+        $scope.loadPage($scope.items.paging.currentPage);
       }));
       // ---------- disable watchers ---------- //
       $scope.$on('$destroy', function () {

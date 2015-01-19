@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v2.1.0 - 2015-01-01
+ * @version v2.1.1 - 2015-01-19
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -8,11 +8,11 @@
 (function(window, document, undefined) {
 'use strict';
 
-// Source: loadingindicator.tpl.js
-angular.module('adaptv.adaptStrap.loadingindicator').run([
+// Source: alerts.tpl.js
+angular.module('adaptv.adaptStrap.alerts').run([
   '$templateCache',
   function ($templateCache) {
-    $templateCache.put('loadingindicator/loadingindicator.tpl.html', '<div class="ad-loading-overlay-container" ng-class="containerClasses" ng-style="{\'z-index\': zIndex || \'1000\',\'position\': position || \'absolute\'}" ng-show="loading"><div class="wrapper"><div class="loading-indicator"><ad-loading-icon loading-icon-size="{{ loadingIconSize }}" loading-icon-class="{{ loadingIconClass }}"></ad-loading-icon></div></div></div>');
+    $templateCache.put('alerts/alerts.tpl.html', '<div ng-show="settings.type !== \'\'" class="alert alert-{{ settings.type }} alert-dismissible fade in" role="alert"><button type="button" class="close" ng-click="close();" aria-label="Close"><span aria-hidden="true">&times;</span></button><h4><span ng-class="iconMap[settings.type]"></span>&nbsp;&nbsp; <strong>{{ settings.caption }}</strong> {{ settings.message }}</h4></div>');
   }
 ]);
 
@@ -24,19 +24,19 @@ angular.module('adaptv.adaptStrap.infinitedropdown').run([
   }
 ]);
 
+// Source: loadingindicator.tpl.js
+angular.module('adaptv.adaptStrap.loadingindicator').run([
+  '$templateCache',
+  function ($templateCache) {
+    $templateCache.put('loadingindicator/loadingindicator.tpl.html', '<div class="ad-loading-overlay-container" ng-class="containerClasses" ng-style="{\'z-index\': zIndex || \'1000\',\'position\': position || \'absolute\'}" ng-show="loading"><div class="wrapper"><div class="loading-indicator"><ad-loading-icon loading-icon-size="{{ loadingIconSize }}" loading-icon-class="{{ loadingIconClass }}"></ad-loading-icon></div></div></div>');
+  }
+]);
+
 // Source: tableajax.tpl.js
 angular.module('adaptv.adaptStrap.tableajax').run([
   '$templateCache',
   function ($templateCache) {
-    $templateCache.put('tableajax/tableajax.tpl.html', '<div class="ad-table-ajax-container" ng-if="items.paging.totalPages || localConfig.loadingData || !attrs.itemsNotFoundMessage"><table class="ad-sticky-table {{ attrs.tableClasses || \'table\' }}" ng-if="attrs.tableMaxHeight" ng-class="{\'ad-fixed-layout\': attrs.tableMaxHeight}"><thead><tr class="ad-user-select-none" ng-include="\'tableajax/headerRowContent.html\'"></tr></thead></table><div class="ad-table-container" ng-style="{\'max-height\': localConfig.tableMaxHeight}"><table class="{{ attrs.tableClasses || \'table\' }}" ng-class="{\'ad-fixed-layout\': attrs.tableMaxHeight}"><thead><tr class="ad-user-select-none" ng-if="!localConfig.tableMaxHeight" ng-include="\'tableajax/headerRowContent.html\'"></tr></thead><tbody><tr ng-repeat-start="item in items.list" ng-include="\'tableajax/rowContent.html\'"></tr><tr ng-if="attrs.rowExpandTemplate && adStrapUtils.itemExistsInList($index, localConfig.expandedItems)" ng-repeat-end><td colspan="{{ columnDefinition.length + 1}}" ng-include="attrs.rowExpandTemplate"></td></tr></tbody></table><ad-loading-overlay loading="localConfig.loadingData"></ad-loading-overlay></div><ng-include src="\'tableajax/pagination.html\'"></ng-include></div><div ng-if="!items.paging.totalPages && !localConfig.loadingData && attrs.itemsNotFoundMessage"><div class="alert alert-info" role="alert">{{ attrs.itemsNotFoundMessage }}</div></div>');
-  }
-]);
-
-// Source: treebrowser.tpl.js
-angular.module('adaptv.adaptStrap.treebrowser').run([
-  '$templateCache',
-  function ($templateCache) {
-    $templateCache.put('treebrowser/treebrowser.tpl.html', '<div class="ad-tree-browser-container" ng-class="{\'tree-bordered\': attrs.bordered}"><div data-level="0" class="tree-view"><div class="tree"><script type="text/ng-template" id="{{ localConfig.rendererTemplateId }}"><div class="content"\n' + '                     ng-style="{\'padding-left\': level * (attrs.childrenPadding || 15) + \'px\'}"\n' + '                     ng-class="{{ attrs.rowNgClass }}">\n' + '                    <div class="content-holder">\n' + '                        <div class="toggle">\n' + '                            <i ng-if="!item._ad_expanded && hasChildren(item) && !item._ad_loading"\n' + '                               ng-class="iconClasses.expand"\n' + '                               ng-click="toggle($event,item)"></i>\n' + '                            <i ng-if="item._ad_expanded && !item._ad_loading"\n' + '                               ng-class="iconClasses.collapse"\n' + '                               ng-click="toggle($event,item)"></i>\n' + '                            <span ng-if="item._ad_loading">\n' + '                                <i ng-class="iconClasses.loadingSpinner"></i>\n' + '                            </span>\n' + '                        </div>\n' + '                        <div class="node-content">\n' + '                          <ng-include ng-if="attrs.nodeTemplateUrl" src="attrs.nodeTemplateUrl"></ng-include>\n' + '                          <span ng-if="!attrs.nodeTemplateUrl">{{ item.name || "" }}</span>\n' + '                        </div>\n' + '                    </div>\n' + '                </div>\n' + '                <div ng-show="item._ad_expanded">\n' + '                    <div class="tree-level tree-sub-level"\n' + '                         onLoad="level=level+1"\n' + '                         ng-repeat="item in item[attrs.childNode]"\n' + '                         ng-include="\'{{ localConfig.rendererTemplateId }}\'">\n' + '                    </div>\n' + '                </div></script><div><div class="tree-level tree-header-level border" ng-if="attrs.nodeHeaderUrl"><div class="content" ng-style="{\'padding-left\': (attrs.childrenPadding || 15) + \'px\'}"><div class="content-holder"><div class="toggle"></div><div class="node-content ad-user-select-none" ng-include="attrs.nodeHeaderUrl"></div></div></div></div><div class="tree-level tree-top-level border" onload="level = 1" ng-repeat="item in treeRoot[attrs.childNode]" ng-include="\'{{ localConfig.rendererTemplateId }}\'"></div></div></div></div></div>');
+    $templateCache.put('tableajax/tableajax.tpl.html', '<div class="ad-table-ajax-container" ng-if="items.paging.totalPages || localConfig.loadingData || !attrs.itemsNotFoundMessage"><table class="ad-sticky-table {{ attrs.tableClasses || \'table\' }}" ng-if="attrs.tableMaxHeight" ng-class="{\'ad-fixed-layout\': attrs.tableMaxHeight}"><thead><tr class="ad-user-select-none" ng-include="\'tableajax/headerRowContent.html\'"></tr></thead></table><div class="ad-table-container" ng-style="{\'max-height\': localConfig.tableMaxHeight}"><table class="{{ attrs.tableClasses || \'table\' }}" ng-class="{\'ad-fixed-layout\': attrs.tableMaxHeight}"><thead><tr class="ad-user-select-none" ng-if="!localConfig.tableMaxHeight" ng-include="\'tableajax/headerRowContent.html\'"></tr></thead><tbody><tr ng-repeat-start="item in items.list" ng-include="\'tableajax/rowContent.html\'"></tr><tr ng-if="attrs.rowExpandTemplate && adStrapUtils.itemExistsInList($index, localConfig.expandedItems)" ng-repeat-end><td colspan="{{ columnDefinition.length + 1}}" ng-include="attrs.rowExpandTemplate"></td></tr></tbody></table><ad-loading-overlay loading="localConfig.loadingData"></ad-loading-overlay></div><ng-include src="\'tableajax/pagination.html\'"></ng-include></div><div ng-if="localConfig.showNoDataFoundMessage && !localConfig.loadingData && attrs.itemsNotFoundMessage"><div class="alert alert-info" role="alert">{{ attrs.itemsNotFoundMessage }}</div></div>');
   }
 ]);
 
@@ -45,6 +45,14 @@ angular.module('adaptv.adaptStrap.tablelite').run([
   '$templateCache',
   function ($templateCache) {
     $templateCache.put('tablelite/tablelite.tpl.html', '<div class="ad-table-lite-container" ng-if="items.allItems.length || !attrs.itemsNotFoundMessage"><table class="ad-sticky-table {{ attrs.tableClasses || \'table\' }}" ng-if="attrs.tableMaxHeight" ng-class="{\'ad-fixed-layout\': attrs.tableMaxHeight}"><thead><tr class="ad-user-select-none" ng-include="\'tablelite/headerRowContent.html\'"></tr></thead></table><div class="ad-table-container" ng-style="{\'max-height\': attrs.tableMaxHeight}"><table class="{{ attrs.tableClasses || \'table\' }}" ng-class="{\'ad-fixed-layout\': attrs.tableMaxHeight}"><thead><tr class="ad-user-select-none" ng-if="!attrs.tableMaxHeight" ng-include="\'tablelite/headerRowContent.html\'"></tr></thead><tbody ng-if="!attrs.draggable" ng-include="\'tablelite/defaultRow.html\'"></tbody><tbody ng-if="attrs.draggable" ng-include="\'tablelite/draggableRow.html\'"></tbody></table></div><ng-include src="\'tablelite/pagination.html\'"></ng-include></div><div ng-if="!localConfig.localData.length && attrs.itemsNotFoundMessage"><div class="alert alert-info" role="alert">{{ attrs.itemsNotFoundMessage }}</div></div>');
+  }
+]);
+
+// Source: treebrowser.tpl.js
+angular.module('adaptv.adaptStrap.treebrowser').run([
+  '$templateCache',
+  function ($templateCache) {
+    $templateCache.put('treebrowser/treebrowser.tpl.html', '<div class="ad-tree-browser-container" ng-class="{\'tree-bordered\': attrs.bordered}"><div data-level="0" class="tree-view"><div class="tree"><script type="text/ng-template" id="{{ localConfig.rendererTemplateId }}"><div class="content"\n' + '                     ng-style="{\'padding-left\': level * (attrs.childrenPadding || 15) + \'px\'}"\n' + '                     ng-class="{{ attrs.rowNgClass }}">\n' + '                    <div class="content-holder">\n' + '                        <div class="toggle">\n' + '                            <i ng-if="!item._ad_expanded && hasChildren(item) && !item._ad_loading"\n' + '                               ng-class="iconClasses.expand"\n' + '                               ng-click="toggle($event,item)"></i>\n' + '                            <i ng-if="item._ad_expanded && !item._ad_loading"\n' + '                               ng-class="iconClasses.collapse"\n' + '                               ng-click="toggle($event,item)"></i>\n' + '                            <span ng-if="item._ad_loading">\n' + '                                <i ng-class="iconClasses.loadingSpinner"></i>\n' + '                            </span>\n' + '                        </div>\n' + '                        <div class="node-content">\n' + '                          <ng-include ng-if="attrs.nodeTemplateUrl" src="attrs.nodeTemplateUrl"></ng-include>\n' + '                          <span ng-if="!attrs.nodeTemplateUrl">{{ item.name || "" }}</span>\n' + '                        </div>\n' + '                    </div>\n' + '                </div>\n' + '                <div ng-show="item._ad_expanded">\n' + '                    <div class="tree-level tree-sub-level"\n' + '                         onLoad="level=level+1"\n' + '                         ng-repeat="item in item[attrs.childNode]"\n' + '                         ng-include="\'{{ localConfig.rendererTemplateId }}\'">\n' + '                    </div>\n' + '                </div></script><div><div class="tree-level tree-header-level border" ng-if="attrs.nodeHeaderUrl"><div class="content" ng-style="{\'padding-left\': (attrs.childrenPadding || 15) + \'px\'}"><div class="content-holder"><div class="toggle"></div><div class="node-content ad-user-select-none" ng-include="attrs.nodeHeaderUrl"></div></div></div></div><div class="tree-level tree-top-level border" onload="level = 1" ng-repeat="item in treeRoot[attrs.childNode]" ng-include="\'{{ localConfig.rendererTemplateId }}\'"></div></div></div></div></div>');
   }
 ]);
 

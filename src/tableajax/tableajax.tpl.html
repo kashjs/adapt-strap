@@ -24,6 +24,6 @@
   </div>
   <ng-include src="'tableajax/pagination.html'"></ng-include>
 </div>
-<div ng-if="!items.paging.totalPages && !localConfig.loadingData && attrs.itemsNotFoundMessage">
+<div ng-if="localConfig.showNoDataFoundMessage && !localConfig.loadingData && attrs.itemsNotFoundMessage">
   <div class="alert alert-info" role="alert">{{ attrs.itemsNotFoundMessage }}</div>
 </div>

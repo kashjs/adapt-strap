@@ -25,6 +25,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
         $scope.localConfig = {
           pagingArray: [],
           loadingData: false,
+          showNoDataFoundMessage: false,
           tableMaxHeight: $attrs.tableMaxHeight,
           expandedItems: []
         };
@@ -44,6 +45,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
           $scope.collapseAll();
           lastRequestToken = Math.random();
           $scope.localConfig.loadingData = true;
+          $scope.localConfig.showNoDataFoundMessage = false;
           var pageLoader = $scope.$eval($attrs.pageLoader) || adLoadPage,
             params = {
               pageNumber: page,
@@ -63,6 +65,10 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
                 $scope.localConfig.loadingData = false;
               }
 
+              if (!response.totalPages) {
+                $scope.localConfig.showNoDataFoundMessage = true;
+              }
+
               if ($scope.onDataLoadedCallback) {
                 $scope.onDataLoadedCallback($scope, {
                   $success: true,
@@ -72,6 +78,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
             },
             errorHandler = function () {
               $scope.localConfig.loadingData = false;
+              $scope.localConfig.showNoDataFoundMessage = true;
               if ($scope.onDataLoadedCallback) {
                 $scope.onDataLoadedCallback($scope, {
                   $success: false,

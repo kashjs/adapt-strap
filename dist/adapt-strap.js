@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v2.1.1 - 2015-01-19
+ * @version v2.1.2 - 2015-01-25
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -57,6 +57,89 @@ angular.module('adaptv.adaptStrap', [
     };
   };
 });
+
+// Source: alerts.js
+angular.module('adaptv.adaptStrap.alerts', []).directive('adAlerts', [function () {
+function controllerFunction($scope, $attrs, $timeout, $adConfig, adAlerts) {
+      $scope.iconMap = {
+        'info': $adConfig.iconClasses.alertInfoSign,
+        'success': $adConfig.iconClasses.alertSuccessSign,
+        'warning': $adConfig.iconClasses.alertWarningSign,
+        'danger': $adConfig.iconClasses.alertDangerSign
+      };
+      var timeout = $scope.timeout && !Number(timeout).isNAN ? $scope.timeout : 0;
+      var timeoutPromise;
+      $scope.close = function () {
+        adAlerts.clear();
+        if (timeoutPromise) {
+          $timeout.cancel(timeoutPromise);
+        }
+      };
+      $scope.settings = adAlerts.settings;
+      if (timeout !== 0) {
+        $scope.$watch('settings.type', function (type) {
+          if (type !== '') {
+            if (timeoutPromise) {
+              $timeout.cancel(timeoutPromise);
+            }
+            timeoutPromise = $timeout($scope.close, timeout);
+          }
+        });
+      }
+    }
+    return {
+      restrict: 'AE',
+      scope: { timeout: '=' },
+      templateUrl: 'alerts/alerts.tpl.html',
+      controller: [
+        '$scope',
+        '$attrs',
+        '$timeout',
+        '$adConfig',
+        'adAlerts',
+        controllerFunction
+      ]
+    };
+  }]);
+
+// Source: alerts.svc.js
+angular.module('adaptv.adaptStrap.alerts').factory('adAlerts', [function () {
+    var _settings = {
+        type: '',
+        caption: '',
+        message: ''
+      };
+    function _warning(cap, msg) {
+      _updateSettings('warning', cap, msg);
+    }
+    function _info(cap, msg) {
+      _updateSettings('info', cap, msg);
+    }
+    function _success(cap, msg) {
+      _updateSettings('success', cap, msg);
+    }
+    function _error(cap, msg) {
+      _updateSettings('danger', cap, msg);
+    }
+    function _updateSettings(type, caption, msg) {
+      _settings.type = type;
+      _settings.caption = caption;
+      _settings.message = msg;
+    }
+    function _clearSettings() {
+      _settings.type = '';
+      _settings.caption = '';
+      _settings.message = '';
+    }
+    return {
+      settings: _settings,
+      warning: _warning,
+      info: _info,
+      success: _success,
+      error: _error,
+      clear: _clearSettings
+    };
+  }]);
 
 // Source: draggable.js
 angular.module('adaptv.adaptStrap.draggable', []).directive('adDrag', [
@@ -430,89 +513,6 @@ angular.module('adaptv.adaptStrap.draggable', []).directive('adDrag', [
   }
 ]);
 
-// Source: alerts.js
-angular.module('adaptv.adaptStrap.alerts', []).directive('adAlerts', [function () {
-function controllerFunction($scope, $attrs, $timeout, $adConfig, adAlerts) {
-      $scope.iconMap = {
-        'info': $adConfig.iconClasses.alertInfoSign,
-        'success': $adConfig.iconClasses.alertSuccessSign,
-        'warning': $adConfig.iconClasses.alertWarningSign,
-        'danger': $adConfig.iconClasses.alertDangerSign
-      };
-      var timeout = $scope.timeout && !Number(timeout).isNAN ? $scope.timeout : 0;
-      var timeoutPromise;
-      $scope.close = function () {
-        adAlerts.clear();
-        if (timeoutPromise) {
-          $timeout.cancel(timeoutPromise);
-        }
-      };
-      $scope.settings = adAlerts.settings;
-      if (timeout !== 0) {
-        $scope.$watch('settings.type', function (type) {
-          if (type !== '') {
-            if (timeoutPromise) {
-              $timeout.cancel(timeoutPromise);
-            }
-            timeoutPromise = $timeout($scope.close, timeout);
-          }
-        });
-      }
-    }
-    return {
-      restrict: 'AE',
-      scope: { timeout: '=' },
-      templateUrl: 'alerts/alerts.tpl.html',
-      controller: [
-        '$scope',
-        '$attrs',
-        '$timeout',
-        '$adConfig',
-        'adAlerts',
-        controllerFunction
-      ]
-    };
-  }]);
-
-// Source: alerts.svc.js
-angular.module('adaptv.adaptStrap.alerts').factory('adAlerts', [function () {
-    var _settings = {
-        type: '',
-        caption: '',
-        message: ''
-      };
-    function _warning(cap, msg) {
-      _updateSettings('warning', cap, msg);
-    }
-    function _info(cap, msg) {
-      _updateSettings('info', cap, msg);
-    }
-    function _success(cap, msg) {
-      _updateSettings('success', cap, msg);
-    }
-    function _error(cap, msg) {
-      _updateSettings('danger', cap, msg);
-    }
-    function _updateSettings(type, caption, msg) {
-      _settings.type = type;
-      _settings.caption = caption;
-      _settings.message = msg;
-    }
-    function _clearSettings() {
-      _settings.type = '';
-      _settings.caption = '';
-      _settings.message = '';
-    }
-    return {
-      settings: _settings,
-      warning: _warning,
-      info: _info,
-      success: _success,
-      error: _error,
-      clear: _clearSettings
-    };
-  }]);
-
 // Source: infinitedropdown.js
 angular.module('adaptv.adaptStrap.infinitedropdown', [
   'adaptv.adaptStrap.utils',
@@ -841,6 +841,13 @@ function controllerFunction($scope, $attrs) {
       $scope.collapseAll = function () {
         $scope.localConfig.expandedItems.length = 0;
       };
+      $scope.getRowClass = function (item, index) {
+        var rowClass = '';
+        if ($attrs.rowClassProvider) {
+          rowClass += $scope.$eval($attrs.rowClassProvider)(item, index);
+        }
+        return rowClass;
+      };
       // ---------- initialization and event listeners ---------- //
       $scope.loadPage(1);
       // reset on parameter change
@@ -1068,6 +1075,14 @@ function controllerFunction($scope, $attrs) {
           pageButtonElement.removeClass('btn-primary');
           pageButtonElement = null;
         }
+      };
+      $scope.getRowClass = function (item, index) {
+        var rowClass = '';
+        rowClass += $attrs.selectedItems && adStrapUtils.itemExistsInList(item, $scope.selectedItems) ? 'ad-selected' : '';
+        if ($attrs.rowClassProvider) {
+          rowClass += ' ' + $scope.$eval($attrs.rowClassProvider)(item, index);
+        }
+        return rowClass;
       };
       // ---------- initialization and event listeners ---------- //
       $scope.loadPage(1);

@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v2.1.1 - 2015-01-19
+ * @version v2.1.2 - 2015-01-25
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -36,7 +36,7 @@ angular.module('adaptv.adaptStrap.loadingindicator').run([
 angular.module('adaptv.adaptStrap.tableajax').run([
   '$templateCache',
   function ($templateCache) {
-    $templateCache.put('tableajax/tableajax.tpl.html', '<div class="ad-table-ajax-container" ng-if="items.paging.totalPages || localConfig.loadingData || !attrs.itemsNotFoundMessage"><table class="ad-sticky-table {{ attrs.tableClasses || \'table\' }}" ng-if="attrs.tableMaxHeight" ng-class="{\'ad-fixed-layout\': attrs.tableMaxHeight}"><thead><tr class="ad-user-select-none" ng-include="\'tableajax/headerRowContent.html\'"></tr></thead></table><div class="ad-table-container" ng-style="{\'max-height\': localConfig.tableMaxHeight}"><table class="{{ attrs.tableClasses || \'table\' }}" ng-class="{\'ad-fixed-layout\': attrs.tableMaxHeight}"><thead><tr class="ad-user-select-none" ng-if="!localConfig.tableMaxHeight" ng-include="\'tableajax/headerRowContent.html\'"></tr></thead><tbody><tr ng-repeat-start="item in items.list" ng-include="\'tableajax/rowContent.html\'"></tr><tr ng-if="attrs.rowExpandTemplate && adStrapUtils.itemExistsInList($index, localConfig.expandedItems)" ng-repeat-end><td colspan="{{ columnDefinition.length + 1}}" ng-include="attrs.rowExpandTemplate"></td></tr></tbody></table><ad-loading-overlay loading="localConfig.loadingData"></ad-loading-overlay></div><ng-include src="\'tableajax/pagination.html\'"></ng-include></div><div ng-if="localConfig.showNoDataFoundMessage && !localConfig.loadingData && attrs.itemsNotFoundMessage"><div class="alert alert-info" role="alert">{{ attrs.itemsNotFoundMessage }}</div></div>');
+    $templateCache.put('tableajax/tableajax.tpl.html', '<div class="ad-table-ajax-container" ng-if="items.paging.totalPages || localConfig.loadingData || !attrs.itemsNotFoundMessage"><table class="ad-sticky-table {{ attrs.tableClasses || \'table\' }}" ng-if="attrs.tableMaxHeight" ng-class="{\'ad-fixed-layout\': attrs.tableMaxHeight}"><thead><tr class="ad-user-select-none" ng-include="\'tableajax/headerRowContent.html\'"></tr></thead></table><div class="ad-table-container" ng-style="{\'max-height\': localConfig.tableMaxHeight}"><table class="{{ attrs.tableClasses || \'table\' }}" ng-class="{\'ad-fixed-layout\': attrs.tableMaxHeight}"><thead><tr class="ad-user-select-none" ng-if="!localConfig.tableMaxHeight" ng-include="\'tableajax/headerRowContent.html\'"></tr></thead><tbody><tr ng-repeat-start="item in items.list" ng-class="getRowClass(item, $index)" ng-include="\'tableajax/rowContent.html\'"></tr><tr ng-if="attrs.rowExpandTemplate && adStrapUtils.itemExistsInList($index, localConfig.expandedItems)" ng-repeat-end><td colspan="{{ columnDefinition.length + 1}}" ng-include="attrs.rowExpandTemplate"></td></tr></tbody></table><ad-loading-overlay loading="localConfig.loadingData"></ad-loading-overlay></div><ng-include src="\'tableajax/pagination.html\'"></ng-include></div><div ng-if="localConfig.showNoDataFoundMessage && !localConfig.loadingData && attrs.itemsNotFoundMessage"><div class="alert alert-info" role="alert">{{ attrs.itemsNotFoundMessage }}</div></div>');
   }
 ]);
 
@@ -84,7 +84,7 @@ angular.module('adaptv.adaptStrap.tableajax').run([
 angular.module('adaptv.adaptStrap.tablelite').run([
   '$templateCache',
   function ($templateCache) {
-    $templateCache.put('tablelite/defaultRow.html', '<tr ng-repeat-start="item in items.list" ng-class="{\'ad-selected\': attrs.selectedItems && adStrapUtils.itemExistsInList(item, selectedItems)}" ng-include="\'tablelite/rowContent.html\'"></tr><tr ng-if="attrs.rowExpandTemplate && adStrapUtils.itemExistsInList($index, localConfig.expandedItems)" ng-repeat-end><td colspan="{{ columnDefinition.length + !!attrs.draggable + !!attrs.selectedItems + 1}}" ng-include="attrs.rowExpandTemplate"></td></tr>');
+    $templateCache.put('tablelite/defaultRow.html', '<tr ng-repeat-start="item in items.list" ng-class="getRowClass(item, $index)" ng-include="\'tablelite/rowContent.html\'"></tr><tr ng-if="attrs.rowExpandTemplate && adStrapUtils.itemExistsInList($index, localConfig.expandedItems)" ng-repeat-end><td colspan="{{ columnDefinition.length + !!attrs.draggable + !!attrs.selectedItems + 1}}" ng-include="attrs.rowExpandTemplate"></td></tr>');
   }
 ]);
 
@@ -92,7 +92,7 @@ angular.module('adaptv.adaptStrap.tablelite').run([
 angular.module('adaptv.adaptStrap.tablelite').run([
   '$templateCache',
   function ($templateCache) {
-    $templateCache.put('tablelite/draggableRow.html', '<tr ad-drag="true" ad-drag-handle="true" ad-drop="true" ad-drag-data="item" ad-drop-over="onDragOver($data, $dragElement, $dropElement, $event)" ad-drop-end="onDropEnd($data, $dragElement, $dropElement, $event)" ad-drag-begin="onDragStart($data, $dragElement, $event)" ad-drag-end="onDragEnd($data, $dragElement, $event)" ng-repeat-start="item in items.list" ng-class="{\'ad-selected\': attrs.selectedItems && adStrapUtils.itemExistsInList(item, selectedItems)}" ng-include="\'tablelite/rowContent.html\'"></tr><tr ng-if="attrs.rowExpandTemplate && adStrapUtils.itemExistsInList($index, localConfig.expandedItems)" ng-repeat-end><td colspan="{{ columnDefinition.length + !!attrs.draggable + !!attrs.selectedItems + 1}}" ng-include="attrs.rowExpandTemplate"></td></tr>');
+    $templateCache.put('tablelite/draggableRow.html', '<tr ad-drag="true" ad-drag-handle="true" ad-drop="true" ad-drag-data="item" ad-drop-over="onDragOver($data, $dragElement, $dropElement, $event)" ad-drop-end="onDropEnd($data, $dragElement, $dropElement, $event)" ad-drag-begin="onDragStart($data, $dragElement, $event)" ad-drag-end="onDragEnd($data, $dragElement, $event)" ng-repeat-start="item in items.list" ng-class="getRowClass(item, $index)" ng-include="\'tablelite/rowContent.html\'"></tr><tr ng-if="attrs.rowExpandTemplate && adStrapUtils.itemExistsInList($index, localConfig.expandedItems)" ng-repeat-end><td colspan="{{ columnDefinition.length + !!attrs.draggable + !!attrs.selectedItems + 1}}" ng-include="attrs.rowExpandTemplate"></td></tr>');
   }
 ]);
 

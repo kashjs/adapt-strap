@@ -7,7 +7,7 @@
     ad-drag-begin="onDragStart($data, $dragElement, $event)"
     ad-drag-end="onDragEnd($data, $dragElement, $event)"
     ng-repeat-start="item in items.list"
-    ng-class="{'ad-selected': attrs.selectedItems && adStrapUtils.itemExistsInList(item, selectedItems)}"
+    ng-class="getRowClass(item, $index)"
     ng-include="'tablelite/rowContent.html'">
 </tr>
 <tr ng-if="attrs.rowExpandTemplate && adStrapUtils.itemExistsInList($index, localConfig.expandedItems)" ng-repeat-end>

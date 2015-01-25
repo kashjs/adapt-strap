@@ -146,6 +146,14 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
           $scope.localConfig.expandedItems.length = 0;
         };
 
+        $scope.getRowClass = function (item, index) {
+          var rowClass = '';
+          if ($attrs.rowClassProvider) {
+            rowClass += $scope.$eval($attrs.rowClassProvider)(item, index);
+          }
+          return rowClass;
+        };
+
         // ---------- initialization and event listeners ---------- //
         $scope.loadPage(1);
 

@@ -224,6 +224,16 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           }
         };
 
+        $scope.getRowClass = function (item, index) {
+          var rowClass = '';
+          rowClass += ($attrs.selectedItems &&
+            adStrapUtils.itemExistsInList(item, $scope.selectedItems)) ? 'ad-selected' : '';
+          if ($attrs.rowClassProvider) {
+            rowClass += ' ' + $scope.$eval($attrs.rowClassProvider)(item, index);
+          }
+          return rowClass;
+        };
+
         // ---------- initialization and event listeners ---------- //
         $scope.loadPage(1);
 

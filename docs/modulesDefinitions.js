@@ -124,6 +124,19 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
 
         },
         {
+          name: 'row-class-provider',
+          required: false,
+          default: 'NA',
+          type: 'Function',
+          description: 'Path to the function that returns row class' +
+            '<code>row-class-provider="checkRowSelected"</code>. The function ' +
+            'will get called with row item and the index. You can do any logic on row' +
+            'and return a class string. That class will be applied to the row. Good usecase' +
+            'is if you want to apply primary class to the selected rows. We recommend you return' +
+            'Default bootstrap classes (<code>"active", "success", "warning", "danger", "info"</code>)'
+
+        },
+        {
           name: 'search-text',
           required: false,
           default: 'NA',
@@ -277,6 +290,19 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
           default: 'NA',
           type: 'String',
           description: 'Message that will be shown in case of empty table'
+        },
+        {
+          name: 'row-class-provider',
+          required: false,
+          default: 'NA',
+          type: 'Function',
+          description: 'Path to the function that returns row class' +
+            '<code>row-class-provider="checkRowSelected"</code>. The function ' +
+            'will get called with row item and the index. You can do any logic on row' +
+            'and return a class string. That class will be applied to the row. Good usecase' +
+            'is if you want to apply primary class to the selected rows. We recommend you return' +
+            'Default bootstrap classes (<code>"active", "success", "warning", "danger", "info"</code>)'
+
         },
         {
           name: 'on-data-loaded',

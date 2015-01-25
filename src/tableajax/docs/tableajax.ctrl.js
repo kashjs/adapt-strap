@@ -64,6 +64,14 @@ angular.module('adaptv.adaptStrapDocs')
         }
       };
 
+      $scope.checkRowSelected = function (item, index) {
+        var rowClass = '';
+        if (index % 2) {
+          rowClass = 'success';
+        }
+        return rowClass;
+      };
+
       // live search implementation
       $scope.artistSearchKey = $scope.artistsAjaxConfigSearch.params.artist;
       $scope.searchArtist = function () {

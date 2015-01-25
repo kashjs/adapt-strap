@@ -125,4 +125,15 @@ angular.module('adaptv.adaptStrapDocs')
     $scope.buyCar = function (car) {
       alert(car.name);
     };
+
+    $scope.checkRowSelected = function (item, index) {
+      var found = false;
+      $scope.models.selectedCars.forEach(function (selectedItem) {
+        if (item.id === selectedItem.id) {
+          found = true;
+        }
+      });
+      return found ? 'info row-' + index : 'row-' + index;
+    };
+
   }]);

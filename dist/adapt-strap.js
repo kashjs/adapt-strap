@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v2.1.3 - 2015-01-28
+ * @version v2.1.4 - 2015-01-28
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -1044,14 +1044,14 @@ function controllerFunction($scope, $attrs) {
         }
       };
       $scope.onNextPageButtonOver = function (data, dragElement, dropElement) {
-        if (dropElement.attr('disabled') !== 'disabled') {
+        if (dropElement.el.attr('disabled') !== 'disabled') {
           pageButtonElement = dropElement.el;
-          pageButtonElement.addClass('btn-primary');
+          pageButtonElement.parent().addClass('active');
         }
       };
       $scope.onNextPageButtonLeave = function (data, dragElement, dropElement) {
         if (pageButtonElement && pageButtonElement === dropElement.el) {
-          pageButtonElement.removeClass('btn-primary');
+          pageButtonElement.parent().removeClass('active');
           pageButtonElement = null;
         }
       };
@@ -1072,7 +1072,7 @@ function controllerFunction($scope, $attrs) {
           if ($scope.localConfig.dragChange) {
             $scope.localConfig.dragChange(initialPos, endPos, data);
           }
-          pageButtonElement.removeClass('btn-primary');
+          pageButtonElement.parent().removeClass('active');
           pageButtonElement = null;
         }
       };

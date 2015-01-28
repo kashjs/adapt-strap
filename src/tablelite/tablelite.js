@@ -189,15 +189,15 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
         };
 
         $scope.onNextPageButtonOver = function(data, dragElement, dropElement) {
-          if (dropElement.attr('disabled') !== 'disabled') {
+          if (dropElement.el.attr('disabled') !== 'disabled') {
             pageButtonElement = dropElement.el;
-            pageButtonElement.addClass('btn-primary');
+            pageButtonElement.parent().addClass('active');
           }
         };
 
         $scope.onNextPageButtonLeave = function(data, dragElement, dropElement) {
           if (pageButtonElement && pageButtonElement === dropElement.el) {
-            pageButtonElement.removeClass('btn-primary');
+            pageButtonElement.parent().removeClass('active');
             pageButtonElement = null;
           }
         };
@@ -219,7 +219,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
             if ($scope.localConfig.dragChange) {
               $scope.localConfig.dragChange(initialPos, endPos, data);
             }
-            pageButtonElement.removeClass('btn-primary');
+            pageButtonElement.parent().removeClass('active');
             pageButtonElement = null;
           }
         };

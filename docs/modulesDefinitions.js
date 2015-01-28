@@ -91,10 +91,10 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
         {
           name: 'pagination-btn-group-classes',
           required: false,
-          default: '"btn-group btn-group-sm"',
+          default: '"pagination pagination-sm"',
           type: 'String',
-          description: 'these classes will be applied to the pagination btn-group tag. ' +
-            'Ex (<code>pagination-btn-group-classes="btn-group btn-group-xs"</code>)'
+          description: 'these classes will be applied to the pagination pagination ul tag. ' +
+            'Ex (<code>pagination-btn-group-classes="pagination pagination-xs"</code>)'
         },
         {
           name: 'draggable',
@@ -260,10 +260,10 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
         {
           name: 'pagination-btn-group-classes',
           required: false,
-          default: '"btn-group btn-group-sm"',
+          default: '"pagination pagination-sm"',
           type: 'String',
-          description: 'these classes will be applied to the pagination btn-group tag. ' +
-            'Ex (<code>pagination-btn-group-classes="btn-group btn-group-xs"</code>)'
+          description: 'these classes will be applied to the pagination pagination ul tag. ' +
+            'Ex (<code>pagination-btn-group-classes="pagination pagination-xs"</code>)'
         },
         {
           name: 'page-loader',

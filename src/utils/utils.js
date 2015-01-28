@@ -189,17 +189,23 @@ angular.module('adaptv.adaptStrap.utils', [])
       }
 
       ajaxConfig.params = ajaxConfig.params ? ajaxConfig.params : {};
-      ajaxConfig.params[pagingConfig.request.start] = start;
-      ajaxConfig.params[pagingConfig.request.pageSize] = options.pageSize;
-      ajaxConfig.params[pagingConfig.request.page] = options.pageNumber;
+      if (pagingConfig.request.start) {
+        ajaxConfig.params[pagingConfig.request.start] = start;
+      }
+      if (pagingConfig.request.pageSize) {
+        ajaxConfig.params[pagingConfig.request.pageSize] = options.pageSize;
+      }
+      if (pagingConfig.request.page) {
+        ajaxConfig.params[pagingConfig.request.page] = options.pageNumber;
+      }
 
-      if (options.sortKey) {
+      if (options.sortKey && pagingConfig.request.sortField) {
         ajaxConfig.params[pagingConfig.request.sortField] = options.sortKey;
       }
 
-      if (options.sortDirection === false) {
+      if (options.sortDirection === false && pagingConfig.request.sortDirection) {
         ajaxConfig.params[pagingConfig.request.sortDirection] = pagingConfig.request.sortAscValue;
-      } else if (options.sortDirection === true) {
+      } else if (options.sortDirection === true && pagingConfig.request.sortDirection) {
         ajaxConfig.params[pagingConfig.request.sortDirection] = pagingConfig.request.sortDescValue;
       }
 

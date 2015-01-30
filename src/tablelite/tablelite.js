@@ -92,6 +92,8 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           $scope.items.paging.currentPage = response.currentPage;
           $scope.items.paging.totalPages = response.totalPages;
           $scope.localConfig.pagingArray = response.pagingArray;
+          
+          $scope.$emit('adTableLite:pageChanged', $scope.items.paging);
         }, 100);
 
         $scope.loadNextPage = function () {

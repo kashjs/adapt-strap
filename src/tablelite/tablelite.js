@@ -27,6 +27,8 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           }
         };
 
+        $scope.filters = {};
+        
         $scope.localConfig = {
           localData: adStrapUtils.parse($scope.$eval($attrs.localDataSource)),
           pagingArray: [],
@@ -70,6 +72,11 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
               parsedData = adStrapUtils.parse($scope.$eval($attrs.localDataSource));
 
           $scope.localConfig.localData = !!$scope.searchText ? $filter('filter')(parsedData, $scope.searchText) : parsedData;
+          
+          if ($attrs.enableFiltering && adStrapUtils.hasAtLeastOnePropertyWithValue($scope.filters)) {
+            $scope.localConfig.localData = $filter('filter')($scope.localConfig.localData, $scope.filters);
+          }
+        
           itemsObject = $scope.localConfig.localData;
           params = {
             pageNumber: page,
@@ -260,6 +267,15 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           })
         );
 
+        if ($attrs.enableFiltering) {
+          var loadFilterPage = adDebounce(function() {
+            $scope.loadPage(1);
+          }, Number($attrs.filterDebounce) || 400);
+          watchers.push($scope.$watch('filters', function () {
+            loadFilterPage();
+          }, true));
+        }
+      
         // ---------- disable watchers ---------- //
         $scope.$on('$destroy', function () {
           watchers.forEach(function (watcher) {

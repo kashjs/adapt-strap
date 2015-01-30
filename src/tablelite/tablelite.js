@@ -69,7 +69,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
               params,
               parsedData = adStrapUtils.parse($scope.$eval($attrs.localDataSource));
 
-          $scope.localConfig.localData = $filter('filter')(parsedData, $scope.searchText);
+          $scope.localConfig.localData = !!$scope.searchText ? $filter('filter')(parsedData, $scope.searchText) : parsedData;
           itemsObject = $scope.localConfig.localData;
           params = {
             pageNumber: page,
@@ -256,7 +256,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
         watchers.push(
           $scope.$watch($attrs.searchText, function() {
             $scope.searchText = $scope.$eval($attrs.searchText);
-            $scope.loadPage($scope.items.paging.currentPage);
+            $scope.loadPage(1);
           })
         );
 

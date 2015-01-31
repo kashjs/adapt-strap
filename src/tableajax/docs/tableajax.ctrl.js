@@ -80,7 +80,7 @@ angular.module('adaptv.adaptStrapDocs')
         }
       };
 
-      $scope.expandCallback = function(item) {
+      $scope.populateShoppingMessage = function(item) {
 
         //Populate a custom message
         if (!item.customMsg) {

@@ -119,6 +119,10 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           $scope.loadPage(1);
         };
 
+        $scope.columnVisible = function(column) {
+          return column.visible !== false;
+        };
+        
         $scope.sortByColumn = function (column) {
           var initialSortDirection = true;
           if ($attrs.onClickSortDirection === 'DEC') {

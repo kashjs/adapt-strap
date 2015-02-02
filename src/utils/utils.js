@@ -114,6 +114,22 @@ angular.module('adaptv.adaptStrap.utils', [])
           item = item[arr.shift()];
         }
         return item;
+      }, hasAtLeastOnePropertyWithValue = function (obj) {
+        var has = false, name, value;
+        for (name in obj) {
+          value = obj[name];
+          if (value instanceof Array) {
+            if (value.length > 0) {
+              has = true;
+            }
+          } else if (!!value) {
+            has = true;
+          }
+          if (has) {
+            break;
+          }
+        }
+        return has;
       };
 
     return {
@@ -128,7 +144,8 @@ angular.module('adaptv.adaptStrap.utils', [])
       addRemoveItemsFromList: addRemoveItemsFromList,
       moveItemInList: moveItemInList,
       parse: parse,
-      getObjectProperty: getObjectProperty
+      getObjectProperty: getObjectProperty,
+      hasAtLeastOnePropertyWithValue: hasAtLeastOnePropertyWithValue
     };
 
   }])

@@ -18,8 +18,8 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
             currentPage: 1,
             totalPages: undefined,
             totalItems: undefined,
-            pageSize: Number($attrs.pageSize) || 10,
-            pageSizes: $parse($attrs.pageSizes)() || [10, 25, 50]
+            pageSize: Number($attrs.pageSize) || $adConfig.paging.pageSize,
+            pageSizes: $parse($attrs.pageSizes)() || $adConfig.paging.pageSizes
           }
         };
         $scope.localConfig = {

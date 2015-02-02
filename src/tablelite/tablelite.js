@@ -22,10 +22,12 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           paging: {
             currentPage: 1,
             totalPages: undefined,
-            pageSize: Number($attrs.pageSize) || 10,
-            pageSizes: $parse($attrs.pageSizes)() || [10, 25, 50]
+            pageSize: Number($attrs.pageSize) || $adConfig.paging.pageSize,
+            pageSizes: $parse($attrs.pageSizes)() || $adConfig.paging.pageSizes
           }
         };
+
+        $scope.filters = {};
 
         $scope.localConfig = {
           localData: adStrapUtils.parse($scope.$eval($attrs.localDataSource)),
@@ -69,7 +71,14 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
               params,
               parsedData = adStrapUtils.parse($scope.$eval($attrs.localDataSource));
 
-          $scope.localConfig.localData = $filter('filter')(parsedData, $scope.searchText);
+          $scope.localConfig.localData = !!$scope.searchText ?
+            $filter('filter')(parsedData, $scope.searchText) :
+            parsedData;
+
+          if ($attrs.enableColumnSearch && adStrapUtils.hasAtLeastOnePropertyWithValue($scope.filters)) {
+            $scope.localConfig.localData = $filter('filter')($scope.localConfig.localData, $scope.filters);
+          }
+
           itemsObject = $scope.localConfig.localData;
           params = {
             pageNumber: page,
@@ -85,6 +94,8 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           $scope.items.paging.currentPage = response.currentPage;
           $scope.items.paging.totalPages = response.totalPages;
           $scope.localConfig.pagingArray = response.pagingArray;
+
+          $scope.$emit('adTableLite:pageChanged', $scope.items.paging);
         }, 100);
 
         $scope.loadNextPage = function () {
@@ -108,6 +119,10 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
         $scope.pageSizeChanged = function (size) {
           $scope.items.paging.pageSize = size;
           $scope.loadPage(1);
+        };
+
+        $scope.columnVisible = function(column) {
+          return column.visible !== false;
         };
 
         $scope.sortByColumn = function (column) {
@@ -256,9 +271,18 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
         watchers.push(
           $scope.$watch($attrs.searchText, function() {
             $scope.searchText = $scope.$eval($attrs.searchText);
-            $scope.loadPage($scope.items.paging.currentPage);
+            $scope.loadPage(1);
           })
         );
+
+        if ($attrs.enableColumnSearch) {
+          var loadFilterPage = adDebounce(function() {
+            $scope.loadPage(1);
+          }, Number($attrs.columnSearchDebounce) || 400);
+          watchers.push($scope.$watch('filters', function () {
+            loadFilterPage();
+          }, true));
+        }
 
         // ---------- disable watchers ---------- //
         $scope.$on('$destroy', function () {

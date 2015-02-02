@@ -73,7 +73,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
 
           $scope.localConfig.localData = !!$scope.searchText ? $filter('filter')(parsedData, $scope.searchText) : parsedData;
           
-          if ($attrs.enableFiltering && adStrapUtils.hasAtLeastOnePropertyWithValue($scope.filters)) {
+          if ($attrs.enableColumnSearch && adStrapUtils.hasAtLeastOnePropertyWithValue($scope.filters)) {
             $scope.localConfig.localData = $filter('filter')($scope.localConfig.localData, $scope.filters);
           }
         
@@ -273,10 +273,10 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           })
         );
 
-        if ($attrs.enableFiltering) {
+        if ($attrs.enableColumnSearch) {
           var loadFilterPage = adDebounce(function() {
             $scope.loadPage(1);
-          }, Number($attrs.filterDebounce) || 400);
+          }, Number($attrs.columnSearchDebounce) || 400);
           watchers.push($scope.$watch('filters', function () {
             loadFilterPage();
           }, true));

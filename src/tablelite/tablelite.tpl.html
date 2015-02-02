@@ -4,7 +4,7 @@
          ng-class="{'ad-fixed-layout': (attrs.tableMaxHeight || attrs.tableFixedHeight)}">
     <thead>
       <tr class="ad-user-select-none" ng-include="'tablelite/headerRowContent.html'"></tr>
-      <tr class="ad-user-select-none" ng-if="attrs.enableFiltering" ng-include="'tablelite/headerRowFilterContent.html'"></tr>
+      <tr class="ad-user-select-none" ng-if="attrs.enableColumnSearch" ng-include="'tablelite/headerRowFilterContent.html'"></tr>
     </thead>
   </table>
   <div class="ad-table-container" ng-style="{'max-height': attrs.tableMaxHeight, 'height': attrs.tableFixedHeight}">
@@ -12,7 +12,7 @@
            ng-class="{'ad-fixed-layout': (attrs.tableMaxHeight || attrs.tableFixedHeight)}">
       <thead>
         <tr class="ad-user-select-none" ng-if="!(attrs.tableMaxHeight || attrs.tableFixedHeight)" ng-include="'tablelite/headerRowContent.html'"></tr>
-        <tr class="ad-user-select-none" ng-if="!(attrs.tableMaxHeight || attrs.tableFixedHeight) && attrs.enableFiltering" ng-include="'tablelite/headerRowFilterContent.html'"></tr>    
+        <tr class="ad-user-select-none" ng-if="!(attrs.tableMaxHeight || attrs.tableFixedHeight) && attrs.enableColumnSearch" ng-include="'tablelite/headerRowFilterContent.html'"></tr>    
       </thead>
       <tbody ng-if="!attrs.draggable" ng-include="'tablelite/defaultRow.html'"></tbody>
       <tbody ng-if="attrs.draggable" ng-include="'tablelite/draggableRow.html'"></tbody>

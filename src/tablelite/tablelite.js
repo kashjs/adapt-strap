@@ -28,7 +28,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
         };
 
         $scope.filters = {};
-        
+
         $scope.localConfig = {
           localData: adStrapUtils.parse($scope.$eval($attrs.localDataSource)),
           pagingArray: [],
@@ -71,12 +71,14 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
               params,
               parsedData = adStrapUtils.parse($scope.$eval($attrs.localDataSource));
 
-          $scope.localConfig.localData = !!$scope.searchText ? $filter('filter')(parsedData, $scope.searchText) : parsedData;
-          
+          $scope.localConfig.localData = !!$scope.searchText ?
+            $filter('filter')(parsedData, $scope.searchText) :
+            parsedData;
+
           if ($attrs.enableColumnSearch && adStrapUtils.hasAtLeastOnePropertyWithValue($scope.filters)) {
             $scope.localConfig.localData = $filter('filter')($scope.localConfig.localData, $scope.filters);
           }
-        
+
           itemsObject = $scope.localConfig.localData;
           params = {
             pageNumber: page,
@@ -92,7 +94,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           $scope.items.paging.currentPage = response.currentPage;
           $scope.items.paging.totalPages = response.totalPages;
           $scope.localConfig.pagingArray = response.pagingArray;
-          
+
           $scope.$emit('adTableLite:pageChanged', $scope.items.paging);
         }, 100);
 
@@ -122,7 +124,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
         $scope.columnVisible = function(column) {
           return column.visible !== false;
         };
-        
+
         $scope.sortByColumn = function (column) {
           var initialSortDirection = true;
           if ($attrs.onClickSortDirection === 'DEC') {
@@ -281,7 +283,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
             loadFilterPage();
           }, true));
         }
-      
+
         // ---------- disable watchers ---------- //
         $scope.$on('$destroy', function () {
           watchers.forEach(function (watcher) {

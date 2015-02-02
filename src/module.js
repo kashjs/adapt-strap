@@ -42,7 +42,7 @@ angular.module('adaptv.adaptStrap', [
           totalItems: 'pagination.totalCount'
         },
         pageSize: 10,
-        pageSizes: [10,25,50]
+        pageSizes: [10, 25, 50]
       };
     this.$get = function () {
       return {

@@ -119,11 +119,15 @@ angular.module('adaptv.adaptStrap.utils', [])
         for (name in obj) {
           value = obj[name];
           if (value instanceof Array) {
-            if (value.length > 0) has = true;
+            if (value.length > 0) {
+              has = true;
+            }
           } else if (!!value) {
             has = true;
           }
-          if (has) break;
+          if (has) {
+            break;
+          }
         }
         return has;
       };

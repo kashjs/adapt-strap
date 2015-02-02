@@ -13,8 +13,8 @@
          ng-checked="adStrapUtils.itemsExistInList(items.allItems, selectedItems)">
 </th>
 <th data-ng-repeat="definition in columnDefinition | filter:columnVisible">
-    <input ng-if="definition.enableFiltering !== false"
+    <input ng-if="definition.columnSearchProperty"
            type="text"
            class="input-sm form-control"
-           ng-model="filters[definition.displayProperty]" />
+           ng-model="filters[definition.columnSearchProperty]" />
 </th>

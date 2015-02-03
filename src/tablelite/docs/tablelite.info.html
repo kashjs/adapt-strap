@@ -6,11 +6,13 @@
             columnHeaderDisplayName: 'String', // Not Required if columnHeaderTemplate is specified
             columnHeaderTemplate: 'String', // Not Required if columnHeaderDisplayName is specified.
             displayProperty: 'String || Function', // - Not required if templateUrl is specified - which attribute of the item object to render. In case of function, result of the function (item passed to the function) is printed.
+            columnSearchProperty: 'String', // - Options - column search property
             cellFilter: 'String', // - Optional - the filter expression to apply to the displayProperty
             templateUrl: 'String', // - Not required if displayProperty is specified - look at artistPicture.html,
             template: 'String', // - Not required if displayProperty or templateUrl specified. - inline template string
             sortKey: 'String', // - Optional - specified key (in most cases: same as displayProperty) will be used for sorting
             width: 'String' // - Optional - the explicitly specify width of the column. (Ex: '10em', '30px'). If not specified, width is calculated automatically based on content width.
+            visible: 'Boolean' // - Optional - hide column by setting this to false
         }
     </markdown>
 </div>

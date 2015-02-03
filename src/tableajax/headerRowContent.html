@@ -1,7 +1,7 @@
 <th class="ad-select-cell" ng-if="attrs.rowExpandTemplate">
   <i></i>
 </th>
-<th data-ng-repeat="definition in columnDefinition"
+<th data-ng-repeat="definition in columnDefinition | filter:columnVisible"
     ng-click="sortByColumn(definition)"
     ng-class="{'ad-cursor-pointer': definition.sortKey}"
     ng-style="{'width': definition.width}">

@@ -1,4 +1,4 @@
-<div class="ad-table-lite-container" ng-if="items.allItems.length || !attrs.itemsNotFoundMessage">
+<div class="ad-table-lite-container" ng-if="items.allItems.length || !attrs.itemsNotFoundMessage || attrs.enableColumnSearch">
   <table class="ad-sticky-table {{ attrs.tableClasses || 'table' }}"
          ng-if="attrs.tableMaxHeight || attrs.tableFixedHeight"
          ng-class="{'ad-fixed-layout': (attrs.tableMaxHeight || attrs.tableFixedHeight)}">
@@ -20,6 +20,6 @@
   </div>
   <ng-include src="'tablelite/pagination.html'"></ng-include>
 </div>
-<div ng-if="!localConfig.localData.length && attrs.itemsNotFoundMessage">
+<div ng-if="!localConfig.localData.length && attrs.itemsNotFoundMessage && !attrs.enableColumnSearch">
   <div class="alert alert-info" role="alert">{{ attrs.itemsNotFoundMessage }}</div>
 </div>

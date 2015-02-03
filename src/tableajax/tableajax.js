@@ -121,6 +121,10 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
           }
         };
 
+        $scope.columnVisible = function(column) {
+          return column.visible !== false;
+        };
+
         $scope.sortByColumn = function (column) {
           var initialSortDirection = true;
           if ($attrs.onClickSortDirection === 'DEC') {

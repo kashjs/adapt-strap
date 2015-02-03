@@ -81,6 +81,14 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
           description: 'shows all the items in local-data-source'
         },
         {
+          name: 'enable-column-search',
+          required: false,
+          default: 'false',
+          type: 'Boolean',
+          description: 'shows column search inputs. Works in combination with ' +
+              '<code>columnSearchProperty</code> on columnDefinition'
+        },
+        {
           name: 'table-classes',
           required: false,
           default: '"table"',

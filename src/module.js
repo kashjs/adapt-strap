@@ -43,11 +43,12 @@ angular.module('adaptv.adaptStrap', [
         },
         pageSize: 10,
         pageSizes: [10, 25, 50]
-      };
+      }, tableClasses = this.tableClasses = 'table';
     this.$get = function () {
       return {
         iconClasses: iconClasses,
-        paging: paging
+        paging: paging,
+        tableClasses: tableClasses
       };
     };
   });

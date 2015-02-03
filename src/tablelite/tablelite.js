@@ -13,6 +13,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
         $scope.attrs = $attrs;
         $scope.iconClasses = $adConfig.iconClasses;
         $scope.adStrapUtils = adStrapUtils;
+        $scope.tableClasses = $adConfig.tableClasses;
 
         $scope.columnDefinition = $scope.$eval($attrs.columnDefinition);
 

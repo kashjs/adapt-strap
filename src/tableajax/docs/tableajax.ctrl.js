@@ -79,4 +79,12 @@ angular.module('adaptv.adaptStrapDocs')
           $scope.artistsAjaxConfigSearch.params.artist = $scope.artistSearchKey;
         }
       };
+
+      $scope.populateShoppingMessage = function(item) {
+
+        //Populate a custom message
+        if (!item.customMsg) {
+          item.customMsg = 'Like ' + item.name + '? Click here to shop';
+        }
+      };
     }]);

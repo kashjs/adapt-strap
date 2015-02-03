@@ -158,6 +158,17 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
           return rowClass;
         };
 
+        $scope.toggle = function(event, index, item) {
+          event.stopPropagation();
+          adStrapUtils.addRemoveItemFromList(index, $scope.localConfig.expandedItems);
+          if (adStrapUtils.itemExistsInList(index, $scope.localConfig.expandedItems)) {
+            var expandCallback = $scope.$eval($attrs.expandCallback);
+            if (expandCallback) {
+              expandCallback(item);
+            }
+          }
+        };
+
         // ---------- initialization and event listeners ---------- //
         $scope.loadPage(1);
 

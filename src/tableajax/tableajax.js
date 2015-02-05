@@ -3,8 +3,8 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
  * Use this directive if you need to render a table that loads data from ajax.
  */
   .directive('adTableAjax',
-  ['$parse', '$adConfig', 'adLoadPage', 'adDebounce', 'adStrapUtils',
-    function ($parse, $adConfig, adLoadPage, adDebounce, adStrapUtils) {
+  ['$parse', '$filter', '$adConfig', 'adLoadPage', 'adDebounce', 'adStrapUtils',
+    function ($parse, $filter, $adConfig, adLoadPage, adDebounce, adStrapUtils) {
       'use strict';
       function controllerFunction($scope, $attrs) {
         // ---------- $scope initialization ---------- //

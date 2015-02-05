@@ -32,6 +32,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
         };
         $scope.ajaxConfig = $scope.$eval($attrs.ajaxConfig);
         $scope.columnDefinition = $scope.$eval($attrs.columnDefinition);
+        $scope.visibleColumnDefinition = $filter('filter')($scope.columnDefinition, $scope.columnVisible);
 
         // ---------- Local data ---------- //
         var lastRequestToken,
@@ -182,6 +183,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
         watchers.push(
           $scope.$watchCollection($attrs.columnDefinition, function () {
             $scope.columnDefinition = $scope.$eval($attrs.columnDefinition);
+            $scope.visibleColumnDefinition = $filter('filter')($scope.columnDefinition, $scope.columnVisible);
           })
         );
 

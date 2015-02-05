@@ -16,6 +16,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
         $scope.tableClasses = $adConfig.componentClasses.tableLiteClass;
 
         $scope.columnDefinition = $scope.$eval($attrs.columnDefinition);
+        $scope.visibleColumnDefinition = $filter('filter')($scope.columnDefinition, $scope.columnVisible);
 
         $scope.items = {
           list: undefined,
@@ -277,6 +278,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
         watchers.push(
           $scope.$watchCollection($attrs.columnDefinition, function () {
             $scope.columnDefinition = $scope.$eval($attrs.columnDefinition);
+            $scope.visibleColumnDefinition = $filter('filter')($scope.columnDefinition, $scope.columnVisible);
           })
         );
         watchers.push(

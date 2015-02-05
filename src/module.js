@@ -43,11 +43,15 @@ angular.module('adaptv.adaptStrap', [
         },
         pageSize: 10,
         pageSizes: [10, 25, 50]
+      }, componentClasses = this.componentClasses = {
+        tableLiteClass: 'table',
+        tableAjaxClass: 'table'
       };
     this.$get = function () {
       return {
         iconClasses: iconClasses,
-        paging: paging
+        paging: paging,
+        componentClasses: componentClasses
       };
     };
   });

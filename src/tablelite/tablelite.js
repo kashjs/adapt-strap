@@ -13,8 +13,10 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
         $scope.attrs = $attrs;
         $scope.iconClasses = $adConfig.iconClasses;
         $scope.adStrapUtils = adStrapUtils;
+        $scope.tableClasses = $adConfig.componentClasses.tableLiteClass;
 
         $scope.columnDefinition = $scope.$eval($attrs.columnDefinition);
+        $scope.visibleColumnDefinition = $filter('filter')($scope.columnDefinition, $scope.columnVisible);
 
         $scope.items = {
           list: undefined,
@@ -249,6 +251,16 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           return rowClass;
         };
 
+        $scope.toggle = function (event, index, item) {
+          event.stopPropagation();
+          adStrapUtils.addRemoveItemFromList(index, $scope.localConfig.expandedItems);
+          if (adStrapUtils.itemExistsInList(index, $scope.localConfig.expandedItems)) {
+            var expandCallback = $scope.$eval($attrs.expandCallback);
+            if (expandCallback) {
+              expandCallback(item);
+            }
+          }
+        };
         // ---------- initialization and event listeners ---------- //
         $scope.loadPage(1);
 
@@ -266,6 +278,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
         watchers.push(
           $scope.$watchCollection($attrs.columnDefinition, function () {
             $scope.columnDefinition = $scope.$eval($attrs.columnDefinition);
+            $scope.visibleColumnDefinition = $filter('filter')($scope.columnDefinition, $scope.columnVisible);
           })
         );
         watchers.push(

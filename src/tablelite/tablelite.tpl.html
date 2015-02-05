@@ -1,5 +1,5 @@
 <div class="ad-table-lite-container" ng-if="items.allItems.length || !attrs.itemsNotFoundMessage || attrs.enableColumnSearch">
-  <table class="ad-sticky-table {{ attrs.tableClasses || 'table' }}"
+  <table class="ad-sticky-table {{ attrs.tableClasses || tableClasses }}"
          ng-if="attrs.tableMaxHeight || attrs.tableFixedHeight"
          ng-class="{'ad-fixed-layout': (attrs.tableMaxHeight || attrs.tableFixedHeight)}">
     <thead>
@@ -8,7 +8,7 @@
     </thead>
   </table>
   <div class="ad-table-container" ng-style="{'max-height': attrs.tableMaxHeight, 'height': attrs.tableFixedHeight}">
-    <table class="{{ attrs.tableClasses || 'table' }}"
+    <table class="{{ attrs.tableClasses || tableClasses }}"
            ng-class="{'ad-fixed-layout': (attrs.tableMaxHeight || attrs.tableFixedHeight)}">
       <thead>
         <tr class="ad-user-select-none" ng-if="!(attrs.tableMaxHeight || attrs.tableFixedHeight)" ng-include="'tablelite/headerRowContent.html'"></tr>

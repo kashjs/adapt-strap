@@ -3,14 +3,15 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
  * Use this directive if you need to render a table that loads data from ajax.
  */
   .directive('adTableAjax',
-  ['$parse', '$adConfig', 'adLoadPage', 'adDebounce', 'adStrapUtils',
-    function ($parse, $adConfig, adLoadPage, adDebounce, adStrapUtils) {
+  ['$parse', '$filter', '$adConfig', 'adLoadPage', 'adDebounce', 'adStrapUtils',
+    function ($parse, $filter, $adConfig, adLoadPage, adDebounce, adStrapUtils) {
       'use strict';
       function controllerFunction($scope, $attrs) {
         // ---------- $scope initialization ---------- //
         $scope.attrs = $attrs;
         $scope.iconClasses = $adConfig.iconClasses;
         $scope.adStrapUtils = adStrapUtils;
+        $scope.tableClasses = $adConfig.componentClasses.tableAjaxClass;
         $scope.onDataLoadedCallback = $parse($attrs.onDataLoaded) || null;
         $scope.items = {
           list: undefined,
@@ -31,6 +32,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
         };
         $scope.ajaxConfig = $scope.$eval($attrs.ajaxConfig);
         $scope.columnDefinition = $scope.$eval($attrs.columnDefinition);
+        $scope.visibleColumnDefinition = $filter('filter')($scope.columnDefinition, $scope.columnVisible);
 
         // ---------- Local data ---------- //
         var lastRequestToken,
@@ -181,6 +183,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
         watchers.push(
           $scope.$watchCollection($attrs.columnDefinition, function () {
             $scope.columnDefinition = $scope.$eval($attrs.columnDefinition);
+            $scope.visibleColumnDefinition = $filter('filter')($scope.columnDefinition, $scope.columnVisible);
           })
         );
 

@@ -130,6 +130,10 @@ angular.module('adaptv.adaptStrapDocs')
       alert(car.name);
     };
 
+    $scope.rowExpanded = function (car) {
+      alert(car.name + ' row expanded');
+    };
+
     $scope.checkRowSelected = function (item, index) {
       var found = false;
       $scope.models.selectedCars.forEach(function (selectedItem) {

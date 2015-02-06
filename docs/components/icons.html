@@ -20,6 +20,11 @@ $adConfigProvider.iconClasses = {
     alertDangerSign: 'glyphicon glyphicon-exclamation-sign'
 }
 
+$adConfigProvider.componentClasses = {
+    tableLiteClass: 'table',
+    tableAjaxClass: 'table'
+}
+
 ### You can globally configure the pagination configuration like this during the app initialization:
 angular.module('myApp').config(['$adConfigProvider', function ($adConfigProvider) {
     $adConfigProvider.iconClasses.collapse = 'glyphicon glyphicon-minus';
@@ -38,6 +43,9 @@ angular.module('myApp').config(['$adConfigProvider', function ($adConfigProvider
     $adConfigProvider.iconClasses.alertSuccessSign = 'glyphicon glyphicon-ok';
     $adConfigProvider.iconClasses.alertWarningSign = 'glyphicon glyphicon-warning-sign';
     $adConfigProvider.iconClasses.alertDangerSign = 'glyphicon glyphicon-exclamation-sign';
+
+    // component classes
+    $adConfigProvider.componentClasses.tableLiteClass = 'table my-custom-class';
 }])
 
 ### You can override global configuration at the directive usage level too.

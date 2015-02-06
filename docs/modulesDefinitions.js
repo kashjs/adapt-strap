@@ -171,6 +171,14 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             'Pass in any css max-height property. EX: <code>table-max-height="157px"</code>'
         },
         {
+          name: 'table-fixed-height',
+          required: false,
+          default: 'auto',
+          type: 'String',
+          description: 'This property makes the table fixed height. The header becomes fixed at top. ' +
+            'Pass in any css max-height property. EX: <code>table-fixed-height="157px"</code>'
+        },
+        {
           name: 'items-not-found-message',
           required: false,
           default: 'NA',
@@ -199,6 +207,13 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
           default: 'NA',
           type: 'String',
           description: 'Template for row expand. Generally used for more info or in-place edit.'
+        },
+        {
+          name: 'row-expand-callback',
+          required: false,
+          default: 'NA',
+          type: 'Function',
+          description: 'callback for row expand. Useful for lazy loading extra information on expand.'
         }
       ]
     }]
@@ -293,6 +308,14 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             'Pass in any css max-height property. EX: <code>table-max-height="157px"</code>'
         },
         {
+          name: 'table-fixed-height',
+          required: false,
+          default: 'auto',
+          type: 'String',
+          description: 'This property makes the table fixed height. The header becomes fixed at top. ' +
+              'Pass in any css max-height property. EX: <code>table-fixed-height="157px"</code>'
+        },
+        {
           name: 'items-not-found-message',
           required: false,
           default: 'NA',
@@ -342,6 +365,13 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
           default: 'NA',
           type: 'String',
           description: 'Template for row expand. Generally used for more info or in-place edit.'
+        },
+        {
+          name: 'row-expand-callback',
+          required: false,
+          default: 'NA',
+          type: 'Function',
+          description: 'callback for row expand. Useful for lazy loading extra information on expand.'
         }
       ]
     }]

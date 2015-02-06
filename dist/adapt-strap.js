@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v2.1.4 - 2015-01-28
+ * @version v2.1.5 - 2015-02-06
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -48,12 +48,22 @@ angular.module('adaptv.adaptStrap', [
       response: {
         itemsLocation: 'data',
         totalItems: 'pagination.totalCount'
-      }
+      },
+      pageSize: 10,
+      pageSizes: [
+        10,
+        25,
+        50
+      ]
+    }, componentClasses = this.componentClasses = {
+      tableLiteClass: 'table',
+      tableAjaxClass: 'table'
     };
   this.$get = function () {
     return {
       iconClasses: iconClasses,
-      paging: paging
+      paging: paging,
+      componentClasses: componentClasses
     };
   };
 });
@@ -709,16 +719,18 @@ angular.module('adaptv.adaptStrap.tableajax', [
   'adaptv.adaptStrap.loadingindicator'
 ]).directive('adTableAjax', [
   '$parse',
+  '$filter',
   '$adConfig',
   'adLoadPage',
   'adDebounce',
   'adStrapUtils',
-  function ($parse, $adConfig, adLoadPage, adDebounce, adStrapUtils) {
+  function ($parse, $filter, $adConfig, adLoadPage, adDebounce, adStrapUtils) {
 function controllerFunction($scope, $attrs) {
       // ---------- $scope initialization ---------- //
       $scope.attrs = $attrs;
       $scope.iconClasses = $adConfig.iconClasses;
       $scope.adStrapUtils = adStrapUtils;
+      $scope.tableClasses = $adConfig.componentClasses.tableAjaxClass;
       $scope.onDataLoadedCallback = $parse($attrs.onDataLoaded) || null;
       $scope.items = {
         list: undefined,
@@ -726,12 +738,8 @@ function controllerFunction($scope, $attrs) {
           currentPage: 1,
           totalPages: undefined,
           totalItems: undefined,
-          pageSize: Number($attrs.pageSize) || 10,
-          pageSizes: $parse($attrs.pageSizes)() || [
-            10,
-            25,
-            50
-          ]
+          pageSize: Number($attrs.pageSize) || $adConfig.paging.pageSize,
+          pageSizes: $parse($attrs.pageSizes)() || $adConfig.paging.pageSizes
         }
       };
       $scope.localConfig = {
@@ -743,6 +751,7 @@ function controllerFunction($scope, $attrs) {
       };
       $scope.ajaxConfig = $scope.$eval($attrs.ajaxConfig);
       $scope.columnDefinition = $scope.$eval($attrs.columnDefinition);
+      $scope.visibleColumnDefinition = $filter('filter')($scope.columnDefinition, $scope.columnVisible);
       // ---------- Local data ---------- //
       var lastRequestToken, watchers = [];
       if ($scope.items.paging.pageSizes.indexOf($scope.items.paging.pageSize) < 0) {
@@ -818,6 +827,9 @@ function controllerFunction($scope, $attrs) {
           $scope.loadPage(1);
         }
       };
+      $scope.columnVisible = function (column) {
+        return column.visible !== false;
+      };
       $scope.sortByColumn = function (column) {
         var initialSortDirection = true;
         if ($attrs.onClickSortDirection === 'DEC') {
@@ -848,6 +860,16 @@ function controllerFunction($scope, $attrs) {
         }
         return rowClass;
       };
+      $scope.toggle = function (event, index, item) {
+        event.stopPropagation();
+        adStrapUtils.addRemoveItemFromList(index, $scope.localConfig.expandedItems);
+        if (adStrapUtils.itemExistsInList(index, $scope.localConfig.expandedItems)) {
+          var rowExpandCallback = $scope.$eval($attrs.rowExpandCallback);
+          if (rowExpandCallback) {
+            rowExpandCallback(item);
+          }
+        }
+      };
       // ---------- initialization and event listeners ---------- //
       $scope.loadPage(1);
       // reset on parameter change
@@ -856,6 +878,7 @@ function controllerFunction($scope, $attrs) {
       }, true));
       watchers.push($scope.$watchCollection($attrs.columnDefinition, function () {
         $scope.columnDefinition = $scope.$eval($attrs.columnDefinition);
+        $scope.visibleColumnDefinition = $filter('filter')($scope.columnDefinition, $scope.columnVisible);
       }));
       // ---------- disable watchers ---------- //
       $scope.$on('$destroy', function () {
@@ -894,21 +917,20 @@ function controllerFunction($scope, $attrs) {
       $scope.attrs = $attrs;
       $scope.iconClasses = $adConfig.iconClasses;
       $scope.adStrapUtils = adStrapUtils;
+      $scope.tableClasses = $adConfig.componentClasses.tableLiteClass;
       $scope.columnDefinition = $scope.$eval($attrs.columnDefinition);
+      $scope.visibleColumnDefinition = $filter('filter')($scope.columnDefinition, $scope.columnVisible);
       $scope.items = {
         list: undefined,
         allItems: undefined,
         paging: {
           currentPage: 1,
           totalPages: undefined,
-          pageSize: Number($attrs.pageSize) || 10,
-          pageSizes: $parse($attrs.pageSizes)() || [
-            10,
-            25,
-            50
-          ]
+          pageSize: Number($attrs.pageSize) || $adConfig.paging.pageSize,
+          pageSizes: $parse($attrs.pageSizes)() || $adConfig.paging.pageSizes
         }
       };
+      $scope.filters = {};
       $scope.localConfig = {
         localData: adStrapUtils.parse($scope.$eval($attrs.localDataSource)),
         pagingArray: [],
@@ -939,7 +961,10 @@ function controllerFunction($scope, $attrs) {
       $scope.loadPage = adDebounce(function (page) {
         $scope.collapseAll();
         var itemsObject, params, parsedData = adStrapUtils.parse($scope.$eval($attrs.localDataSource));
-        $scope.localConfig.localData = $filter('filter')(parsedData, $scope.searchText);
+        $scope.localConfig.localData = !!$scope.searchText ? $filter('filter')(parsedData, $scope.searchText) : parsedData;
+        if ($attrs.enableColumnSearch && adStrapUtils.hasAtLeastOnePropertyWithValue($scope.filters)) {
+          $scope.localConfig.localData = $filter('filter')($scope.localConfig.localData, $scope.filters);
+        }
         itemsObject = $scope.localConfig.localData;
         params = {
           pageNumber: page,
@@ -954,6 +979,7 @@ function controllerFunction($scope, $attrs) {
         $scope.items.paging.currentPage = response.currentPage;
         $scope.items.paging.totalPages = response.totalPages;
         $scope.localConfig.pagingArray = response.pagingArray;
+        $scope.$emit('adTableLite:pageChanged', $scope.items.paging);
       }, 100);
       $scope.loadNextPage = function () {
         if ($scope.items.paging.currentPage + 1 <= $scope.items.paging.totalPages) {
@@ -973,6 +999,9 @@ function controllerFunction($scope, $attrs) {
       $scope.pageSizeChanged = function (size) {
         $scope.items.paging.pageSize = size;
         $scope.loadPage(1);
+      };
+      $scope.columnVisible = function (column) {
+        return column.visible !== false;
       };
       $scope.sortByColumn = function (column) {
         var initialSortDirection = true;
@@ -1084,6 +1113,16 @@ function controllerFunction($scope, $attrs) {
         }
         return rowClass;
       };
+      $scope.toggle = function (event, index, item) {
+        event.stopPropagation();
+        adStrapUtils.addRemoveItemFromList(index, $scope.localConfig.expandedItems);
+        if (adStrapUtils.itemExistsInList(index, $scope.localConfig.expandedItems)) {
+          var rowExpandCallback = $scope.$eval($attrs.rowExpandCallback);
+          if (rowExpandCallback) {
+            rowExpandCallback(item);
+          }
+        }
+      };
       // ---------- initialization and event listeners ---------- //
       $scope.loadPage(1);
       // ---------- set watchers ---------- //
@@ -1095,11 +1134,20 @@ function controllerFunction($scope, $attrs) {
       }));
       watchers.push($scope.$watchCollection($attrs.columnDefinition, function () {
         $scope.columnDefinition = $scope.$eval($attrs.columnDefinition);
+        $scope.visibleColumnDefinition = $filter('filter')($scope.columnDefinition, $scope.columnVisible);
       }));
       watchers.push($scope.$watch($attrs.searchText, function () {
         $scope.searchText = $scope.$eval($attrs.searchText);
-        $scope.loadPage($scope.items.paging.currentPage);
+        $scope.loadPage(1);
       }));
+      if ($attrs.enableColumnSearch) {
+        var loadFilterPage = adDebounce(function () {
+            $scope.loadPage(1);
+          }, Number($attrs.columnSearchDebounce) || 400);
+        watchers.push($scope.$watch('filters', function () {
+          loadFilterPage();
+        }, true));
+      }
       // ---------- disable watchers ---------- //
       $scope.$on('$destroy', function () {
         watchers.forEach(function (watcher) {
@@ -1180,17 +1228,18 @@ angular.module('adaptv.adaptStrap.utils', []).factory('adStrapUtils', [
         }
         return obj;
       }, applyFilter = function (value, filter, item) {
-        var parts, filterOptions;
+        var filterName, filterOptions, optionsIndex;
         if (value && 'function' === typeof value) {
           return value(item);
         }
         if (filter) {
-          parts = filter.split(':');
-          filterOptions = parts[1];
-          if (filterOptions) {
-            value = $filter(parts[0])(value, filterOptions);
+          optionsIndex = filter.indexOf(':');
+          if (optionsIndex > -1) {
+            filterName = filter.substring(0, optionsIndex);
+            filterOptions = filter.substring(optionsIndex + 1);
+            value = $filter(filterName)(value, filterOptions);
           } else {
-            value = $filter(parts[0])(value);
+            value = $filter(filter)(value);
           }
         }
         return value;
@@ -1266,6 +1315,22 @@ angular.module('adaptv.adaptStrap.utils', []).factory('adStrapUtils', [
           item = item[arr.shift()];
         }
         return item;
+      }, hasAtLeastOnePropertyWithValue = function (obj) {
+        var has = false, name, value;
+        for (name in obj) {
+          value = obj[name];
+          if (value instanceof Array) {
+            if (value.length > 0) {
+              has = true;
+            }
+          } else if (!!value) {
+            has = true;
+          }
+          if (has) {
+            break;
+          }
+        }
+        return has;
       };
     return {
       evalObjectProperty: evalObjectProperty,
@@ -1279,7 +1344,8 @@ angular.module('adaptv.adaptStrap.utils', []).factory('adStrapUtils', [
       addRemoveItemsFromList: addRemoveItemsFromList,
       moveItemInList: moveItemInList,
       parse: parse,
-      getObjectProperty: getObjectProperty
+      getObjectProperty: getObjectProperty,
+      hasAtLeastOnePropertyWithValue: hasAtLeastOnePropertyWithValue
     };
   }
 ]).factory('adDebounce', [

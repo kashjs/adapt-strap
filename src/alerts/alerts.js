@@ -19,6 +19,8 @@ angular.module('adaptv.adaptStrap.alerts', [])
         }
       };
 
+      $scope.customClasses = $scope.customClasses || '';
+
       $scope.settings = adAlerts.settings;
 
       if (timeout !== 0) {
@@ -35,7 +37,8 @@ angular.module('adaptv.adaptStrap.alerts', [])
     return {
       restrict: 'AE',
       scope: {
-        timeout: '=' //ms
+        timeout: '=', //ms
+        customClasses: '@'
       },
       templateUrl: 'alerts/alerts.tpl.html',
       controller: ['$scope', '$attrs', '$timeout', '$adConfig', 'adAlerts', controllerFunction]

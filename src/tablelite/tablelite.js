@@ -43,6 +43,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
 
         // ---------- Local data ---------- //
         var placeHolder = null,
+          placeHolderInDom = false,
           pageButtonElement = null,
           validDrop = false,
           initialPos,
@@ -161,18 +162,23 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           $scope.localConfig.expandedItems.length = 0;
           dragElement = dragElement.el;
           var parent = dragElement.parent();
-          placeHolder = $('<tr><td colspan=' + dragElement.find('td').length + '>&nbsp;</td></tr>');
+          placeHolder = $('<tr id="row-phldr"><td colspan=' + dragElement.find('td').length + '>&nbsp;</td></tr>');
           initialPos = dragElement.index() + (($scope.items.paging.currentPage - 1) *
             $scope.items.paging.pageSize);
-          if (dragElement[0] !== parent.children().last()[0]) {
-            dragElement.next().before(placeHolder);
-          } else {
-            parent.append(placeHolder);
+          if (!placeHolderInDom) {
+            if (dragElement[0] !== parent.children().last()[0]) {
+              dragElement.next().before(placeHolder);
+              placeHolderInDom = true;
+            } else {
+              parent.append(placeHolder);
+              placeHolderInDom = true;
+            }
           }
         };
 
         $scope.onDragEnd = function() {
-          placeHolder.remove();
+          $('#row-phldr').remove();
+          placeHolderInDom = false;
         };
 
         $scope.onDragOver = function(data, dragElement, dropElement) {
@@ -192,7 +198,10 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
             } else if (placeHolder.prev()[0]) {
               placeHolder.prev().after(dragElement);
             }
-            placeHolder.remove();
+
+            $('#row-phldr').remove();
+            placeHolderInDom = false;
+
             validDrop = true;
             endPos = dragElement.index() + (($scope.items.paging.currentPage - 1) *
               $scope.items.paging.pageSize);
@@ -231,7 +240,10 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
             }
             adStrapUtils.moveItemInList(initialPos, endPos, $scope.localConfig.localData);
             $scope.loadPage($scope.items.paging.currentPage);
-            placeHolder.remove();
+
+            $('#row-phldr').remove();
+            placeHolderInDom = false;
+
             dragElement.el.remove();
             if ($scope.localConfig.dragChange) {
               $scope.localConfig.dragChange(initialPos, endPos, data);

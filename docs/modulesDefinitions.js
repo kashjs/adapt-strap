@@ -7,7 +7,8 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
     description: 'shows notification messages to the user.',
     docFiles: [
       'alerts.view.html',
-      'alerts.ctrl.js'
+      'alerts.ctrl.js',
+      'style.css'
     ],
     directives: [{
       name: 'ad-alerts',
@@ -17,6 +18,12 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
         default: 'NA',
         type: 'String/Number',
         description: 'The number of milliseconds the alert is visible, before it auto closes'
+      }, {
+        name: 'custom-classes',
+        required: false,
+        default: 'NA',
+        type: 'String',
+        description: 'Allows the definition of custom styling for the alert'
       }]
     }]
   },

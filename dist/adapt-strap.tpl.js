@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v2.1.5 - 2015-02-06
+ * @version v2.1.6 - 2015-03-02
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -12,7 +12,7 @@
 angular.module('adaptv.adaptStrap.alerts').run([
   '$templateCache',
   function ($templateCache) {
-    $templateCache.put('alerts/alerts.tpl.html', '<div ng-show="settings.type !== \'\'" class="alert alert-{{ settings.type }} alert-dismissible fade in" role="alert"><button type="button" class="close" ng-click="close();" aria-label="Close"><span aria-hidden="true">&times;</span></button><h4><span ng-class="iconMap[settings.type]"></span>&nbsp;&nbsp; <strong>{{ settings.caption }}</strong> {{ settings.message }}</h4></div>');
+    $templateCache.put('alerts/alerts.tpl.html', '<div ng-show="settings.type !== \'\'" class="alert alert-{{ settings.type }} alert-dismissible fade in {{ customClasses }}" role="alert"><button type="button" class="close" ng-click="close();" aria-label="Close"><span aria-hidden="true">&times;</span></button><h4><span ng-class="iconMap[settings.type]"></span>&nbsp;&nbsp; <strong>{{ settings.caption }}</strong> {{ settings.message }}</h4></div>');
   }
 ]);
 
@@ -32,19 +32,19 @@ angular.module('adaptv.adaptStrap.loadingindicator').run([
   }
 ]);
 
-// Source: tablelite.tpl.js
-angular.module('adaptv.adaptStrap.tablelite').run([
-  '$templateCache',
-  function ($templateCache) {
-    $templateCache.put('tablelite/tablelite.tpl.html', '<div class="ad-table-lite-container" ng-if="items.allItems.length || !attrs.itemsNotFoundMessage || attrs.enableColumnSearch"><table class="ad-sticky-table {{ attrs.tableClasses || tableClasses }}" ng-if="attrs.tableMaxHeight || attrs.tableFixedHeight" ng-class="{\'ad-fixed-layout\': (attrs.tableMaxHeight || attrs.tableFixedHeight)}"><thead><tr class="ad-user-select-none" ng-include="\'tablelite/headerRowContent.html\'"></tr><tr class="ad-user-select-none" ng-if="attrs.enableColumnSearch" ng-include="\'tablelite/headerRowFilterContent.html\'"></tr></thead></table><div class="ad-table-container" ng-style="{\'max-height\': attrs.tableMaxHeight, \'height\': attrs.tableFixedHeight}"><table class="{{ attrs.tableClasses || tableClasses }}" ng-class="{\'ad-fixed-layout\': (attrs.tableMaxHeight || attrs.tableFixedHeight)}"><thead><tr class="ad-user-select-none" ng-if="!(attrs.tableMaxHeight || attrs.tableFixedHeight)" ng-include="\'tablelite/headerRowContent.html\'"></tr><tr class="ad-user-select-none" ng-if="!(attrs.tableMaxHeight || attrs.tableFixedHeight) && attrs.enableColumnSearch" ng-include="\'tablelite/headerRowFilterContent.html\'"></tr></thead><tbody ng-if="!attrs.draggable" ng-include="\'tablelite/defaultRow.html\'"></tbody><tbody ng-if="attrs.draggable" ng-include="\'tablelite/draggableRow.html\'"></tbody></table></div><ng-include src="\'tablelite/pagination.html\'"></ng-include></div><div ng-if="!localConfig.localData.length && attrs.itemsNotFoundMessage && !attrs.enableColumnSearch"><div class="alert alert-info" role="alert">{{ attrs.itemsNotFoundMessage }}</div></div>');
-  }
-]);
-
 // Source: tableajax.tpl.js
 angular.module('adaptv.adaptStrap.tableajax').run([
   '$templateCache',
   function ($templateCache) {
     $templateCache.put('tableajax/tableajax.tpl.html', '<div class="ad-table-ajax-container" ng-if="items.paging.totalPages || localConfig.loadingData || !attrs.itemsNotFoundMessage"><table class="ad-sticky-table {{ attrs.tableClasses || tableClasses }}" ng-if="attrs.tableMaxHeight || attrs.tableFixedHeight" ng-class="{\'ad-fixed-layout\': (attrs.tableMaxHeight || attrs.tableFixedHeight)}"><thead><tr class="ad-user-select-none" ng-include="\'tableajax/headerRowContent.html\'"></tr></thead></table><div class="ad-table-container" ng-style="{\'max-height\': localConfig.tableMaxHeight, \'height\' : attrs.tableFixedHeight}"><table class="{{ attrs.tableClasses || tableClasses }}" ng-class="{\'ad-fixed-layout\': (attrs.tableMaxHeight || attrs.tableFixedHeight)}"><thead><tr class="ad-user-select-none" ng-if="!(localConfig.tableMaxHeight || attrs.tableFixedHeight)" ng-include="\'tableajax/headerRowContent.html\'"></tr></thead><tbody><tr ng-repeat-start="item in items.list" ng-class="getRowClass(item, $index)" ng-include="\'tableajax/rowContent.html\'"></tr><tr ng-if="attrs.rowExpandTemplate && adStrapUtils.itemExistsInList($index, localConfig.expandedItems)" ng-repeat-end><td colspan="{{ visibleColumnDefinition.length + 1}}" ng-include="attrs.rowExpandTemplate"></td></tr></tbody></table><ad-loading-overlay loading="localConfig.loadingData"></ad-loading-overlay></div><ng-include src="\'tableajax/pagination.html\'"></ng-include></div><div ng-if="localConfig.showNoDataFoundMessage && !localConfig.loadingData && attrs.itemsNotFoundMessage"><div class="alert alert-info" role="alert">{{ attrs.itemsNotFoundMessage }}</div></div>');
+  }
+]);
+
+// Source: tablelite.tpl.js
+angular.module('adaptv.adaptStrap.tablelite').run([
+  '$templateCache',
+  function ($templateCache) {
+    $templateCache.put('tablelite/tablelite.tpl.html', '<div class="ad-table-lite-container" ng-if="items.allItems.length || !attrs.itemsNotFoundMessage || attrs.enableColumnSearch"><table class="ad-sticky-table {{ attrs.tableClasses || tableClasses }}" ng-if="attrs.tableMaxHeight || attrs.tableFixedHeight" ng-class="{\'ad-fixed-layout\': (attrs.tableMaxHeight || attrs.tableFixedHeight)}"><thead><tr class="ad-user-select-none" ng-include="\'tablelite/headerRowContent.html\'"></tr><tr class="ad-user-select-none" ng-if="attrs.enableColumnSearch" ng-include="\'tablelite/headerRowFilterContent.html\'"></tr></thead></table><div class="ad-table-container" ng-style="{\'max-height\': attrs.tableMaxHeight, \'height\': attrs.tableFixedHeight}"><table class="{{ attrs.tableClasses || tableClasses }}" ng-class="{\'ad-fixed-layout\': (attrs.tableMaxHeight || attrs.tableFixedHeight)}"><thead><tr class="ad-user-select-none" ng-if="!(attrs.tableMaxHeight || attrs.tableFixedHeight)" ng-include="\'tablelite/headerRowContent.html\'"></tr><tr class="ad-user-select-none" ng-if="!(attrs.tableMaxHeight || attrs.tableFixedHeight) && attrs.enableColumnSearch" ng-include="\'tablelite/headerRowFilterContent.html\'"></tr></thead><tbody ng-if="!attrs.draggable" ng-include="\'tablelite/defaultRow.html\'"></tbody><tbody ng-if="attrs.draggable" ng-include="\'tablelite/draggableRow.html\'"></tbody></table></div><ng-include src="\'tablelite/pagination.html\'"></ng-include></div><div ng-if="!localConfig.localData.length && attrs.itemsNotFoundMessage && !attrs.enableColumnSearch"><div class="alert alert-info" role="alert">{{ attrs.itemsNotFoundMessage }}</div></div>');
   }
 ]);
 

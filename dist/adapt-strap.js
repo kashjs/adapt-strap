@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v2.1.5 - 2015-02-06
+ * @version v2.1.6 - 2015-03-02
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -85,6 +85,7 @@ function controllerFunction($scope, $attrs, $timeout, $adConfig, adAlerts) {
           $timeout.cancel(timeoutPromise);
         }
       };
+      $scope.customClasses = $scope.customClasses || '';
       $scope.settings = adAlerts.settings;
       if (timeout !== 0) {
         $scope.$watch('settings.type', function (type) {
@@ -99,7 +100,10 @@ function controllerFunction($scope, $attrs, $timeout, $adConfig, adAlerts) {
     }
     return {
       restrict: 'AE',
-      scope: { timeout: '=' },
+      scope: {
+        timeout: '=',
+        customClasses: '@'
+      },
       templateUrl: 'alerts/alerts.tpl.html',
       controller: [
         '$scope',
@@ -940,7 +944,7 @@ function controllerFunction($scope, $attrs) {
       $scope.selectedItems = $scope.$eval($attrs.selectedItems);
       $scope.searchText = $scope.$eval($attrs.searchText);
       // ---------- Local data ---------- //
-      var placeHolder = null, pageButtonElement = null, validDrop = false, initialPos, watchers = [];
+      var placeHolder = null, placeHolderInDom = false, pageButtonElement = null, validDrop = false, initialPos, watchers = [];
       function moveElementNode(nodeToMove, relativeNode, dragNode) {
         if (relativeNode.next()[0] === nodeToMove[0]) {
           relativeNode.before(nodeToMove);
@@ -1034,16 +1038,21 @@ function controllerFunction($scope, $attrs) {
         $scope.localConfig.expandedItems.length = 0;
         dragElement = dragElement.el;
         var parent = dragElement.parent();
-        placeHolder = $('<tr><td colspan=' + dragElement.find('td').length + '>&nbsp;</td></tr>');
+        placeHolder = $('<tr id="row-phldr"><td colspan=' + dragElement.find('td').length + '>&nbsp;</td></tr>');
         initialPos = dragElement.index() + ($scope.items.paging.currentPage - 1) * $scope.items.paging.pageSize;
-        if (dragElement[0] !== parent.children().last()[0]) {
-          dragElement.next().before(placeHolder);
-        } else {
-          parent.append(placeHolder);
+        if (!placeHolderInDom) {
+          if (dragElement[0] !== parent.children().last()[0]) {
+            dragElement.next().before(placeHolder);
+            placeHolderInDom = true;
+          } else {
+            parent.append(placeHolder);
+            placeHolderInDom = true;
+          }
         }
       };
       $scope.onDragEnd = function () {
-        placeHolder.remove();
+        $('#row-phldr').remove();
+        placeHolderInDom = false;
       };
       $scope.onDragOver = function (data, dragElement, dropElement) {
         if (placeHolder) {
@@ -1061,7 +1070,8 @@ function controllerFunction($scope, $attrs) {
           } else if (placeHolder.prev()[0]) {
             placeHolder.prev().after(dragElement);
           }
-          placeHolder.remove();
+          $('#row-phldr').remove();
+          placeHolderInDom = false;
           validDrop = true;
           endPos = dragElement.index() + ($scope.items.paging.currentPage - 1) * $scope.items.paging.pageSize;
           adStrapUtils.moveItemInList(initialPos, endPos, $scope.localConfig.localData);
@@ -1096,7 +1106,8 @@ function controllerFunction($scope, $attrs) {
           }
           adStrapUtils.moveItemInList(initialPos, endPos, $scope.localConfig.localData);
           $scope.loadPage($scope.items.paging.currentPage);
-          placeHolder.remove();
+          $('#row-phldr').remove();
+          placeHolderInDom = false;
           dragElement.el.remove();
           if ($scope.localConfig.dragChange) {
             $scope.localConfig.dragChange(initialPos, endPos, data);

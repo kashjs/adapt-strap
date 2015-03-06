@@ -5,6 +5,7 @@
             <script type="text/ng-template" id="{{ localConfig.rendererTemplateId }}">
                 <div class="content"
                      ng-style="{'padding-left': level * (attrs.childrenPadding || 15) + 'px'}"
+                     ng-click="onRowClick(item, level, $event)"
                      ng-class="{{ attrs.rowNgClass }}">
                     <div class="content-holder">
                         <div class="toggle">

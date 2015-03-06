@@ -468,7 +468,7 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
           name: 'toggle-callback',
           required: false,
           default: 'NA',
-          type: 'String',
+          type: 'Function',
           description: 'This function is to lazy load the tree levels.' +
             'Provide the path to toggle function ' +
             '(ex: <code>toggle-callback="methods.loadChildren"</code>). If you do provide this, ' +
@@ -476,6 +476,14 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             'In this case, you need to set the _ad_expanded' +
             'property to true or false. You can also set loading property to true or false on the item.' +
             'If you set _ad_loading to true, the ui will show the _ad_loading icon on that tree level.'
+        },
+        {
+          name: 'on-row-click',
+          required: false,
+          default: 'NA',
+          type: 'Function',
+          description: 'This function gets called with item, level and event properties when row is clicked.' +
+            'ex: <code>on-row-click="rowClicked"</code>'
         },
         {
           name: 'bordered',

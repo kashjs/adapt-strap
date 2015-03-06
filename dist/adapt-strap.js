@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v2.1.6 - 2015-03-02
+ * @version v2.1.7 - 2015-03-06
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -527,6 +527,50 @@ angular.module('adaptv.adaptStrap.draggable', []).directive('adDrag', [
   }
 ]);
 
+// Source: loadingindicator.js
+angular.module('adaptv.adaptStrap.loadingindicator', []).directive('adLoadingIcon', [
+  '$adConfig',
+  '$compile',
+  function ($adConfig, $compile) {
+    return {
+      restrict: 'E',
+      compile: function compile() {
+        return {
+          pre: function preLink(scope, element, attrs) {
+            var loadingIconClass = attrs.loadingIconClass || $adConfig.iconClasses.loadingSpinner, ngStyleTemplate = attrs.loadingIconSize ? 'ng-style="{\'font-size\': \'' + attrs.loadingIconSize + '\'}"' : '', template = '<i class="' + loadingIconClass + '" ' + ngStyleTemplate + '></i>';
+            element.empty();
+            element.append($compile(template)(scope));
+          }
+        };
+      }
+    };
+  }
+]).directive('adLoadingOverlay', [
+  '$adConfig',
+  function ($adConfig) {
+    return {
+      restrict: 'E',
+      templateUrl: 'loadingindicator/loadingindicator.tpl.html',
+      scope: {
+        loading: '=',
+        zIndex: '@',
+        position: '@',
+        containerClasses: '@',
+        loadingIconClass: '@',
+        loadingIconSize: '@'
+      },
+      compile: function compile() {
+        return {
+          pre: function preLink(scope) {
+            scope.loadingIconClass = scope.loadingIconClass || $adConfig.iconClasses.loading;
+            scope.loadingIconSize = scope.loadingIconSize || '3em';
+          }
+        };
+      }
+    };
+  }
+]);
+
 // Source: infinitedropdown.js
 angular.module('adaptv.adaptStrap.infinitedropdown', [
   'adaptv.adaptStrap.utils',
@@ -669,50 +713,6 @@ function linkFunction(scope, element, attrs) {
       scope: true,
       link: linkFunction,
       templateUrl: 'infinitedropdown/infinitedropdown.tpl.html'
-    };
-  }
-]);
-
-// Source: loadingindicator.js
-angular.module('adaptv.adaptStrap.loadingindicator', []).directive('adLoadingIcon', [
-  '$adConfig',
-  '$compile',
-  function ($adConfig, $compile) {
-    return {
-      restrict: 'E',
-      compile: function compile() {
-        return {
-          pre: function preLink(scope, element, attrs) {
-            var loadingIconClass = attrs.loadingIconClass || $adConfig.iconClasses.loadingSpinner, ngStyleTemplate = attrs.loadingIconSize ? 'ng-style="{\'font-size\': \'' + attrs.loadingIconSize + '\'}"' : '', template = '<i class="' + loadingIconClass + '" ' + ngStyleTemplate + '></i>';
-            element.empty();
-            element.append($compile(template)(scope));
-          }
-        };
-      }
-    };
-  }
-]).directive('adLoadingOverlay', [
-  '$adConfig',
-  function ($adConfig) {
-    return {
-      restrict: 'E',
-      templateUrl: 'loadingindicator/loadingindicator.tpl.html',
-      scope: {
-        loading: '=',
-        zIndex: '@',
-        position: '@',
-        containerClasses: '@',
-        loadingIconClass: '@',
-        loadingIconSize: '@'
-      },
-      compile: function compile() {
-        return {
-          pre: function preLink(scope) {
-            scope.loadingIconClass = scope.loadingIconClass || $adConfig.iconClasses.loading;
-            scope.loadingIconSize = scope.loadingIconSize || '3em';
-          }
-        };
-      }
     };
   }
 ]);
@@ -1197,6 +1197,12 @@ angular.module('adaptv.adaptStrap.treebrowser', []).directive('adTreeBrowser', [
           toggleCallback(item);
         } else {
           item._ad_expanded = !item._ad_expanded;
+        }
+      };
+      $scope.onRowClick = function (item, level, event) {
+        var onRowClick = $scope.$eval($attrs.onRowClick);
+        if (onRowClick) {
+          onRowClick(item, level, event);
         }
       };
       var hasChildren = $scope.$eval($attrs.hasChildren);

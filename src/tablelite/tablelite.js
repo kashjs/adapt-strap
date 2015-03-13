@@ -35,8 +35,15 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           localData: adStrapUtils.parse($scope.$eval($attrs.localDataSource)),
           pagingArray: [],
           dragChange: $scope.$eval($attrs.onDragChange),
-          expandedItems: []
+          expandedItems: [],
+          predicate: $attrs.initialSortKey
         };
+
+        if ($attrs.initialSortDirection === 'DEC') {
+          $scope.localConfig.reverse = false;
+        } else if ($attrs.initialSortDirection === 'ASC') {
+          $scope.localConfig.reverse = true;
+        }
 
         $scope.selectedItems = $scope.$eval($attrs.selectedItems);
         $scope.searchText = $scope.$eval($attrs.searchText);

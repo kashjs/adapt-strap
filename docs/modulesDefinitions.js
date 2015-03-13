@@ -201,6 +201,22 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             'EX: <code>on-click-sort-direction="DEC"</code>'
         },
         {
+          name: 'initial-sort-key',
+          required: false,
+          default: 'DEC',
+          type: 'String',
+          description: 'Sort key to use on initialization. ' +
+            'EX: <code>initial-sort-key="name"</code>'
+        },
+        {
+          name: 'initial-sort-direction',
+          required: false,
+          default: 'DEC',
+          type: 'String',
+          description: 'Which direction to sort the initial-sort-key. ' +
+            'EX: <code>initial-sort-direction="DEC"</code>'
+        },
+        {
           name: 'snug-sort-icons',
           required: false,
           default: 'false',

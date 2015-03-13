@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v2.1.8 - 2015-03-13
+ * @version v2.1.9 - 2015-03-13
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -939,8 +939,14 @@ function controllerFunction($scope, $attrs) {
         localData: adStrapUtils.parse($scope.$eval($attrs.localDataSource)),
         pagingArray: [],
         dragChange: $scope.$eval($attrs.onDragChange),
-        expandedItems: []
+        expandedItems: [],
+        predicate: $attrs.initialSortKey
       };
+      if ($attrs.initialSortDirection === 'DEC') {
+        $scope.localConfig.reverse = false;
+      } else if ($attrs.initialSortDirection === 'ASC') {
+        $scope.localConfig.reverse = true;
+      }
       $scope.selectedItems = $scope.$eval($attrs.selectedItems);
       $scope.searchText = $scope.$eval($attrs.searchText);
       // ---------- Local data ---------- //

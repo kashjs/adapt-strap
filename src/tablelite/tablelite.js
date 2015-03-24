@@ -280,6 +280,14 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
             }
           }
         };
+
+        $scope.onRowClick = function (item, event) {
+          var onRowClick = $scope.$parent.$eval($attrs.onRowClick);
+          if (onRowClick) {
+            onRowClick(item, event);
+          }
+        };
+
         // ---------- initialization and event listeners ---------- //
         $scope.loadPage(1);
 

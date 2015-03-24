@@ -15,7 +15,8 @@
       <tbody>
         <tr ng-repeat-start="item in items.list"
             ng-class="getRowClass(item, $index)"
-            ng-include="'tableajax/rowContent.html'"></tr>
+            ng-include="'tableajax/rowContent.html'"
+            ng-click="onRowClick(item, $event)"></tr>
         <tr ng-if="attrs.rowExpandTemplate && adStrapUtils.itemExistsInList($index, localConfig.expandedItems)" ng-repeat-end>
           <td colspan="{{ visibleColumnDefinition.length + 1}}"
               ng-include="attrs.rowExpandTemplate"></td>

@@ -30,6 +30,12 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
           tableMaxHeight: $attrs.tableMaxHeight,
           expandedItems: []
         };
+        $scope.onRowClick = function (item, event) {
+          var onRowClick = $scope.$parent.$eval($attrs.onRowClick);
+          if (onRowClick) {
+            onRowClick(item, event);
+          }
+        };
         $scope.ajaxConfig = $scope.$eval($attrs.ajaxConfig);
         $scope.columnDefinition = $scope.$eval($attrs.columnDefinition);
         $scope.visibleColumnDefinition = $filter('filter')($scope.columnDefinition, $scope.columnVisible);

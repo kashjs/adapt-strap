@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v2.1.9 - 2015-03-13
+ * @version v2.2.0 - 2015-03-25
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -753,6 +753,12 @@ function controllerFunction($scope, $attrs) {
         tableMaxHeight: $attrs.tableMaxHeight,
         expandedItems: []
       };
+      $scope.onRowClick = function (item, event) {
+        var onRowClick = $scope.$parent.$eval($attrs.onRowClick);
+        if (onRowClick) {
+          onRowClick(item, event);
+        }
+      };
       $scope.ajaxConfig = $scope.$eval($attrs.ajaxConfig);
       $scope.columnDefinition = $scope.$eval($attrs.columnDefinition);
       $scope.visibleColumnDefinition = $filter('filter')($scope.columnDefinition, $scope.columnVisible);
@@ -1140,6 +1146,12 @@ function controllerFunction($scope, $attrs) {
           }
         }
       };
+      $scope.onRowClick = function (item, event) {
+        var onRowClick = $scope.$parent.$eval($attrs.onRowClick);
+        if (onRowClick) {
+          onRowClick(item, event);
+        }
+      };
       // ---------- initialization and event listeners ---------- //
       $scope.loadPage(1);
       // ---------- set watchers ---------- //
@@ -1206,7 +1218,7 @@ angular.module('adaptv.adaptStrap.treebrowser', []).directive('adTreeBrowser', [
         }
       };
       $scope.onRowClick = function (item, level, event) {
-        var onRowClick = $scope.$eval($attrs.onRowClick);
+        var onRowClick = $scope.$parent.$eval($attrs.onRowClick);
         if (onRowClick) {
           onRowClick(item, level, event);
         }

@@ -24,7 +24,7 @@ angular.module('adaptv.adaptStrap.treebrowser', [])
           }
         };
         $scope.onRowClick = function (item, level, event) {
-          var onRowClick = $scope.$eval($attrs.onRowClick);
+          var onRowClick = $scope.$parent.$eval($attrs.onRowClick);
           if (onRowClick) {
             onRowClick(item, level, event);
           }

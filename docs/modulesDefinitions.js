@@ -237,6 +237,14 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
           default: 'NA',
           type: 'Function',
           description: 'callback for row expand. Useful for lazy loading extra information on expand.'
+        },
+        {
+          name: 'on-row-click',
+          required: false,
+          default: 'NA',
+          type: 'Function',
+          description: 'This function gets called with item and event properties when row is clicked.' +
+            'ex: <code>on-row-click="rowClicked"</code>'
         }
       ]
     }]
@@ -395,6 +403,14 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
           default: 'NA',
           type: 'Function',
           description: 'callback for row expand. Useful for lazy loading extra information on expand.'
+        },
+        {
+          name: 'on-row-click',
+          required: false,
+          default: 'NA',
+          type: 'Function',
+          description: 'This function gets called with item and event properties when row is clicked.' +
+            'ex: <code>on-row-click="rowClicked"</code>'
         }
       ]
     }]

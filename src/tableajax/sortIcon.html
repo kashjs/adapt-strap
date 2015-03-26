@@ -1,0 +1,9 @@
+<div ng-class="{'ad-display-inline-block': attrs.snugSortIcons, 'pull-right': !attrs.snugSortIcons}"
+     ng-if="definition.sortKey && localConfig.predicate == definition.sortKey">
+    <i ng-class="iconClasses.sortAscending" ng-hide="localConfig.reverse"></i>
+    <i ng-class="iconClasses.sortDescending" ng-show="localConfig.reverse"></i>
+</div>
+<div ng-class="{'ad-display-inline-block': attrs.snugSortIcons, 'pull-right': !attrs.snugSortIcons}"
+     ng-if="definition.sortKey && localConfig.predicate != definition.sortKey">
+    <i ng-class="iconClasses.sortable"></i>
+</div>

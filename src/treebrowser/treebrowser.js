@@ -49,4 +49,28 @@ angular.module('adaptv.adaptStrap.treebrowser', [])
         controller: ['$scope', '$attrs', controllerFunction],
         templateUrl: 'treebrowser/treebrowser.tpl.html'
       };
-    }]);
+    }])
+  .directive('adTreeBrowserNode', ['$compile', '$http', '$templateCache',
+    function ($compile, $http, $templateCache) {
+
+      function linkFunction (scope, element, attrs) {
+        function compileTemplate(nodeTemplate) {
+          var data = $templateCache.get('treebrowser/treeBrowserNode.tpl.html');
+          var template = data.replace(/%=nodeTemplate%/g, nodeTemplate.data);
+          element.empty();
+          element.append($compile(template)(scope));
+        }
+        $http({
+          cache: true,
+          url: scope.$eval(attrs.templateUrl),
+          method: 'GET'
+        }).then(compileTemplate);
+      }
+
+      return {
+        link: linkFunction,
+        scope: true,
+        restrict: 'E'
+      }
+    }
+  ]);

@@ -1,0 +1,29 @@
+<div class="content"
+     ng-style="{'padding-left': level * (attrs.childrenPadding || 15) + 'px'}"
+     ng-click="onRowClick(item, level, $event)"
+     ng-class="{{ attrs.rowNgClass }}">
+    <div class="content-holder">
+        <div class="toggle">
+            <i ng-if="!item._ad_expanded && hasChildren(item) && !item._ad_loading"
+               ng-class="iconClasses.expand"
+               ng-click="toggle($event,item)"></i>
+            <i ng-if="item._ad_expanded && !item._ad_loading"
+               ng-class="iconClasses.collapse"
+               ng-click="toggle($event,item)"></i>
+            <span ng-if="item._ad_loading">
+                <i ng-class="iconClasses.loadingSpinner"></i>
+            </span>
+        </div>
+        <div class="node-content">
+            %=nodeTemplate%
+            <span ng-if="!attrs.nodeTemplateUrl">{{ item.name || "" }}</span>
+        </div>
+    </div>
+</div>
+<div ng-show="item._ad_expanded">
+    <div class="tree-level tree-sub-level"
+         ng-init="level=level+1"
+         ng-repeat="item in item[attrs.childNode]">
+        <ad-tree-browser-node template-url="attrs.nodeTemplateUrl"></ad-tree-browser-node>
+    </div>
+</div>

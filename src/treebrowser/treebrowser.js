@@ -73,4 +73,12 @@ angular.module('adaptv.adaptStrap.treebrowser', [])
         restrict: 'E'
       }
     }
-  ]);
+  ])
+  .directive('adTreeBrowserNodeToggle', function() {
+    return {
+      scope: true,
+      restrict: 'E',
+      replace: true,
+      templateUrl: 'treebrowser/treebrowserNodeToggle.tpl.html'
+    }
+  });

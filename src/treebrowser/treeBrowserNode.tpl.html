@@ -3,17 +3,8 @@
      ng-click="onRowClick(item, level, $event)"
      ng-class="{{ attrs.rowNgClass }}">
     <div class="content-holder">
-        <div class="toggle">
-            <i ng-if="!item._ad_expanded && hasChildren(item) && !item._ad_loading"
-               ng-class="iconClasses.expand"
-               ng-click="toggle($event,item)"></i>
-            <i ng-if="item._ad_expanded && !item._ad_loading"
-               ng-class="iconClasses.collapse"
-               ng-click="toggle($event,item)"></i>
-            <span ng-if="item._ad_loading">
-                <i ng-class="iconClasses.loadingSpinner"></i>
-            </span>
-        </div>
+        <ad-tree-browser-node-toggle ng-if="!attrs.customToggle">
+        </ad-tree-browser-node-toggle>
         <div class="node-content">
             %=nodeTemplate%
             <span ng-if="!attrs.nodeTemplateUrl">{{ item.name || "" }}</span>

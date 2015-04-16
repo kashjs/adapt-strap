@@ -7,11 +7,12 @@
                    row-ng-class="{added:item._selected}"
                    tree-root="root"
                    child-node="children"
-                   children-padding="15"
+                   children-padding="0"
                    bordered="true"
                    on-row-click="rowClicked"
                    node-header-url="src/treebrowser/docs/treeHeader.html"
-                   node-template-url="src/treebrowser/docs/treeNode.html">
+                   node-template-url="src/treebrowser/docs/treeNodeWithCustomToggle.html"
+                   custom-toggle="true">
   </ad-tree-browser>
   <!-- ad_example_end -->
   <hr>

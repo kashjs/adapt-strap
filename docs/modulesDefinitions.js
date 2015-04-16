@@ -523,6 +523,17 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
           default: 'false',
           type: 'boolean',
           description: 'If true, adds border to the tree levels'
+        },
+        {
+          name: 'custom-toggle',
+          required: false,
+          default: 'false',
+          type: 'boolean',
+          description: 'If true, the default toggling functionality is disabled. A toggling directive, ' +
+            'ad-tree-browser-node-toggle, is used to provide toggling behavior, typically done in the node template. ' +
+            'One can also implement hierarchical structure using custom indentation. ' +
+            'See <a href="https://github.com/Adaptv/adapt-strap/blob/master/src/treebrowser/docs/treeNodeWithCustomToggle.html">' +
+            'treeNode sample</a>'
         }
       ]
     }]

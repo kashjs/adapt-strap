@@ -426,7 +426,8 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
       'treebrowser.ctrl.js',
       'treeNode.html',
       'treeHeader.html',
-      'style.css'
+      'style.css',
+      'treeNodeWithCustomToggle.html'
     ],
     directives: [{
       name: 'ad-tree-browser',
@@ -530,7 +531,8 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
           default: 'false',
           type: 'boolean',
           description: 'If true, the default toggling functionality is disabled. A toggling directive, ' +
-            'ad-tree-browser-node-toggle, is used to provide toggling behavior, typically done in the node template. ' +
+            '<code>ad-tree-browser-node-toggle</code>, is used to provide toggling behavior, ' +
+            'typically done in the node template. ' +
             'One can also implement hierarchical structure using custom indentation. ' +
             'See treeNodeWithCustomToggle.html' +
             'treeNode sample'

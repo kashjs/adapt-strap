@@ -52,13 +52,24 @@ angular.module('adaptv.adaptStrap.treebrowser', [])
     }])
   .directive('adTreeBrowserNode', ['$compile', '$http', '$templateCache',
     function ($compile, $http, $templateCache) {
+      var tbNodeTemplate = $templateCache.get('treebrowser/treeBrowserNode.tpl.html');
+      var compiledTemplates = {};
+
+      function getTemplate(contentTpl) {
+        var tplUrl = contentTpl.config.url;
+        var compiledTpl = compiledTemplates[tplUrl];
+        if (!compiledTpl) {
+          var tbNodeHtml = tbNodeTemplate.replace(/%=nodeTemplate%/g, contentTpl.data);
+          compiledTemplates[tplUrl] = $compile(tbNodeHtml);
+        }
+        return compiledTemplates[tplUrl];
+      }
 
       function linkFunction (scope, element, attrs) {
         function compileTemplate(nodeTemplate) {
-          var data = $templateCache.get('treebrowser/treeBrowserNode.tpl.html');
-          var template = data.replace(/%=nodeTemplate%/g, nodeTemplate.data);
-          element.empty();
-          element.append($compile(template)(scope));
+          getTemplate(nodeTemplate)(scope, function(clonedElement) {
+            element.append(clonedElement);
+          });
         }
         $http({
           cache: true,

@@ -11,7 +11,7 @@
         </div>
     </div>
 </div>
-<div ng-show="item._ad_expanded">
+<div ng-if="item._ad_expanded">
     <div class="tree-level tree-sub-level"
          ng-init="level=level+1"
          ng-repeat="item in item[attrs.childNode]">

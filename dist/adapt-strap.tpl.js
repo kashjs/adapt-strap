@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v2.2.2 - 2015-04-23
+ * @version v2.2.3 - 2015-05-05
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -52,7 +52,7 @@ angular.module('adaptv.adaptStrap.tablelite').run([
 angular.module('adaptv.adaptStrap.treebrowser').run([
   '$templateCache',
   function ($templateCache) {
-    $templateCache.put('treebrowser/treeBrowserNode.tpl.html', '<div class="content" ng-style="{\'padding-left\': level * (attrs.childrenPadding || 15) + \'px\'}" ng-click="onRowClick(item, level, $event)" ng-class="{{ attrs.rowNgClass }}"><div class="content-holder"><ad-tree-browser-node-toggle ng-if="!attrs.customToggle"></ad-tree-browser-node-toggle><div class="node-content">%=nodeTemplate% <span ng-if="!attrs.nodeTemplateUrl">{{ item.name || "" }}</span></div></div></div><div ng-show="item._ad_expanded"><div class="tree-level tree-sub-level" ng-init="level=level+1" ng-repeat="item in item[attrs.childNode]"><ad-tree-browser-node template-url="attrs.nodeTemplateUrl"></ad-tree-browser-node></div></div>');
+    $templateCache.put('treebrowser/treeBrowserNode.tpl.html', '<div class="content" ng-style="{\'padding-left\': level * (attrs.childrenPadding || 15) + \'px\'}" ng-click="onRowClick(item, level, $event)" ng-class="{{ attrs.rowNgClass }}"><div class="content-holder"><ad-tree-browser-node-toggle ng-if="!attrs.customToggle"></ad-tree-browser-node-toggle><div class="node-content">%=nodeTemplate% <span ng-if="!attrs.nodeTemplateUrl">{{ item.name || "" }}</span></div></div></div><div ng-if="item._ad_expanded"><div class="tree-level tree-sub-level" ng-init="level=level+1" ng-repeat="item in item[attrs.childNode]"><ad-tree-browser-node template-url="attrs.nodeTemplateUrl"></ad-tree-browser-node></div></div>');
   }
 ]);
 

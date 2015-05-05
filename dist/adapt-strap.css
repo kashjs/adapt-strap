@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v2.2.2 - 2015-04-23
+ * @version v2.2.3 - 2015-05-05
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -130,7 +130,6 @@
 }
 .ad-tree-browser-container .tree-view .tree .tree-header-level:first-child {
   font-weight: bold;
-  background-color: #f9f9f9;
 }
 .ad-tree-browser-container .tree-view .tree .content {
   padding-top: 5px;

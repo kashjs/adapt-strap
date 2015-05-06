@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v2.2.3 - 2015-05-05
+ * @version v2.2.4 - 2015-05-06
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -976,10 +976,17 @@ function controllerFunction($scope, $attrs) {
       // ---------- ui handlers ---------- //
       $scope.loadPage = adDebounce(function (page) {
         $scope.collapseAll();
-        var itemsObject, params, parsedData = adStrapUtils.parse($scope.$eval($attrs.localDataSource));
+        var itemsObject, params, parsedData = adStrapUtils.parse($scope.$eval($attrs.localDataSource)), filterObj = {};
         $scope.localConfig.localData = !!$scope.searchText ? $filter('filter')(parsedData, $scope.searchText) : parsedData;
         if ($attrs.enableColumnSearch && adStrapUtils.hasAtLeastOnePropertyWithValue($scope.filters)) {
-          $scope.localConfig.localData = $filter('filter')($scope.localConfig.localData, $scope.filters);
+          angular.forEach($scope.filters, function (value, key) {
+            if (key.indexOf('.') > -1) {
+              angular.extend(filterObj, adStrapUtils.createdChainObjectAndInitValue(key, value));
+            } else {
+              filterObj[key] = value;
+            }
+          });
+          $scope.localConfig.localData = $filter('filter')($scope.localConfig.localData, filterObj);
         }
         itemsObject = $scope.localConfig.localData;
         params = {
@@ -1303,6 +1310,22 @@ angular.module('adaptv.adaptStrap.utils', []).factory('adStrapUtils', [
           }
         }
         return obj;
+      }, createdChainObjectAndInitValue = function (property, value) {
+        var arr = property.split('.');
+        var obj = { obj: {} };
+        var ob2 = obj.obj;
+        while (arr.length) {
+          var key = arr.shift();
+          if (ob2) {
+            if (arr.length === 0) {
+              ob2[key] = value;
+            } else {
+              ob2[key] = {};
+              ob2 = ob2[key];
+            }
+          }
+        }
+        return obj.obj;
       }, applyFilter = function (value, filter, item) {
         var filterName, filterOptions, optionsIndex;
         if (value && 'function' === typeof value) {
@@ -1410,6 +1433,7 @@ angular.module('adaptv.adaptStrap.utils', []).factory('adStrapUtils', [
       };
     return {
       evalObjectProperty: evalObjectProperty,
+      createdChainObjectAndInitValue: createdChainObjectAndInitValue,
       applyFilter: applyFilter,
       itemExistsInList: itemExistsInList,
       itemsExistInList: itemsExistInList,

@@ -13,6 +13,23 @@ angular.module('adaptv.adaptStrap.utils', [])
         }
         return obj;
       },
+      createdChainObjectAndInitValue = function (property, value) {
+        var arr = property.split('.');
+        var obj = {obj: {}};
+        var ob2 = obj.obj;
+        while (arr.length) {
+          var key = arr.shift();
+          if (ob2) {
+            if (arr.length === 0) {
+              ob2[key] = value;
+            } else {
+              ob2[key] = {};
+              ob2 = ob2[key];
+            }
+          }
+        }
+        return obj.obj;
+      },
       applyFilter = function (value, filter, item) {
         var filterName,
           filterOptions,
@@ -136,6 +153,7 @@ angular.module('adaptv.adaptStrap.utils', [])
 
     return {
       evalObjectProperty: evalObjectProperty,
+      createdChainObjectAndInitValue: createdChainObjectAndInitValue,
       applyFilter: applyFilter,
       itemExistsInList: itemExistsInList,
       itemsExistInList: itemsExistInList,

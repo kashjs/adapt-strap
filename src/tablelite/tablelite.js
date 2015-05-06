@@ -79,14 +79,22 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           $scope.collapseAll();
           var itemsObject,
               params,
-              parsedData = adStrapUtils.parse($scope.$eval($attrs.localDataSource));
+              parsedData = adStrapUtils.parse($scope.$eval($attrs.localDataSource)),
+              filterObj = {};
 
           $scope.localConfig.localData = !!$scope.searchText ?
             $filter('filter')(parsedData, $scope.searchText) :
             parsedData;
 
           if ($attrs.enableColumnSearch && adStrapUtils.hasAtLeastOnePropertyWithValue($scope.filters)) {
-            $scope.localConfig.localData = $filter('filter')($scope.localConfig.localData, $scope.filters);
+            angular.forEach($scope.filters, function (value, key) {
+              if (key.indexOf('.') > -1) {
+                angular.extend(filterObj, adStrapUtils.createdChainObjectAndInitValue(key, value));
+              } else {
+                filterObj[key] = value;
+              }
+            });
+            $scope.localConfig.localData = $filter('filter')($scope.localConfig.localData, filterObj);
           }
 
           itemsObject = $scope.localConfig.localData;

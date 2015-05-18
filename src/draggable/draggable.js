@@ -377,6 +377,7 @@ angular.module('adaptv.adaptStrap.draggable', [])
             });
             obj.el.lastDropElement.removeClass('ad-drop-over');
             delete obj.el.lastDropElement;
+            elem = null;
           }
         }
       }

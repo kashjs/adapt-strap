@@ -235,6 +235,7 @@ angular.module('adaptv.adaptStrap.draggable', []).directive('adDrag', [
         if (!dragEnabled) {
           return;
         }
+        if ($(evt.target).is('.ad-prevent-drag')) return;
         if (hasTouch) {
           cancelPress();
           pressTimer = setTimeout(function () {

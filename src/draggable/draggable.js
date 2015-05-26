@@ -89,7 +89,7 @@ angular.module('adaptv.adaptStrap.draggable', [])
         if (!dragEnabled) {
           return;
         }
-        if ($(evt.target).is('.ad-prevent-drag')) {
+        if ($(evt.target).is('.ad-prevent-drag') || $(evt.target).parents('.ad-prevent-drag').length > 0) {
           return;
         }
         if (hasTouch) {

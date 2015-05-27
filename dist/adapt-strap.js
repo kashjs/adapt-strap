@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v2.2.5 - 2015-05-18
+ * @version v2.2.6 - 2015-05-27
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -233,6 +233,9 @@ angular.module('adaptv.adaptStrap.draggable', []).directive('adDrag', [
       */
       function onPress(evt) {
         if (!dragEnabled) {
+          return;
+        }
+        if ($(evt.target).is('[ad-prevent-drag]') || $(evt.target).parents('[ad-prevent-drag]').length > 0) {
           return;
         }
         if (hasTouch) {

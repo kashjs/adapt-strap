@@ -49,14 +49,22 @@
         <!-- =========== Drag with handles ============= -->
         <li class="list-group-item"
             ad-drag="true"
-            ad-drag-handle="true">
+            ad-drag-handle="true"
+            id="drag-handle-demo">
           <span class="ad-drag-handle glyphicon glyphicon-align-justify"></span>
           Drag me using my handle
         </li>
         <!-- =========== Drag on the whole element ============= -->
         <li class="list-group-item"
-            ad-drag="true">
+            ad-drag="true"
+            id="drag-element-demo">
           Drag me without handle
+        </li>
+        <!-- =========== Prevent drag on parts of the element ============= -->
+        <li class="list-group-item"
+            ad-drag="true"
+            id="drag-prevent-demo">
+          Drag me, except <strong ad-prevent-drag>this bold text</strong></li>
         </li>
       </ul>
       <!-- ad_example_end -->

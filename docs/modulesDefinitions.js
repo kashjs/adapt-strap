@@ -593,6 +593,14 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             description: 'Callback for drag end event. It fires when a drag has ended, always after the' +
               'drop end. It should take 3 parameters <code>$data, $dragElement, $event</code>. ' +
               '<strong>Note:</strong> Use <code>$dragElement.el</code> to get the actual element.'
+          },
+          {
+            name: 'ad-prevent-drag',
+            required: 'false',
+            default: 'NA',
+            type: 'NA',
+            description: '<span class="text-primary">This is an advanced attribute that can be added to any child element of a' +
+              'draggable element. This prevents dragging on some child elements of a draggable elements.</span>'
           }
         ]
       },

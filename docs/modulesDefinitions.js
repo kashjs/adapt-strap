@@ -599,8 +599,9 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             required: 'false',
             default: 'NA',
             type: 'NA',
-            description: '<span class="text-primary">This is an advanced attribute that can be added to any child element of a' +
-              'draggable element. This prevents dragging on some child elements of a draggable elements.</span>'
+            description: '<span class="text-primary">This is an advanced attribute that can ' +
+              'be added to any child element of a draggable element. This prevents dragging on ' +
+              'some child elements of a draggable elements.</span>'
           }
         ]
       },

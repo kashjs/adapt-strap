@@ -45,15 +45,6 @@ angular.module('adaptv.adaptStrap.draggable', [])
           element.on(startEvents, onPress);
           element.addClass('ad-draggable');
         }
-
-        if (!hasTouch) {
-          element.on('mousedown', '.ad-drag-handle', function() {
-            return false;
-          });
-          element.on('mousedown', function() {
-            return false;
-          }); // prevent native drag
-        }
       }
 
       //--- Event Handlers ---
@@ -103,6 +94,7 @@ angular.module('adaptv.adaptStrap.draggable', [])
           $document.on(endEvents, cancelPress);
         } else {
           onLongPress(evt);
+          return false;
         }
       }
 

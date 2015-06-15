@@ -6,6 +6,7 @@ angular.module('adaptv.adaptStrap.draggable', [])
       scope.hasHandle = attrs.adDragHandle === 'false' || typeof attrs.adDragHandle === 'undefined' ? false : true;
       scope.onDragStartCallback = $parse(attrs.adDragBegin) || null;
       scope.onDragEndCallback = $parse(attrs.adDragEnd) || null;
+      scope.useClonedElement = attrs.adDragCloneElement === 'true';
       scope.data = null;
 
       var offset, mx, my, tx, ty;
@@ -22,6 +23,7 @@ angular.module('adaptv.adaptStrap.draggable', [])
       var dragEnabled = false;
       var pressTimer = null;
 
+      var draggedClone = null;
       function init() {
         element.attr('draggable', 'false'); // prevent native drag
         toggleListeners(true);
@@ -143,6 +145,11 @@ angular.module('adaptv.adaptStrap.draggable', [])
           return;
         }
         evt.preventDefault();
+        if (scope.useClonedElement) {
+          draggedClone = element.clone().appendTo(element.parent());
+        }
+
+        var elem = scope.useClonedElement ? draggedClone : element;
         offset = element.offset();
 
         if (scope.hasHandle) {
@@ -170,7 +177,7 @@ angular.module('adaptv.adaptStrap.draggable', [])
           y: my,
           tx: tx,
           ty: ty,
-          el: element,
+          el: elem,
           data: scope.data,
           callback: onDragBegin
         });
@@ -193,7 +200,7 @@ angular.module('adaptv.adaptStrap.draggable', [])
         cy = cy - $window.scrollTop();
 
         moveElement(tx, ty);
-
+        var elem = scope.useClonedElement ? draggedClone : element;
         $rootScope.$broadcast('draggable:move', {
           x: mx,
           y: my,
@@ -201,7 +208,7 @@ angular.module('adaptv.adaptStrap.draggable', [])
           ty: ty,
           cx: cx,
           cy: cy,
-          el: element,
+          el: elem,
           data: scope.data
         });
       }
@@ -211,17 +218,21 @@ angular.module('adaptv.adaptStrap.draggable', [])
           return;
         }
         evt.preventDefault();
+        var elem = scope.useClonedElement ? draggedClone : element;
         $rootScope.$broadcast('draggable:end', {
           x: mx,
           y: my,
           tx: tx,
           ty: ty,
-          el: element,
+          el: elem,
           data: scope.data,
           callback: onDragComplete
         });
-
-        element.removeClass('ad-dragging');
+        if (scope.useClonedElement) {
+          elem.remove();
+        } else {
+          elem.removeClass('ad-dragging');
+        }
         reset();
         $document.off(moveEvents, onMove);
         $document.off(endEvents, onRelease);
@@ -232,10 +243,11 @@ angular.module('adaptv.adaptStrap.draggable', [])
         if (!scope.onDragStartCallback) {
           return;
         }
-        scope.$apply(function() {
+        var elem = scope.useClonedElement ? draggedClone : element;
+        scope.$apply(function () {
           scope.onDragStartCallback(scope, {
             $data: scope.data,
-            $dragElement: { el: element },
+            $dragElement: { el: elem },
             $event: evt
           });
         });
@@ -245,6 +257,7 @@ angular.module('adaptv.adaptStrap.draggable', [])
         if (!scope.onDragEndCallback) {
           return;
         }
+        var elem = scope.useClonedElement ? draggedClone : element;
         // To fix a bug issue where onDragEnd happens before
         // onDropEnd. Currently the only way around this
         // Ideally onDropEnd should fire before onDragEnd
@@ -252,7 +265,7 @@ angular.module('adaptv.adaptStrap.draggable', [])
           scope.$apply(function () {
             scope.onDragEndCallback(scope, {
               $data: scope.data,
-              $dragElement: { el: element },
+              $dragElement: { el: elem },
               $event: evt
             });
           });
@@ -261,14 +274,16 @@ angular.module('adaptv.adaptStrap.draggable', [])
 
       // utils functions
       function reset() {
-        element.css({ left: '', top: '', position:'', 'z-index': '' });
-        var width = element.data('ad-draggable-temp-width');
+        var elem = scope.useClonedElement ? draggedClone : element;
+        elem.css({ left: '', top: '', position:'', 'z-index': '' });
+        var width = elem.data('ad-draggable-temp-width');
+
         if (width) {
-          element.css({width: width});
+          elem.css({ width: width });
         } else {
-          element.css({width: ''});
+          elem.css({ width: '' });
         }
-        element.children()
+        elem.children()
           .each(function() {
             var width = $(this).data('ad-draggable-temp-width');
             if (width) {
@@ -280,7 +295,8 @@ angular.module('adaptv.adaptStrap.draggable', [])
       }
 
       function moveElement(x, y) {
-        element.css({
+        var elem = scope.useClonedElement ? draggedClone : element;
+        elem.css({
           left: x,
           top: y,
           position: 'fixed',

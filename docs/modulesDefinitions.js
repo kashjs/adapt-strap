@@ -562,6 +562,14 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             description: 'If <code>true</code>, enables drag capabilities for the node'
           },
           {
+            name: 'ad-drag-clone-element',
+            required: 'false',
+            default: 'false',
+            type: 'Boolean',
+            description: 'If <code>true</code>, original element will stay in place while dragging' +
+              'and a clone will appear on drag. Once dropped, the clone will be destroyed.'
+          },
+          {
             name: 'ad-drag-handle',
             required: 'false',
             default: 'NA',

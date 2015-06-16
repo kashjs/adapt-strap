@@ -229,6 +229,7 @@ angular.module('adaptv.adaptStrap.draggable', [])
           callback: onDragComplete
         });
         if (scope.useClonedElement) {
+          elem.removeClass('ad-dragging');
           elem.remove();
         } else {
           elem.removeClass('ad-dragging');

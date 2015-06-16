@@ -29,7 +29,7 @@
                 </a>
             </li>
             <li class="text-overflow text-center"
-                ng-style="{'opacity': localConfig.loadingData ? 1 : 0}">
+                ng-show="localConfig.loadingData">
                 <a role="menuitem" tabindex="-1" href="">
                     <ad-loading-icon></ad-loading-icon>
                 </a>

@@ -156,8 +156,8 @@ angular.module('adaptv.adaptStrap.draggable', [])
         mx = (evt.pageX || evt.originalEvent.touches[0].pageX);
         my = (evt.pageY || evt.originalEvent.touches[0].pageY);
 
-        tx = mx - offset.left - $window.scrollLeft();
-        ty = my - offset.top - $window.scrollTop();
+        tx = offset.left - $window.scrollLeft();
+        ty = offset.top - $window.scrollTop();
 
         persistElementWidth();
         moveElement(tx, ty);

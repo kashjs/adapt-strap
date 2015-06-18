@@ -121,17 +121,17 @@ angular.module('adaptv.adaptStrap.draggable', [])
        * Preserve the width of the element during drag
        */
       function persistElementWidth() {
-        if (getInlineProperty('width', element)) {
-          element.data('ad-draggable-temp-width', getInlineProperty('width', element));
+        var elem = scope.useClonedElement ? draggedClone : element;
+        if (getInlineProperty('width', elem)) {
+          elem.data('ad-draggable-temp-width', getInlineProperty('width', elem));
         }
-        element.width(element.width());
-        element.children()
-          .each(function() {
-            if (getInlineProperty('width', this)) {
-              $(this).data('ad-draggable-temp-width', getInlineProperty('width', this));
-            }
-            $(this).width($(this).width());
-          });
+        elem.width(elem.width());
+        elem.children().each(function () {
+          if (getInlineProperty('width', this)) {
+            $(this).data('ad-draggable-temp-width', getInlineProperty('width', this));
+          }
+          $(this).width($(this).width());
+        });
       }
 
       function cancelPress() {

@@ -84,7 +84,11 @@ angular.module('adaptv.adaptStrapDocs')
           modelYear: 2014,
           price: 100000
         }
-      ]
+      ],
+      state: {
+        sortKey: 'name',
+        sortDirection: 'DEC'
+      }
     };
 
     $scope.carsTableColumnDefinition = [
@@ -117,12 +121,16 @@ angular.module('adaptv.adaptStrapDocs')
       }
     ];
 
-    $scope.onChange = function(o, n, data) {
+    $scope.onDragChange = function(o, n, data) {
       $scope.models.changeInfo.push({
         startPosition: o,
         endPosition: n,
         data: data
       });
+    };
+
+    $scope.onStateChange = function(state) {
+      alert(JSON.stringify(state));
     };
 
     // ========== ui handlers ========== //

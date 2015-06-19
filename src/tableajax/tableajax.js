@@ -9,6 +9,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
       function controllerFunction($scope, $attrs) {
         // ---------- $scope initialization ---------- //
         $scope.attrs = $attrs;
+        $scope.attrs.state = $scope.attrs.state || {};
         $scope.iconClasses = $adConfig.iconClasses;
         $scope.adStrapUtils = adStrapUtils;
         $scope.tableClasses = $adConfig.componentClasses.tableAjaxClass;
@@ -28,7 +29,9 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
           loadingData: false,
           showNoDataFoundMessage: false,
           tableMaxHeight: $attrs.tableMaxHeight,
-          expandedItems: []
+          expandedItems: [],
+          sortState: {},
+          stateChange: $scope.$eval($attrs.onStateChange)
         };
         $scope.onRowClick = function (item, event) {
           var onRowClick = $scope.$parent.$eval($attrs.onRowClick);
@@ -58,8 +61,8 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
             params = {
               pageNumber: page,
               pageSize: $scope.items.paging.pageSize,
-              sortKey: $scope.localConfig.predicate,
-              sortDirection: $scope.localConfig.reverse,
+              sortKey: $scope.localConfig.sortState.sortKey,
+              sortDirection: $scope.localConfig.sortState.sortDirection === 'DEC',
               ajaxConfig: $scope.ajaxConfig,
               token: lastRequestToken
             },
@@ -133,24 +136,27 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
           return column.visible !== false;
         };
 
-        $scope.sortByColumn = function (column) {
-          var initialSortDirection = true;
-          if ($attrs.onClickSortDirection === 'DEC') {
-            initialSortDirection = false;
-          }
+        $scope.sortByColumn  = function (column, preventNotification) {
+          var sortDirection = $scope.localConfig.sortState.sortDirection || 'ASC';
           if (column.sortKey) {
-            if (column.sortKey !== $scope.localConfig.predicate) {
-              $scope.localConfig.predicate = column.sortKey;
-              $scope.localConfig.reverse = initialSortDirection;
+            if (column.sortKey !== $scope.localConfig.sortState.sortKey) {
+              $scope.localConfig.sortState = {
+                sortKey: column.sortKey,
+                sortDirection: sortDirection
+              };
             } else {
-              if ($scope.localConfig.reverse === initialSortDirection) {
-                $scope.localConfig.reverse = !initialSortDirection;
+              if ($scope.localConfig.sortState.sortDirection === sortDirection) {
+                $scope.localConfig.sortState.sortDirection = sortDirection === 'ASC' ? 'DEC' : 'ASC';
               } else {
-                $scope.localConfig.reverse = undefined;
-                $scope.localConfig.predicate = undefined;
+                $scope.localConfig.sortState = {};
               }
             }
             $scope.loadPage($scope.items.paging.currentPage);
+
+            if (!preventNotification && $scope.localConfig.stateChange) {
+              $scope.localConfig.stateChange($scope.localConfig.sortState);
+            }
+
           }
         };
 
@@ -178,6 +184,14 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
         };
 
         // ---------- initialization and event listeners ---------- //
+
+        var state = $scope.$eval($attrs.state) || {};
+        var column = {
+          sortKey: state.sortKey,
+          sortDirection: state.sortDirection
+        };
+        $scope.sortByColumn(column, true);
+
         $scope.loadPage(1);
 
         // reset on parameter change

@@ -32,7 +32,8 @@ describe('tablelite component', function () {
     expect($rootScope.models.selectedCars).toBeDefined();
     expect($rootScope.models.changeInfo).toBeDefined();
     expect($rootScope.carsTableColumnDefinition).toBeDefined();
-    expect($rootScope.onChange).toBeDefined();
+    expect($rootScope.onDragChange).toBeDefined();
+    expect($rootScope.onStateChange).toBeDefined();
     expect($rootScope.buyCar).toBeDefined();
     expect($rootScope.models.carsForSale.length).toEqual(12);
     expect($rootScope.models.selectedCars.length).toEqual(1);

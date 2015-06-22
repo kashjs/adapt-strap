@@ -15,6 +15,9 @@ angular.module('adaptv.adaptStrapDocs', [
   .controller('layoutCtrl', ['$scope', '$anchorScroll', '$location', 'adaptStrapModules',
     function ($scope, $anchorScroll, $location, adaptStrapModules) {
       $scope.modules = adaptStrapModules;
+      $scope.info = {
+        version: undefined
+      };
 
       $scope.scrollTo = function (id, $event) {
         $event.preventDefault();
@@ -129,6 +132,7 @@ angular.module('adaptv.adaptStrapDocs', [
       link: function (scope) {
         $http.get('bower.json').success(function (response) {
           scope.version = response.version;
+          scope.info.version = response.version;
         });
       }
     };

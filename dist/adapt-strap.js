@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v2.2.9 - 2015-06-16
+ * @version v2.3.0 - 2015-06-22
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -264,11 +264,12 @@ angular.module('adaptv.adaptStrap.draggable', []).directive('adDrag', [
        * Preserve the width of the element during drag
        */
       function persistElementWidth() {
-        if (getInlineProperty('width', element)) {
-          element.data('ad-draggable-temp-width', getInlineProperty('width', element));
+        var elem = scope.useClonedElement ? draggedClone : element;
+        if (getInlineProperty('width', elem)) {
+          elem.data('ad-draggable-temp-width', getInlineProperty('width', elem));
         }
-        element.width(element.width());
-        element.children().each(function () {
+        elem.width(elem.width());
+        elem.children().each(function () {
           if (getInlineProperty('width', this)) {
             $(this).data('ad-draggable-temp-width', getInlineProperty('width', this));
           }
@@ -750,6 +751,7 @@ angular.module('adaptv.adaptStrap.tableajax', [
 function controllerFunction($scope, $attrs) {
       // ---------- $scope initialization ---------- //
       $scope.attrs = $attrs;
+      $scope.attrs.state = $scope.attrs.state || {};
       $scope.iconClasses = $adConfig.iconClasses;
       $scope.adStrapUtils = adStrapUtils;
       $scope.tableClasses = $adConfig.componentClasses.tableAjaxClass;
@@ -769,7 +771,9 @@ function controllerFunction($scope, $attrs) {
         loadingData: false,
         showNoDataFoundMessage: false,
         tableMaxHeight: $attrs.tableMaxHeight,
-        expandedItems: []
+        expandedItems: [],
+        sortState: {},
+        stateChange: $scope.$eval($attrs.onStateChange)
       };
       $scope.onRowClick = function (item, event) {
         var onRowClick = $scope.$parent.$eval($attrs.onRowClick);
@@ -794,8 +798,8 @@ function controllerFunction($scope, $attrs) {
         var pageLoader = $scope.$eval($attrs.pageLoader) || adLoadPage, params = {
             pageNumber: page,
             pageSize: $scope.items.paging.pageSize,
-            sortKey: $scope.localConfig.predicate,
-            sortDirection: $scope.localConfig.reverse,
+            sortKey: $scope.localConfig.sortState.sortKey,
+            sortDirection: $scope.localConfig.sortState.sortDirection === 'DEC',
             ajaxConfig: $scope.ajaxConfig,
             token: lastRequestToken
           }, successHandler = function (response) {
@@ -858,24 +862,25 @@ function controllerFunction($scope, $attrs) {
       $scope.columnVisible = function (column) {
         return column.visible !== false;
       };
-      $scope.sortByColumn = function (column) {
-        var initialSortDirection = true;
-        if ($attrs.onClickSortDirection === 'DEC') {
-          initialSortDirection = false;
-        }
+      $scope.sortByColumn = function (column, preventNotification) {
+        var sortDirection = $scope.localConfig.sortState.sortDirection || 'ASC';
         if (column.sortKey) {
-          if (column.sortKey !== $scope.localConfig.predicate) {
-            $scope.localConfig.predicate = column.sortKey;
-            $scope.localConfig.reverse = initialSortDirection;
+          if (column.sortKey !== $scope.localConfig.sortState.sortKey) {
+            $scope.localConfig.sortState = {
+              sortKey: column.sortKey,
+              sortDirection: sortDirection
+            };
           } else {
-            if ($scope.localConfig.reverse === initialSortDirection) {
-              $scope.localConfig.reverse = !initialSortDirection;
+            if ($scope.localConfig.sortState.sortDirection === sortDirection) {
+              $scope.localConfig.sortState.sortDirection = sortDirection === 'ASC' ? 'DEC' : 'ASC';
             } else {
-              $scope.localConfig.reverse = undefined;
-              $scope.localConfig.predicate = undefined;
+              $scope.localConfig.sortState = {};
             }
           }
           $scope.loadPage($scope.items.paging.currentPage);
+          if (!preventNotification && $scope.localConfig.stateChange) {
+            $scope.localConfig.stateChange($scope.localConfig.sortState);
+          }
         }
       };
       $scope.collapseAll = function () {
@@ -899,6 +904,12 @@ function controllerFunction($scope, $attrs) {
         }
       };
       // ---------- initialization and event listeners ---------- //
+      var state = $scope.$eval($attrs.state) || {};
+      var column = {
+          sortKey: state.sortKey,
+          sortDirection: state.sortDirection
+        };
+      $scope.sortByColumn(column, true);
       $scope.loadPage(1);
       // reset on parameter change
       watchers.push($scope.$watch($attrs.ajaxConfig, function () {
@@ -943,6 +954,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils']).direc
 function controllerFunction($scope, $attrs) {
       // ---------- $$scope initialization ---------- //
       $scope.attrs = $attrs;
+      $scope.attrs.state = $scope.attrs.state || {};
       $scope.iconClasses = $adConfig.iconClasses;
       $scope.adStrapUtils = adStrapUtils;
       $scope.tableClasses = $adConfig.componentClasses.tableLiteClass;
@@ -964,13 +976,9 @@ function controllerFunction($scope, $attrs) {
         pagingArray: [],
         dragChange: $scope.$eval($attrs.onDragChange),
         expandedItems: [],
-        predicate: $attrs.initialSortKey
+        sortState: {},
+        stateChange: $scope.$eval($attrs.onStateChange)
       };
-      if ($attrs.initialSortDirection === 'DEC') {
-        $scope.localConfig.reverse = false;
-      } else if ($attrs.initialSortDirection === 'ASC') {
-        $scope.localConfig.reverse = true;
-      }
       $scope.selectedItems = $scope.$eval($attrs.selectedItems);
       $scope.searchText = $scope.$eval($attrs.searchText);
       // ---------- Local data ---------- //
@@ -1010,8 +1018,8 @@ function controllerFunction($scope, $attrs) {
         params = {
           pageNumber: page,
           pageSize: !$attrs.disablePaging ? $scope.items.paging.pageSize : itemsObject.length,
-          sortKey: $scope.localConfig.predicate,
-          sortDirection: $scope.localConfig.reverse,
+          sortKey: $scope.localConfig.sortState.sortKey,
+          sortDirection: $scope.localConfig.sortState.sortDirection === 'DEC',
           localData: itemsObject
         };
         var response = adLoadLocalPage(params);
@@ -1048,29 +1056,29 @@ function controllerFunction($scope, $attrs) {
       $scope.columnVisible = function (column) {
         return column.visible !== false;
       };
-      $scope.sortByColumn = function (column) {
-        var initialSortDirection = true;
-        if ($attrs.onClickSortDirection === 'DEC') {
-          initialSortDirection = false;
-        }
+      $scope.sortByColumn = function (column, preventNotification) {
+        var sortDirection = $scope.localConfig.sortState.sortDirection || 'ASC';
         if (column.sortKey) {
-          if (column.sortKey !== $scope.localConfig.predicate) {
-            $scope.localConfig.predicate = column.sortKey;
-            $scope.localConfig.reverse = initialSortDirection;
+          if (column.sortKey !== $scope.localConfig.sortState.sortKey) {
+            $scope.localConfig.sortState = {
+              sortKey: column.sortKey,
+              sortDirection: sortDirection
+            };
           } else {
-            if ($scope.localConfig.reverse === initialSortDirection) {
-              $scope.localConfig.reverse = !initialSortDirection;
+            if ($scope.localConfig.sortState.sortDirection === sortDirection) {
+              $scope.localConfig.sortState.sortDirection = sortDirection === 'ASC' ? 'DEC' : 'ASC';
             } else {
-              $scope.localConfig.reverse = undefined;
-              $scope.localConfig.predicate = undefined;
+              $scope.localConfig.sortState = {};
             }
           }
           $scope.loadPage($scope.items.paging.currentPage);
+          if (!preventNotification && $scope.localConfig.stateChange) {
+            $scope.localConfig.stateChange($scope.localConfig.sortState);
+          }
         }
       };
       $scope.unSortTable = function () {
-        $scope.localConfig.reverse = undefined;
-        $scope.localConfig.predicate = undefined;
+        $scope.localConfig.sortState = {};
       };
       $scope.collapseAll = function () {
         $scope.localConfig.expandedItems.length = 0;
@@ -1182,6 +1190,12 @@ function controllerFunction($scope, $attrs) {
         }
       };
       // ---------- initialization and event listeners ---------- //
+      var state = $scope.$eval($attrs.state) || {};
+      var column = {
+          sortKey: state.sortKey,
+          sortDirection: state.sortDirection
+        };
+      $scope.sortByColumn(column, true);
       $scope.loadPage(1);
       // ---------- set watchers ---------- //
       watchers.push($scope.$watch($attrs.localDataSource, function () {

@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v2.2.9 - 2015-06-16
+ * @version v2.3.0 - 2015-06-22
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -100,7 +100,7 @@ angular.module('adaptv.adaptStrap.tableajax').run([
 angular.module('adaptv.adaptStrap.tableajax').run([
   '$templateCache',
   function ($templateCache) {
-    $templateCache.put('tableajax/sortIcons.html', '<div ng-class="{\'ad-display-inline-block\': attrs.snugSortIcons, \'pull-right\': !attrs.snugSortIcons}" ng-if="definition.sortKey && localConfig.predicate == definition.sortKey"><i ng-class="iconClasses.sortAscending" ng-hide="localConfig.reverse"></i> <i ng-class="iconClasses.sortDescending" ng-show="localConfig.reverse"></i></div><div ng-class="{\'ad-display-inline-block\': attrs.snugSortIcons, \'pull-right\': !attrs.snugSortIcons}" ng-if="definition.sortKey && localConfig.predicate != definition.sortKey"><i ng-class="iconClasses.sortable"></i></div>');
+    $templateCache.put('tableajax/sortIcons.html', '<div ng-class="{\'ad-display-inline-block\': attrs.snugSortIcons, \'pull-right\': !attrs.snugSortIcons}" ng-if="definition.sortKey && localConfig.sortState.sortKey == definition.sortKey"><i ng-class="iconClasses.sortAscending" ng-show="localConfig.sortState.sortDirection === \'ASC\'"></i> <i ng-class="iconClasses.sortDescending" ng-show="localConfig.sortState.sortDirection === \'DEC\'"></i></div><div ng-class="{\'ad-display-inline-block\': attrs.snugSortIcons, \'pull-right\': !attrs.snugSortIcons}" ng-if="definition.sortKey && localConfig.sortState.sortKey != definition.sortKey"><i ng-class="iconClasses.sortable"></i></div>');
   }
 ]);
 
@@ -156,7 +156,7 @@ angular.module('adaptv.adaptStrap.tablelite').run([
 angular.module('adaptv.adaptStrap.tablelite').run([
   '$templateCache',
   function ($templateCache) {
-    $templateCache.put('tablelite/sortIcons.html', '<div ng-class="{\'ad-display-inline-block\': attrs.snugSortIcons, \'pull-right\': !attrs.snugSortIcons}" ng-if="definition.sortKey && localConfig.predicate == definition.sortKey"><i ng-class="iconClasses.sortAscending" ng-hide="localConfig.reverse"></i> <i ng-class="iconClasses.sortDescending" ng-show="localConfig.reverse"></i></div><div ng-class="{\'ad-display-inline-block\': attrs.snugSortIcons, \'pull-right\': !attrs.snugSortIcons}" ng-if="definition.sortKey && localConfig.predicate != definition.sortKey"><i ng-class="iconClasses.sortable"></i></div>');
+    $templateCache.put('tablelite/sortIcons.html', '<div ng-class="{\'ad-display-inline-block\': attrs.snugSortIcons, \'pull-right\': !attrs.snugSortIcons}" ng-if="definition.sortKey && localConfig.sortState.sortKey == definition.sortKey"><i ng-class="iconClasses.sortAscending" ng-show="localConfig.sortState.sortDirection === \'ASC\'"></i> <i ng-class="iconClasses.sortDescending" ng-show="localConfig.sortState.sortDirection === \'DEC\'"></i></div><div ng-class="{\'ad-display-inline-block\': attrs.snugSortIcons, \'pull-right\': !attrs.snugSortIcons}" ng-if="definition.sortKey && localConfig.sortState.sortKey != definition.sortKey"><i ng-class="iconClasses.sortable"></i></div>');
   }
 ]);
 

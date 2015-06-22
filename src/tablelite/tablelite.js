@@ -11,6 +11,7 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
       function controllerFunction($scope, $attrs) {
         // ---------- $$scope initialization ---------- //
         $scope.attrs = $attrs;
+        $scope.attrs.state = $scope.attrs.state || {};
         $scope.iconClasses = $adConfig.iconClasses;
         $scope.adStrapUtils = adStrapUtils;
         $scope.tableClasses = $adConfig.componentClasses.tableLiteClass;
@@ -36,14 +37,9 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           pagingArray: [],
           dragChange: $scope.$eval($attrs.onDragChange),
           expandedItems: [],
-          predicate: $attrs.initialSortKey
+          sortState: {},
+          stateChange: $scope.$eval($attrs.onStateChange)
         };
-
-        if ($attrs.initialSortDirection === 'DEC') {
-          $scope.localConfig.reverse = false;
-        } else if ($attrs.initialSortDirection === 'ASC') {
-          $scope.localConfig.reverse = true;
-        }
 
         $scope.selectedItems = $scope.$eval($attrs.selectedItems);
         $scope.searchText = $scope.$eval($attrs.searchText);
@@ -101,8 +97,8 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           params = {
             pageNumber: page,
             pageSize: (!$attrs.disablePaging) ? $scope.items.paging.pageSize : itemsObject.length,
-            sortKey: $scope.localConfig.predicate,
-            sortDirection: $scope.localConfig.reverse,
+            sortKey: $scope.localConfig.sortState.sortKey,
+            sortDirection: $scope.localConfig.sortState.sortDirection === 'DEC',
             localData: itemsObject
           };
 
@@ -146,30 +142,32 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
           return column.visible !== false;
         };
 
-        $scope.sortByColumn = function (column) {
-          var initialSortDirection = true;
-          if ($attrs.onClickSortDirection === 'DEC') {
-            initialSortDirection = false;
-          }
+        $scope.sortByColumn  = function (column, preventNotification) {
+          var sortDirection = $scope.localConfig.sortState.sortDirection || 'ASC';
           if (column.sortKey) {
-            if (column.sortKey !== $scope.localConfig.predicate) {
-              $scope.localConfig.predicate = column.sortKey;
-              $scope.localConfig.reverse = initialSortDirection;
+            if (column.sortKey !== $scope.localConfig.sortState.sortKey) {
+              $scope.localConfig.sortState = {
+                sortKey: column.sortKey,
+                sortDirection: sortDirection
+              };
             } else {
-              if ($scope.localConfig.reverse === initialSortDirection) {
-                $scope.localConfig.reverse = !initialSortDirection;
+              if ($scope.localConfig.sortState.sortDirection === sortDirection) {
+                $scope.localConfig.sortState.sortDirection = sortDirection === 'ASC' ? 'DEC' : 'ASC';
               } else {
-                $scope.localConfig.reverse = undefined;
-                $scope.localConfig.predicate = undefined;
+                $scope.localConfig.sortState = {};
               }
             }
             $scope.loadPage($scope.items.paging.currentPage);
+
+            if (!preventNotification && $scope.localConfig.stateChange) {
+              $scope.localConfig.stateChange($scope.localConfig.sortState);
+            }
+
           }
         };
 
         $scope.unSortTable = function () {
-          $scope.localConfig.reverse = undefined;
-          $scope.localConfig.predicate = undefined;
+          $scope.localConfig.sortState = {};
         };
 
         $scope.collapseAll = function () {
@@ -300,6 +298,14 @@ angular.module('adaptv.adaptStrap.tablelite', ['adaptv.adaptStrap.utils'])
         };
 
         // ---------- initialization and event listeners ---------- //
+
+        var state = $scope.$eval($attrs.state) || {};
+        var column = {
+          sortKey: state.sortKey,
+          sortDirection: state.sortDirection
+        };
+        $scope.sortByColumn(column, true);
+
         $scope.loadPage(1);
 
         // ---------- set watchers ---------- //

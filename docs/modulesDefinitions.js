@@ -193,28 +193,20 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
           description: 'Message that will be shown in case of empty table'
         },
         {
-          name: 'on-click-sort-direction',
+          name: 'state',
           required: false,
-          default: 'ASC',
-          type: 'String',
-          description: 'Which direction to sort first when column is clicked. ' +
-            'EX: <code>on-click-sort-direction="DEC"</code>'
+          default: {sortKey: undefined, sortDirection: 'ASC'},
+          type: 'Object',
+          description: 'Object containing properties that can be used ' +
+              'for initializing the state of the table.  Supported properties ' +
+              'include \'sortKey\' and \'sortDirection\''
         },
         {
-          name: 'initial-sort-key',
+          name: 'on-state-change',
           required: false,
-          default: 'DEC',
-          type: 'String',
-          description: 'Sort key to use on initialization. ' +
-            'EX: <code>initial-sort-key="name"</code>'
-        },
-        {
-          name: 'initial-sort-direction',
-          required: false,
-          default: 'DEC',
-          type: 'String',
-          description: 'Which direction to sort the initial-sort-key. ' +
-            'EX: <code>initial-sort-direction="DEC"</code>'
+          default: 'NA',
+          type: 'Function',
+          description: 'Callback for state changes.  Useful for persisting the state of the table.'
         },
         {
           name: 'snug-sort-icons',
@@ -375,12 +367,20 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
           'It should take 2 parameters <code>$success, $response</code>.'
         },
         {
-          name: 'on-click-sort-direction',
+          name: 'state',
           required: false,
-          default: 'ASC',
-          type: 'String',
-          description: 'Which direction to sort first when column is clicked. ' +
-            'EX: <code>on-click-sort-direction="DEC"</code>'
+          default: {sortKey: undefined, sortDirection: 'ASC'},
+          type: 'Object',
+          description: 'Object containing properties that can be used ' +
+              'for initializing the state of the table.  Supported properties ' +
+              'include \'sortKey\' and \'sortDirection\''
+        },
+        {
+          name: 'on-state-change',
+          required: false,
+          default: 'NA',
+          type: 'Function',
+          description: 'Callback for state changes.  Useful for persisting the state of the table.'
         },
         {
           name: 'snug-sort-icons',

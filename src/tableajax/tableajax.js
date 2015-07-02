@@ -136,13 +136,13 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
           return column.visible !== false;
         };
 
-        $scope.sortByColumn  = function (column, preventNotification) {
+        $scope.sortByColumn = function (column, preventNotification) {
           var sortDirection = $scope.localConfig.sortState.sortDirection || 'ASC';
           if (column.sortKey) {
             if (column.sortKey !== $scope.localConfig.sortState.sortKey) {
               $scope.localConfig.sortState = {
                 sortKey: column.sortKey,
-                sortDirection: sortDirection
+                sortDirection: column.sortDirection ? column.sortDirection : sortDirection
               };
             } else {
               if ($scope.localConfig.sortState.sortDirection === sortDirection) {

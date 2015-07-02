@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v2.3.0 - 2015-06-22
+ * @version v2.3.1 - 2015-07-02
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -868,7 +868,7 @@ function controllerFunction($scope, $attrs) {
           if (column.sortKey !== $scope.localConfig.sortState.sortKey) {
             $scope.localConfig.sortState = {
               sortKey: column.sortKey,
-              sortDirection: sortDirection
+              sortDirection: column.sortDirection ? column.sortDirection : sortDirection
             };
           } else {
             if ($scope.localConfig.sortState.sortDirection === sortDirection) {
@@ -1062,7 +1062,7 @@ function controllerFunction($scope, $attrs) {
           if (column.sortKey !== $scope.localConfig.sortState.sortKey) {
             $scope.localConfig.sortState = {
               sortKey: column.sortKey,
-              sortDirection: sortDirection
+              sortDirection: column.sortDirection ? column.sortDirection : sortDirection
             };
           } else {
             if ($scope.localConfig.sortState.sortDirection === sortDirection) {

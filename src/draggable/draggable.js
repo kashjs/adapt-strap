@@ -321,7 +321,7 @@ angular.module('adaptv.adaptStrap.draggable', [])
 
       var dropEnabled = false;
       var elem = null;
-
+      var lastDropElement = null;
       var $window = $(window);
 
       function init() {
@@ -368,6 +368,7 @@ angular.module('adaptv.adaptStrap.draggable', [])
 
         if (el !== null) {
           elem = el;
+          lastDropElement = elem;
           obj.el.lastDropElement = elem;
           scope.$apply(function() {
             scope.onDropOverCallback(scope, {
@@ -394,29 +395,30 @@ angular.module('adaptv.adaptStrap.draggable', [])
             });
             obj.el.lastDropElement.removeClass('ad-drop-over');
             delete obj.el.lastDropElement;
-            elem = null;
+            //elem = null;
           }
         }
       }
 
       function onDragEnd(evt, obj) {
-
         if (!dropEnabled) {
           return;
         }
-
+        // call the adDrop element callback
+        // Callback should fire only once
         if (elem) {
-          // call the adDrop element callback
           scope.$apply(function () {
             scope.onDropCallback(scope, {
               $data: obj.data,
               $dragElement: { el: obj.el },
-              $dropElement: { el: elem },
+              $dropElement: { el: elem }, // Current drop element over
+              $lastDropElement: { el: lastDropElement }, // Track the previous valid drop element dragged over
               $event: evt
             });
           });
-          elem = null;
         }
+        elem = null;
+        lastDropElement = null;
       }
 
       function getCurrentDropElement(x, y) {

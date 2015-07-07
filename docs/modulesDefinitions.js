@@ -637,7 +637,7 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             required: 'false',
             default: 'NA',
             type: 'Function',
-            description: 'Callback for the drop end event. It fires on a valid drop. It takes 4 parameters' +
+            description: 'Callback for the drop end event. It fires only on a valid drop. It takes 4 parameters' +
               '<code>$data, $dragElement, $dropElement, $event</code>.'
           },
           {

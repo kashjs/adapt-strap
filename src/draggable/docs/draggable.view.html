@@ -10,7 +10,7 @@
             ad-drag="true"
             ad-drag-data="car"
             ad-drag-begin="onDragStart($data, $dragElement, $event);"
-            ad-drag-end="onDataEnd($data, $dragElement, $event);"
+            ad-drag-end="onDragEnd($data, $dragElement, $lastDropElement, $event);"
             ng-repeat="car in models.cars">
           <span>
             <span class="glyphicon glyphicon-th"></span>
@@ -27,6 +27,7 @@
           class="list-group"
           ad-drop="true"
           ad-drop-over="onDragOver($data, $dragElement, $dropElement, $event);"
+          ad-drop-leave="onDragLeave($data, $dragElement, $dropElement, $event)"
           ad-drop-end="onDrop($data, $dragElement, $dropElement, $event);">
         <li class="list-group-item disabled">My Basket</li>
         <li class="list-group-item"

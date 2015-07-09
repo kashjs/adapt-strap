@@ -285,7 +285,7 @@ angular.module('adaptv.adaptStrap.utils', [])
       });
     };
   }])
-  .factory('adLoadLocalPage', ['$filter', function ($filter) {
+  .factory('adLoadLocalPage', [function () {
     return function (options) {
       var response = {
         items: undefined,
@@ -300,13 +300,13 @@ angular.module('adaptv.adaptStrap.utils', [])
         itemsObject = options.localData,
         localItems = itemsObject;
 
-      if (options.sortKey) {
+      /*if (options.sortKey) {
         localItems = $filter('orderBy')(
           itemsObject,
           options.sortKey,
           options.sortDirection
         );
-      }
+      }*/
 
       response.items = localItems.slice(start, end);
       response.allItems = itemsObject;

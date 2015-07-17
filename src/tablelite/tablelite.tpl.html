@@ -12,10 +12,10 @@
            ng-class="{'ad-fixed-layout': (attrs.tableMaxHeight || attrs.tableFixedHeight)}">
       <thead>
         <tr class="ad-user-select-none" ng-if="!(attrs.tableMaxHeight || attrs.tableFixedHeight)" ng-include="'tablelite/headerRowContent.html'"></tr>
-        <tr class="ad-user-select-none" ng-if="!(attrs.tableMaxHeight || attrs.tableFixedHeight) && attrs.enableColumnSearch" ng-include="'tablelite/headerRowFilterContent.html'"></tr>    
+        <tr class="ad-user-select-none" ng-if="!(attrs.tableMaxHeight || attrs.tableFixedHeight) && attrs.enableColumnSearch" ng-include="'tablelite/headerRowFilterContent.html'"></tr>
       </thead>
-      <tbody ng-if="!attrs.draggable" ng-include="'tablelite/defaultRow.html'"></tbody>
-      <tbody ng-if="attrs.draggable" ng-include="'tablelite/draggableRow.html'"></tbody>
+      <tbody ng-if="!localConfig.draggable" ng-include="'tablelite/defaultRow.html'"></tbody>
+      <tbody ng-if="localConfig.draggable" ng-include="'tablelite/draggableRow.html'"></tbody>
     </table>
   </div>
   <ng-include src="'tablelite/pagination.html'"></ng-include>

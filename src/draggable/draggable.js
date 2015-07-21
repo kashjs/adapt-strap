@@ -147,6 +147,7 @@ angular.module('adaptv.adaptStrap.draggable', [])
         evt.preventDefault();
         if (scope.useClonedElement) {
           draggedClone = element.clone().appendTo(element.parent());
+          draggedClone.css({position: 'fixed'});
         }
 
         var elem = scope.useClonedElement ? draggedClone : element;

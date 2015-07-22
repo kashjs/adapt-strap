@@ -72,7 +72,7 @@ angular.module('adaptv.adaptStrap.treebrowser', [])
           });
         }
         $http({
-          cache: true,
+          cache: $templateCache,
           url: scope.$eval(attrs.templateUrl),
           method: 'GET'
         }).then(compileTemplate);

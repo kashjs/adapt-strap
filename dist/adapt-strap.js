@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v2.3.1 - 2015-07-02
+ * @version v2.3.2 - 2015-07-22
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -67,93 +67,6 @@ angular.module('adaptv.adaptStrap', [
     };
   };
 });
-
-// Source: alerts.js
-angular.module('adaptv.adaptStrap.alerts', []).directive('adAlerts', [function () {
-function controllerFunction($scope, $attrs, $timeout, $adConfig, adAlerts) {
-      $scope.iconMap = {
-        'info': $adConfig.iconClasses.alertInfoSign,
-        'success': $adConfig.iconClasses.alertSuccessSign,
-        'warning': $adConfig.iconClasses.alertWarningSign,
-        'danger': $adConfig.iconClasses.alertDangerSign
-      };
-      var timeout = $scope.timeout && !Number(timeout).isNAN ? $scope.timeout : 0;
-      var timeoutPromise;
-      $scope.close = function () {
-        adAlerts.clear();
-        if (timeoutPromise) {
-          $timeout.cancel(timeoutPromise);
-        }
-      };
-      $scope.customClasses = $scope.customClasses || '';
-      $scope.settings = adAlerts.settings;
-      if (timeout !== 0) {
-        $scope.$watch('settings.type', function (type) {
-          if (type !== '') {
-            if (timeoutPromise) {
-              $timeout.cancel(timeoutPromise);
-            }
-            timeoutPromise = $timeout($scope.close, timeout);
-          }
-        });
-      }
-    }
-    return {
-      restrict: 'AE',
-      scope: {
-        timeout: '=',
-        customClasses: '@'
-      },
-      templateUrl: 'alerts/alerts.tpl.html',
-      controller: [
-        '$scope',
-        '$attrs',
-        '$timeout',
-        '$adConfig',
-        'adAlerts',
-        controllerFunction
-      ]
-    };
-  }]);
-
-// Source: alerts.svc.js
-angular.module('adaptv.adaptStrap.alerts').factory('adAlerts', [function () {
-    var _settings = {
-        type: '',
-        caption: '',
-        message: ''
-      };
-    function _warning(cap, msg) {
-      _updateSettings('warning', cap, msg);
-    }
-    function _info(cap, msg) {
-      _updateSettings('info', cap, msg);
-    }
-    function _success(cap, msg) {
-      _updateSettings('success', cap, msg);
-    }
-    function _error(cap, msg) {
-      _updateSettings('danger', cap, msg);
-    }
-    function _updateSettings(type, caption, msg) {
-      _settings.type = type;
-      _settings.caption = caption;
-      _settings.message = msg;
-    }
-    function _clearSettings() {
-      _settings.type = '';
-      _settings.caption = '';
-      _settings.message = '';
-    }
-    return {
-      settings: _settings,
-      warning: _warning,
-      info: _info,
-      success: _success,
-      error: _error,
-      clear: _clearSettings
-    };
-  }]);
 
 // Source: draggable.js
 angular.module('adaptv.adaptStrap.draggable', []).directive('adDrag', [
@@ -448,6 +361,7 @@ angular.module('adaptv.adaptStrap.draggable', []).directive('adDrag', [
       scope.onDropLeaveCallback = $parse(attrs.adDropLeave) || null;
       var dropEnabled = false;
       var elem = null;
+      var lastDropElement = null;
       var $window = $(window);
       function init() {
         toggleListeners(true);
@@ -485,6 +399,7 @@ angular.module('adaptv.adaptStrap.draggable', []).directive('adDrag', [
         var el = getCurrentDropElement(obj.cx, obj.cy);
         if (el !== null) {
           elem = el;
+          lastDropElement = elem;
           obj.el.lastDropElement = elem;
           scope.$apply(function () {
             scope.onDropOverCallback(scope, {
@@ -507,8 +422,7 @@ angular.module('adaptv.adaptStrap.draggable', []).directive('adDrag', [
               });
             });
             obj.el.lastDropElement.removeClass('ad-drop-over');
-            delete obj.el.lastDropElement;
-            elem = null;
+            delete obj.el.lastDropElement;  //elem = null;
           }
         }
       }
@@ -516,18 +430,21 @@ angular.module('adaptv.adaptStrap.draggable', []).directive('adDrag', [
         if (!dropEnabled) {
           return;
         }
+        // call the adDrop element callback
+        // Callback should fire only once
         if (elem) {
-          // call the adDrop element callback
           scope.$apply(function () {
             scope.onDropCallback(scope, {
               $data: obj.data,
               $dragElement: { el: obj.el },
               $dropElement: { el: elem },
+              $lastDropElement: { el: lastDropElement },
               $event: evt
             });
           });
-          elem = null;
         }
+        elem = null;
+        lastDropElement = null;
       }
       function getCurrentDropElement(x, y) {
         var bounds = element.offset();
@@ -545,6 +462,93 @@ angular.module('adaptv.adaptStrap.draggable', []).directive('adDrag', [
     };
   }
 ]);
+
+// Source: alerts.js
+angular.module('adaptv.adaptStrap.alerts', []).directive('adAlerts', [function () {
+function controllerFunction($scope, $attrs, $timeout, $adConfig, adAlerts) {
+      $scope.iconMap = {
+        'info': $adConfig.iconClasses.alertInfoSign,
+        'success': $adConfig.iconClasses.alertSuccessSign,
+        'warning': $adConfig.iconClasses.alertWarningSign,
+        'danger': $adConfig.iconClasses.alertDangerSign
+      };
+      var timeout = $scope.timeout && !Number(timeout).isNAN ? $scope.timeout : 0;
+      var timeoutPromise;
+      $scope.close = function () {
+        adAlerts.clear();
+        if (timeoutPromise) {
+          $timeout.cancel(timeoutPromise);
+        }
+      };
+      $scope.customClasses = $scope.customClasses || '';
+      $scope.settings = adAlerts.settings;
+      if (timeout !== 0) {
+        $scope.$watch('settings.type', function (type) {
+          if (type !== '') {
+            if (timeoutPromise) {
+              $timeout.cancel(timeoutPromise);
+            }
+            timeoutPromise = $timeout($scope.close, timeout);
+          }
+        });
+      }
+    }
+    return {
+      restrict: 'AE',
+      scope: {
+        timeout: '=',
+        customClasses: '@'
+      },
+      templateUrl: 'alerts/alerts.tpl.html',
+      controller: [
+        '$scope',
+        '$attrs',
+        '$timeout',
+        '$adConfig',
+        'adAlerts',
+        controllerFunction
+      ]
+    };
+  }]);
+
+// Source: alerts.svc.js
+angular.module('adaptv.adaptStrap.alerts').factory('adAlerts', [function () {
+    var _settings = {
+        type: '',
+        caption: '',
+        message: ''
+      };
+    function _warning(cap, msg) {
+      _updateSettings('warning', cap, msg);
+    }
+    function _info(cap, msg) {
+      _updateSettings('info', cap, msg);
+    }
+    function _success(cap, msg) {
+      _updateSettings('success', cap, msg);
+    }
+    function _error(cap, msg) {
+      _updateSettings('danger', cap, msg);
+    }
+    function _updateSettings(type, caption, msg) {
+      _settings.type = type;
+      _settings.caption = caption;
+      _settings.message = msg;
+    }
+    function _clearSettings() {
+      _settings.type = '';
+      _settings.caption = '';
+      _settings.message = '';
+    }
+    return {
+      settings: _settings,
+      warning: _warning,
+      info: _info,
+      success: _success,
+      error: _error,
+      clear: _clearSettings
+    };
+  }]);
 
 // Source: infinitedropdown.js
 angular.module('adaptv.adaptStrap.infinitedropdown', [
@@ -977,7 +981,8 @@ function controllerFunction($scope, $attrs) {
         dragChange: $scope.$eval($attrs.onDragChange),
         expandedItems: [],
         sortState: {},
-        stateChange: $scope.$eval($attrs.onStateChange)
+        stateChange: $scope.$eval($attrs.onStateChange),
+        draggable: $scope.$eval($attrs.draggable) || false
       };
       $scope.selectedItems = $scope.$eval($attrs.selectedItems);
       $scope.searchText = $scope.$eval($attrs.searchText);
@@ -1020,7 +1025,8 @@ function controllerFunction($scope, $attrs) {
           pageSize: !$attrs.disablePaging ? $scope.items.paging.pageSize : itemsObject.length,
           sortKey: $scope.localConfig.sortState.sortKey,
           sortDirection: $scope.localConfig.sortState.sortDirection === 'DEC',
-          localData: itemsObject
+          localData: itemsObject,
+          draggable: $scope.localConfig.draggable
         };
         var response = adLoadLocalPage(params);
         $scope.items.list = response.items;
@@ -1124,31 +1130,32 @@ function controllerFunction($scope, $attrs) {
           validDrop = true;
           endPos = dragElement.index() + ($scope.items.paging.currentPage - 1) * $scope.items.paging.pageSize;
           adStrapUtils.moveItemInList(initialPos, endPos, $scope.localConfig.localData);
-          if ($scope.localConfig.dragChange) {
+          if ($scope.localConfig.draggable && $scope.localConfig.dragChange) {
             $scope.localConfig.dragChange(initialPos, endPos, data);
           }
           $scope.unSortTable();
           $scope.loadPage($scope.items.paging.currentPage);
         }
       };
-      $scope.onNextPageButtonOver = function (data, dragElement, dropElement) {
+      $scope.onPageButtonOver = function (data, dragElement, dropElement) {
         if (dropElement.el.attr('disabled') !== 'disabled') {
           pageButtonElement = dropElement.el;
           pageButtonElement.parent().addClass('active');
         }
       };
-      $scope.onNextPageButtonLeave = function (data, dragElement, dropElement) {
+      $scope.onPageButtonLeave = function (data, dragElement, dropElement) {
         if (pageButtonElement && pageButtonElement === dropElement.el) {
           pageButtonElement.parent().removeClass('active');
           pageButtonElement = null;
         }
       };
-      $scope.onNextPageButtonDrop = function (data, dragElement) {
+      $scope.onPageButtonDrop = function (data, dragElement) {
         var endPos;
         if (pageButtonElement) {
           validDrop = true;
           if (pageButtonElement.attr('id') === 'btnPrev') {
-            endPos = $scope.items.paging.pageSize * ($scope.items.paging.currentPage - 1);
+            // endPos - 1 due to zero indexing
+            endPos = $scope.items.paging.pageSize * ($scope.items.paging.currentPage - 1) - 1;
           }
           if (pageButtonElement.attr('id') === 'btnNext') {
             endPos = $scope.items.paging.pageSize * $scope.items.paging.currentPage;
@@ -1158,7 +1165,7 @@ function controllerFunction($scope, $attrs) {
           $('#row-phldr').remove();
           placeHolderInDom = false;
           dragElement.el.remove();
-          if ($scope.localConfig.dragChange) {
+          if ($scope.localConfig.draggable && $scope.localConfig.dragChange) {
             $scope.localConfig.dragChange(initialPos, endPos, data);
           }
           pageButtonElement.parent().removeClass('active');
@@ -1598,7 +1605,7 @@ var deb = function (func, delay, immediate, ctx) {
           token: options.token
         };
       var start = (options.pageNumber - 1) * options.pageSize, end = start + options.pageSize, i, itemsObject = options.localData, localItems = itemsObject;
-      if (options.sortKey) {
+      if (options.sortKey && !options.draggable) {
         localItems = $filter('orderBy')(itemsObject, options.sortKey, options.sortDirection);
       }
       response.items = localItems.slice(start, end);

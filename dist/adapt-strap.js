@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v2.3.2 - 2015-07-22
+ * @version v2.3.3 - 2015-08-16
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -67,6 +67,93 @@ angular.module('adaptv.adaptStrap', [
     };
   };
 });
+
+// Source: alerts.js
+angular.module('adaptv.adaptStrap.alerts', []).directive('adAlerts', [function () {
+function controllerFunction($scope, $attrs, $timeout, $adConfig, adAlerts) {
+      $scope.iconMap = {
+        'info': $adConfig.iconClasses.alertInfoSign,
+        'success': $adConfig.iconClasses.alertSuccessSign,
+        'warning': $adConfig.iconClasses.alertWarningSign,
+        'danger': $adConfig.iconClasses.alertDangerSign
+      };
+      var timeout = $scope.timeout && !Number(timeout).isNAN ? $scope.timeout : 0;
+      var timeoutPromise;
+      $scope.close = function () {
+        adAlerts.clear();
+        if (timeoutPromise) {
+          $timeout.cancel(timeoutPromise);
+        }
+      };
+      $scope.customClasses = $scope.customClasses || '';
+      $scope.settings = adAlerts.settings;
+      if (timeout !== 0) {
+        $scope.$watch('settings.type', function (type) {
+          if (type !== '') {
+            if (timeoutPromise) {
+              $timeout.cancel(timeoutPromise);
+            }
+            timeoutPromise = $timeout($scope.close, timeout);
+          }
+        });
+      }
+    }
+    return {
+      restrict: 'AE',
+      scope: {
+        timeout: '=',
+        customClasses: '@'
+      },
+      templateUrl: 'alerts/alerts.tpl.html',
+      controller: [
+        '$scope',
+        '$attrs',
+        '$timeout',
+        '$adConfig',
+        'adAlerts',
+        controllerFunction
+      ]
+    };
+  }]);
+
+// Source: alerts.svc.js
+angular.module('adaptv.adaptStrap.alerts').factory('adAlerts', [function () {
+    var _settings = {
+        type: '',
+        caption: '',
+        message: ''
+      };
+    function _warning(cap, msg) {
+      _updateSettings('warning', cap, msg);
+    }
+    function _info(cap, msg) {
+      _updateSettings('info', cap, msg);
+    }
+    function _success(cap, msg) {
+      _updateSettings('success', cap, msg);
+    }
+    function _error(cap, msg) {
+      _updateSettings('danger', cap, msg);
+    }
+    function _updateSettings(type, caption, msg) {
+      _settings.type = type;
+      _settings.caption = caption;
+      _settings.message = msg;
+    }
+    function _clearSettings() {
+      _settings.type = '';
+      _settings.caption = '';
+      _settings.message = '';
+    }
+    return {
+      settings: _settings,
+      warning: _warning,
+      info: _info,
+      success: _success,
+      error: _error,
+      clear: _clearSettings
+    };
+  }]);
 
 // Source: draggable.js
 angular.module('adaptv.adaptStrap.draggable', []).directive('adDrag', [
@@ -201,6 +288,7 @@ angular.module('adaptv.adaptStrap.draggable', []).directive('adDrag', [
         evt.preventDefault();
         if (scope.useClonedElement) {
           draggedClone = element.clone().appendTo(element.parent());
+          draggedClone.css({ position: 'fixed' });
         }
         var elem = scope.useClonedElement ? draggedClone : element;
         offset = element.offset();
@@ -462,93 +550,6 @@ angular.module('adaptv.adaptStrap.draggable', []).directive('adDrag', [
     };
   }
 ]);
-
-// Source: alerts.js
-angular.module('adaptv.adaptStrap.alerts', []).directive('adAlerts', [function () {
-function controllerFunction($scope, $attrs, $timeout, $adConfig, adAlerts) {
-      $scope.iconMap = {
-        'info': $adConfig.iconClasses.alertInfoSign,
-        'success': $adConfig.iconClasses.alertSuccessSign,
-        'warning': $adConfig.iconClasses.alertWarningSign,
-        'danger': $adConfig.iconClasses.alertDangerSign
-      };
-      var timeout = $scope.timeout && !Number(timeout).isNAN ? $scope.timeout : 0;
-      var timeoutPromise;
-      $scope.close = function () {
-        adAlerts.clear();
-        if (timeoutPromise) {
-          $timeout.cancel(timeoutPromise);
-        }
-      };
-      $scope.customClasses = $scope.customClasses || '';
-      $scope.settings = adAlerts.settings;
-      if (timeout !== 0) {
-        $scope.$watch('settings.type', function (type) {
-          if (type !== '') {
-            if (timeoutPromise) {
-              $timeout.cancel(timeoutPromise);
-            }
-            timeoutPromise = $timeout($scope.close, timeout);
-          }
-        });
-      }
-    }
-    return {
-      restrict: 'AE',
-      scope: {
-        timeout: '=',
-        customClasses: '@'
-      },
-      templateUrl: 'alerts/alerts.tpl.html',
-      controller: [
-        '$scope',
-        '$attrs',
-        '$timeout',
-        '$adConfig',
-        'adAlerts',
-        controllerFunction
-      ]
-    };
-  }]);
-
-// Source: alerts.svc.js
-angular.module('adaptv.adaptStrap.alerts').factory('adAlerts', [function () {
-    var _settings = {
-        type: '',
-        caption: '',
-        message: ''
-      };
-    function _warning(cap, msg) {
-      _updateSettings('warning', cap, msg);
-    }
-    function _info(cap, msg) {
-      _updateSettings('info', cap, msg);
-    }
-    function _success(cap, msg) {
-      _updateSettings('success', cap, msg);
-    }
-    function _error(cap, msg) {
-      _updateSettings('danger', cap, msg);
-    }
-    function _updateSettings(type, caption, msg) {
-      _settings.type = type;
-      _settings.caption = caption;
-      _settings.message = msg;
-    }
-    function _clearSettings() {
-      _settings.type = '';
-      _settings.caption = '';
-      _settings.message = '';
-    }
-    return {
-      settings: _settings,
-      warning: _warning,
-      info: _info,
-      success: _success,
-      error: _error,
-      clear: _clearSettings
-    };
-  }]);
 
 // Source: infinitedropdown.js
 angular.module('adaptv.adaptStrap.infinitedropdown', [
@@ -1318,7 +1319,7 @@ angular.module('adaptv.adaptStrap.treebrowser', []).directive('adTreeBrowser', [
         });
       }
       $http({
-        cache: true,
+        cache: $templateCache,
         url: scope.$eval(attrs.templateUrl),
         method: 'GET'
       }).then(compileTemplate);

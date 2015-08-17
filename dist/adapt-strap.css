@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v2.3.3 - 2015-08-16
+ * @version v2.4.0 - 2015-08-17
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT

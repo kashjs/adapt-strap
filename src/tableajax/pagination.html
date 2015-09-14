@@ -1,7 +1,6 @@
 <div class="row ad-table-pagination-container">
   <div class="col-md-8 col-sm-8">
-    <ul ng-class="attrs.paginationBtnGroupClasses || 'pagination pagination-sm'"
-        ng-show="items.paging.totalPages > 1">
+    <ul ng-class="attrs.paginationBtnGroupClasses || 'pagination pagination-sm'">
       <li>
         <a class="ad-cursor-pointer" ng-click="loadPage(1)"
            ng-disabled="items.paging.currentPage == 1">

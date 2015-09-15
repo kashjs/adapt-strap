@@ -734,6 +734,14 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
               'Name of the object/array that contains local data items.'
           },
           {
+            name: 'on-data-loaded',
+            required: false,
+            default: 'NA',
+            type: 'Function',
+            description: 'Callback for the data load event. It fires when the request finishes' +
+              'It should take 2 parameters <code>$success, $response</code>.'
+          },
+          {
             name: 'max-height',
             required: false,
             default: '200px',

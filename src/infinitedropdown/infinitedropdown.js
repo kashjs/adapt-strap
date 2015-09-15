@@ -10,6 +10,7 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
         // scope initialization
         scope.attrs = attrs;
         scope.adStrapUtils = adStrapUtils;
+        scope.onDataLoadedCallback = $parse(attrs.onDataLoaded) || null;
         scope.items = {
           list: [],
           paging: {
@@ -45,6 +46,10 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
           if (callback) {
             callback(item);
           }
+
+          if (scope.localConfig.singleSelectionMode) {
+            element.find('.dropdown').removeClass('open');
+          }
         };
 
         scope.loadPage = adDebounce(function (page) {
@@ -70,10 +75,22 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
                 scope.items.paging.totalPages = response.totalPages;
                 scope.items.paging.currentPage = response.currentPage;
                 scope.localConfig.loadingData = false;
+                if (attrs.onDataLoaded) {
+                  scope.onDataLoadedCallback(scope, {
+                    $success: true,
+                    $response: response
+                  });
+                }
               }
             },
             errorHandler = function () {
               scope.localConfig.loadingData = false;
+              if (attrs.onDataLoaded) {
+                scope.onDataLoadedCallback(scope, {
+                  $success: false,
+                  $response: null
+                });
+              }
             };
           if (attrs.localDataSource) {
             params.localData = scope.$eval(attrs.localDataSource);

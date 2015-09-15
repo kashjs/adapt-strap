@@ -153,6 +153,7 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
           }
         }, 50);
         angular.element(listContainer).bind('mousewheel DOMMouseScroll scroll', function (event) {
+          console.log('scrolling');
           if (event.originalEvent && event.originalEvent.deltaY) {
             listContainer.scrollTop += event.originalEvent.deltaY;
             event.preventDefault();

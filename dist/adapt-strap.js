@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v2.4.2 - 2015-09-14
+ * @version v2.4.3 - 2015-09-15
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -569,6 +569,7 @@ function linkFunction(scope, element, attrs) {
       // scope initialization
       scope.attrs = attrs;
       scope.adStrapUtils = adStrapUtils;
+      scope.onDataLoadedCallback = $parse(attrs.onDataLoaded) || null;
       scope.items = {
         list: [],
         paging: {
@@ -601,6 +602,9 @@ function linkFunction(scope, element, attrs) {
         if (callback) {
           callback(item);
         }
+        if (scope.localConfig.singleSelectionMode) {
+          element.find('.dropdown').removeClass('open');
+        }
       };
       scope.loadPage = adDebounce(function (page) {
         lastRequestToken = Math.random();
@@ -622,9 +626,21 @@ function linkFunction(scope, element, attrs) {
               scope.items.paging.totalPages = response.totalPages;
               scope.items.paging.currentPage = response.currentPage;
               scope.localConfig.loadingData = false;
+              if (attrs.onDataLoaded) {
+                scope.onDataLoadedCallback(scope, {
+                  $success: true,
+                  $response: response
+                });
+              }
             }
           }, errorHandler = function () {
             scope.localConfig.loadingData = false;
+            if (attrs.onDataLoaded) {
+              scope.onDataLoadedCallback(scope, {
+                $success: false,
+                $response: null
+              });
+            }
           };
         if (attrs.localDataSource) {
           params.localData = scope.$eval(attrs.localDataSource);
@@ -679,7 +695,8 @@ function linkFunction(scope, element, attrs) {
             scope.loadNextPage();
           }
         }, 50);
-      angular.element(listContainer).bind('mousewheel DOMMouseScroll', function (event) {
+      angular.element(listContainer).bind('mousewheel DOMMouseScroll scroll', function (event) {
+        console.log('scrolling');
         if (event.originalEvent && event.originalEvent.deltaY) {
           listContainer.scrollTop += event.originalEvent.deltaY;
           event.preventDefault();
@@ -1248,6 +1265,97 @@ function controllerFunction($scope, $attrs) {
   }
 ]);
 
+// Source: treebrowser.js
+angular.module('adaptv.adaptStrap.treebrowser', []).directive('adTreeBrowser', [
+  '$adConfig',
+  function ($adConfig) {
+    function controllerFunction($scope, $attrs) {
+      var templateToken = Math.random();
+      // scope initialization
+      $scope.attrs = $attrs;
+      $scope.iconClasses = $adConfig.iconClasses;
+      $scope.treeRoot = $scope.$eval($attrs.treeRoot) || {};
+      $scope.toggle = function (event, item) {
+        var toggleCallback;
+        event.stopPropagation();
+        toggleCallback = $scope.$eval($attrs.toggleCallback);
+        if (toggleCallback) {
+          toggleCallback(item);
+        } else {
+          item._ad_expanded = !item._ad_expanded;
+        }
+      };
+      $scope.onRowClick = function (item, level, event) {
+        var onRowClick = $scope.$parent.$eval($attrs.onRowClick);
+        if (onRowClick) {
+          onRowClick(item, level, event);
+        }
+      };
+      var hasChildren = $scope.$eval($attrs.hasChildren);
+      $scope.hasChildren = function (item) {
+        var found = item[$attrs.childNode] && item[$attrs.childNode].length > 0;
+        if (hasChildren) {
+          found = hasChildren(item);
+        }
+        return found;
+      };
+      // for unique template
+      $scope.localConfig = { rendererTemplateId: 'tree-renderer-' + templateToken + '.html' };
+    }
+    return {
+      restrict: 'E',
+      scope: true,
+      controller: [
+        '$scope',
+        '$attrs',
+        controllerFunction
+      ],
+      templateUrl: 'treebrowser/treebrowser.tpl.html'
+    };
+  }
+]).directive('adTreeBrowserNode', [
+  '$compile',
+  '$http',
+  '$templateCache',
+  function ($compile, $http, $templateCache) {
+    var tbNodeTemplate = $templateCache.get('treebrowser/treeBrowserNode.tpl.html');
+    var compiledTemplates = {};
+    function getTemplate(contentTpl) {
+      var tplUrl = contentTpl.config.url;
+      var compiledTpl = compiledTemplates[tplUrl];
+      if (!compiledTpl) {
+        var tbNodeHtml = tbNodeTemplate.replace(/%=nodeTemplate%/g, contentTpl.data);
+        compiledTemplates[tplUrl] = $compile(tbNodeHtml);
+      }
+      return compiledTemplates[tplUrl];
+    }
+    function linkFunction(scope, element, attrs) {
+      function compileTemplate(nodeTemplate) {
+        getTemplate(nodeTemplate)(scope, function (clonedElement) {
+          element.append(clonedElement);
+        });
+      }
+      $http({
+        cache: $templateCache,
+        url: scope.$eval(attrs.templateUrl),
+        method: 'GET'
+      }).then(compileTemplate);
+    }
+    return {
+      link: linkFunction,
+      scope: true,
+      restrict: 'E'
+    };
+  }
+]).directive('adTreeBrowserNodeToggle', function () {
+  return {
+    scope: true,
+    restrict: 'E',
+    replace: true,
+    templateUrl: 'treebrowser/treebrowserNodeToggle.tpl.html'
+  };
+});
+
 // Source: utils.js
 angular.module('adaptv.adaptStrap.utils', []).factory('adStrapUtils', [
   '$filter',
@@ -1540,96 +1648,5 @@ var deb = function (func, delay, immediate, ctx) {
     };
   }
 ]);
-
-// Source: treebrowser.js
-angular.module('adaptv.adaptStrap.treebrowser', []).directive('adTreeBrowser', [
-  '$adConfig',
-  function ($adConfig) {
-    function controllerFunction($scope, $attrs) {
-      var templateToken = Math.random();
-      // scope initialization
-      $scope.attrs = $attrs;
-      $scope.iconClasses = $adConfig.iconClasses;
-      $scope.treeRoot = $scope.$eval($attrs.treeRoot) || {};
-      $scope.toggle = function (event, item) {
-        var toggleCallback;
-        event.stopPropagation();
-        toggleCallback = $scope.$eval($attrs.toggleCallback);
-        if (toggleCallback) {
-          toggleCallback(item);
-        } else {
-          item._ad_expanded = !item._ad_expanded;
-        }
-      };
-      $scope.onRowClick = function (item, level, event) {
-        var onRowClick = $scope.$parent.$eval($attrs.onRowClick);
-        if (onRowClick) {
-          onRowClick(item, level, event);
-        }
-      };
-      var hasChildren = $scope.$eval($attrs.hasChildren);
-      $scope.hasChildren = function (item) {
-        var found = item[$attrs.childNode] && item[$attrs.childNode].length > 0;
-        if (hasChildren) {
-          found = hasChildren(item);
-        }
-        return found;
-      };
-      // for unique template
-      $scope.localConfig = { rendererTemplateId: 'tree-renderer-' + templateToken + '.html' };
-    }
-    return {
-      restrict: 'E',
-      scope: true,
-      controller: [
-        '$scope',
-        '$attrs',
-        controllerFunction
-      ],
-      templateUrl: 'treebrowser/treebrowser.tpl.html'
-    };
-  }
-]).directive('adTreeBrowserNode', [
-  '$compile',
-  '$http',
-  '$templateCache',
-  function ($compile, $http, $templateCache) {
-    var tbNodeTemplate = $templateCache.get('treebrowser/treeBrowserNode.tpl.html');
-    var compiledTemplates = {};
-    function getTemplate(contentTpl) {
-      var tplUrl = contentTpl.config.url;
-      var compiledTpl = compiledTemplates[tplUrl];
-      if (!compiledTpl) {
-        var tbNodeHtml = tbNodeTemplate.replace(/%=nodeTemplate%/g, contentTpl.data);
-        compiledTemplates[tplUrl] = $compile(tbNodeHtml);
-      }
-      return compiledTemplates[tplUrl];
-    }
-    function linkFunction(scope, element, attrs) {
-      function compileTemplate(nodeTemplate) {
-        getTemplate(nodeTemplate)(scope, function (clonedElement) {
-          element.append(clonedElement);
-        });
-      }
-      $http({
-        cache: $templateCache,
-        url: scope.$eval(attrs.templateUrl),
-        method: 'GET'
-      }).then(compileTemplate);
-    }
-    return {
-      link: linkFunction,
-      scope: true,
-      restrict: 'E'
-    };
-  }
-]).directive('adTreeBrowserNodeToggle', function () {
-  return {
-    scope: true,
-    restrict: 'E',
-    replace: true,
-    templateUrl: 'treebrowser/treebrowserNodeToggle.tpl.html'
-  };
-});
 
 })(window, document);

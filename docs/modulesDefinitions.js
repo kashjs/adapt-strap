@@ -663,7 +663,8 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
     docFiles: [
       'infinitedropdown.view.html',
       'infinitedropdown.ctrl.js',
-      'artist.html'
+      'artist.html',
+      'customSearch.html'
     ],
     directives: [
       {
@@ -700,6 +701,14 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             type: 'String',
             default: 'NA',
             description: 'Url to load the template. This template will be used to render the items'
+          },
+          {
+            name: 'dropdown-header-template-url',
+            required: false,
+            type: 'String',
+            default: 'NA',
+            description: 'Url to load the template for dropdown header area. This template will be rendered' +
+              'on the top section of dropdown and dropdown items will be right below this section.'
           },
           {
             name: 'initial-label',

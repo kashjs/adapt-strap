@@ -108,6 +108,10 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
           }
         };
 
+        scope.dropdownHeaderClicked = function (event) {
+          event.stopPropagation();
+        };
+
         // ---------- initialization and event listeners ---------- //
         //We do the compile after injecting the name spacing into the template.
         scope.loadPage(1);
@@ -136,6 +140,26 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
             })
           );
         }
+
+        // for dropdown-header area
+        var open = false;
+        element.find('.dropdown-toggle').click(function() {
+          if (open) {
+            open = false;
+            element.find('.dropdown-header').hide();
+          } else {
+            open = true;
+            element.find('.dropdown-header').show();
+            element.find('.dropdown-header').outerWidth(element.find('.dropdown-menu').outerWidth());
+          }
+        });
+        $(document).click(function() {
+          if (open) {
+            open = false;
+            element.find('.dropdown-header').hide();
+          }
+        });
+
         // ---------- disable watchers ---------- //
         scope.$on('$destroy', function () {
           watchers.forEach(function (watcher) {

@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v2.4.3 - 2015-09-15
+ * @version v2.4.4 - 2015-09-17
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -656,6 +656,9 @@ function linkFunction(scope, element, attrs) {
           }
         }
       };
+      scope.dropdownHeaderClicked = function (event) {
+        event.stopPropagation();
+      };
       // ---------- initialization and event listeners ---------- //
       //We do the compile after injecting the name spacing into the template.
       scope.loadPage(1);
@@ -680,6 +683,24 @@ function linkFunction(scope, element, attrs) {
           }
         }));
       }
+      // for dropdown-header area
+      var open = false;
+      element.find('.dropdown-toggle').click(function () {
+        if (open) {
+          open = false;
+          element.find('.dropdown-header').hide();
+        } else {
+          open = true;
+          element.find('.dropdown-header').show();
+          element.find('.dropdown-header').outerWidth(element.find('.dropdown-menu').outerWidth());
+        }
+      });
+      $(document).click(function () {
+        if (open) {
+          open = false;
+          element.find('.dropdown-header').hide();
+        }
+      });
       // ---------- disable watchers ---------- //
       scope.$on('$destroy', function () {
         watchers.forEach(function (watcher) {

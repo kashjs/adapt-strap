@@ -24,14 +24,12 @@ angular.module('adaptv.adaptStrapDocs')
         alert(artist.name);
       };
 
+      $scope.dropdownStatus = {
+        open: false
+      };
       $scope.deselectAllArtists = function () {
         $scope.selectedArtists.length = 0;
-      };
-
-      $scope.searchHeaderClicked = function (event) {
-        // NOTE: it is important to do this otherwise
-        // dropdown will disappear when someone clicks on your header template;
-        event.stopPropagation();
+        $scope.dropdownStatus.open = false;
       };
 
       $scope.selectedArtists = [];

@@ -735,6 +735,15 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
               'Look at more info for details on how to build ajaxConfig object'
           },
           {
+            name: 'dropdown-status',
+            required: true,
+            default: 'NA',
+            type: 'String',
+            description: 'Path to the object that contains dropdown status' +
+              'this comes in handy when you need to close dropdown from within javascript. ' +
+              'default status object looks like this <code>{open: false}</code>'
+          },
+          {
             name: 'local-data-source',
             required: true,
             default: 'NA',

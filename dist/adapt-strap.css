@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v2.4.5 - 2015-09-29
+ * @version v2.4.6 - 2015-09-29
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -237,7 +237,6 @@
   margin-top: 0;
 }
 .ad-infinite-list-container .dropdown-header {
-  display: none;
   background-color: #ffffff;
   border: 1px solid #cccccc;
   border: 1px solid rgba(0, 0, 0, 0.15);

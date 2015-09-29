@@ -3,8 +3,10 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
  * Use this directive if you need to render a table that loads data from ajax.
  */
   .directive('adInfiniteDropdown',
-  ['$parse', '$compile', '$templateCache', '$adConfig', 'adLoadPage', 'adDebounce', 'adStrapUtils', 'adLoadLocalPage',
-    function ($parse, $compile, $templateCache, $adConfig, adLoadPage, adDebounce, adStrapUtils, adLoadLocalPage) {
+  ['$parse', '$compile', '$timeout', '$templateCache', '$adConfig',
+    'adLoadPage', 'adDebounce', 'adStrapUtils', 'adLoadLocalPage',
+    function ($parse, $compile, $timeout, $templateCache, $adConfig,
+              adLoadPage, adDebounce, adStrapUtils, adLoadLocalPage) {
       'use strict';
       function linkFunction(scope, element, attrs) {
         // scope initialization
@@ -108,6 +110,10 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
           }
         };
 
+        scope.dropdownHeaderAreaClicked = function (event) {
+          event.stopPropagation();
+        };
+
         // ---------- initialization and event listeners ---------- //
         //We do the compile after injecting the name spacing into the template.
         scope.loadPage(1);
@@ -138,22 +144,34 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
         }
 
         // for dropdown-header area
-        var open = false;
-        element.find('.dropdown-toggle').click(function() {
-          if (open) {
-            open = false;
-            element.find('.dropdown-header').hide();
+        scope.dropdownStatus = scope.$eval(attrs.dropdownStatus) || { open: false };
+        watchers.push(scope.$watch('dropdownStatus.open', function (value) {
+          if (value === true) {
+            $timeout(function () {
+              element.find('.dropdown').addClass('open');
+            }, 0);
           } else {
-            open = true;
-            element.find('.dropdown-header').show();
-            element.find('.dropdown-header').outerWidth(element.find('.dropdown-menu').outerWidth());
+            $timeout(function () {
+              element.find('.dropdown').removeClass('open');
+            }, 0);
           }
+        }));
+        element.find('.dropdown-toggle').click(function() {
+          scope.$apply(function () {
+            if (scope.dropdownStatus.open) {
+              scope.dropdownStatus.open = false;
+            } else {
+              scope.dropdownStatus.open = true;
+              element.find('.dropdown-header').outerWidth(element.find('.dropdown-menu').outerWidth());
+            }
+          });
         });
         $(document).click(function() {
-          if (open) {
-            open = false;
-            element.find('.dropdown-header').hide();
-          }
+          scope.$apply(function () {
+            if (scope.dropdownStatus.open) {
+              scope.dropdownStatus.open = false;
+            }
+          });
         });
 
         // ---------- disable watchers ---------- //

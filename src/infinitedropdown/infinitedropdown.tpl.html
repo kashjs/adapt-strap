@@ -13,6 +13,8 @@
                 <span class="caret"></span>
             </button>
         <div class="dropdown-header"
+             ng-show="dropdownStatus.open"
+             ng-click="dropdownHeaderAreaClicked($event)"
              ng-if="attrs.dropdownHeaderTemplateUrl">
             <ng-include src="attrs.dropdownHeaderTemplateUrl"></ng-include>
         </div>

@@ -108,10 +108,6 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
           }
         };
 
-        scope.dropdownHeaderClicked = function (event) {
-          event.stopPropagation();
-        };
-
         // ---------- initialization and event listeners ---------- //
         //We do the compile after injecting the name spacing into the template.
         scope.loadPage(1);

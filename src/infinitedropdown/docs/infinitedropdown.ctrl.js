@@ -28,6 +28,12 @@ angular.module('adaptv.adaptStrapDocs')
         $scope.selectedArtists.length = 0;
       };
 
+      $scope.searchHeaderClicked = function (event) {
+        // NOTE: it is important to do this otherwise
+        // dropdown will disappear when someone clicks on your header template;
+        event.stopPropagation();
+      };
+
       $scope.selectedArtists = [];
       $scope.selectedArtist = [];
 

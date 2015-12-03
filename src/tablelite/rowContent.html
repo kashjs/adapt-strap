@@ -1,13 +1,13 @@
-<td class="ad-select-cell ad-cursor-pointer" class="table-lite-col-{{$index}}"
+<td class="ad-select-cell ad-cursor-pointer table-lite-col-{{$index}}"
     ng-if="attrs.rowExpandTemplate"
     ng-click="toggle($event, $index, item)">
   <i ng-class="iconClasses.expand" ng-if="!adStrapUtils.itemExistsInList($index, localConfig.expandedItems)"></i>
   <i ng-class="iconClasses.collapse" ng-if="adStrapUtils.itemExistsInList($index, localConfig.expandedItems)"></i>
 </td>
-<td class="ad-select-cell ad-drag-handle" ng-if="attrs.draggable" class="table-lite-col-{{$index}}">
+<td class="ad-select-cell ad-drag-handle table-lite-col-{{$index}}" ng-if="attrs.draggable">
   <i ng-class="iconClasses.draggable"></i>
 </td>
-<td class="ad-select-cell" ng-if="attrs.selectedItems" class="table-lite-col-{{$index}}">
+<td class="ad-select-cell table-lite-col-{{$index}}" ng-if="attrs.selectedItems">
   <input type="checkbox"
          class="ad-cursor-pointer"
          ng-checked="adStrapUtils.itemExistsInList(item, selectedItems)"

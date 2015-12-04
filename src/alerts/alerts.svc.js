@@ -6,6 +6,12 @@ angular.module('adaptv.adaptStrap.alerts')
       message: ''
     };
 
+    function _updateSettings(type, caption, msg) {
+      _settings.type = type;
+      _settings.caption = caption;
+      _settings.message = msg;
+    }
+
     function _warning(cap, msg) {
       _updateSettings('warning', cap, msg);
     }
@@ -20,12 +26,6 @@ angular.module('adaptv.adaptStrap.alerts')
 
     function _error(cap, msg) {
       _updateSettings('danger', cap, msg);
-    }
-
-    function _updateSettings(type, caption, msg) {
-      _settings.type = type;
-      _settings.caption = caption;
-      _settings.message = msg;
     }
 
     function _clearSettings() {

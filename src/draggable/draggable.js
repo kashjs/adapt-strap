@@ -24,32 +24,38 @@ angular.module('adaptv.adaptStrap.draggable', [])
       var pressTimer = null;
 
       var draggedClone = null;
-      function init() {
-        element.attr('draggable', 'false'); // prevent native drag
-        toggleListeners(true);
-      }
 
-      function toggleListeners(enable) {
-        if (!enable) {
-          return;
-        }
-        // add listeners.
-        scope.$on('$destroy', onDestroy);
-        attrs.$observe('adDrag', onEnableChange);
-        scope.$watch(attrs.adDragData, onDragDataChange);
+      function reset() {
+        var elem = scope.useClonedElement ? draggedClone : element;
+        elem.css({ left: '', top: '', position:'', 'z-index': '' });
+        var width = elem.data('ad-draggable-temp-width');
 
-        scope.$on('draggable:start', onDragStart);
-        scope.$on('draggable:end', onDragEnd);
-
-        if (scope.hasHandle) {
-          element.on(startEvents, '.ad-drag-handle', onPress);
+        if (width) {
+          elem.css({ width: width });
         } else {
-          element.on(startEvents, onPress);
-          element.addClass('ad-draggable');
+          elem.css({ width: '' });
         }
+        elem.children()
+          .each(function() {
+            var width = $(this).data('ad-draggable-temp-width');
+            if (width) {
+              $(this).css({width: width});
+            } else {
+              $(this).css({width: ''});
+            }
+          });
       }
 
-      //--- Event Handlers ---
+      function moveElement(x, y) {
+        var elem = scope.useClonedElement ? draggedClone : element;
+        elem.css({
+          left: x,
+          top: y,
+          position: 'fixed',
+          'z-index': 99999
+        });
+      }
+
       function onDragStart(evt, o) {
         if (o.el === element && o.callback) {
           o.callback(evt);
@@ -62,126 +68,37 @@ angular.module('adaptv.adaptStrap.draggable', [])
         }
       }
 
-      function onDestroy() {
-        toggleListeners(false);
-      }
-
-      function onDragDataChange(newVal) {
-        scope.data = newVal;
-      }
-
-      function onEnableChange(newVal) {
-        dragEnabled = scope.$eval(newVal);
-      }
-
-      /*
-      * When the element is clicked start the drag behaviour
-      * On touch devices as a small delay so as not to prevent native window scrolling
-      */
-      function onPress(evt) {
-        if (!dragEnabled) {
+      function onDragBegin(evt) {
+        if (!scope.onDragStartCallback) {
           return;
         }
-        if ($(evt.target).is('[ad-prevent-drag]') || $(evt.target).parents('[ad-prevent-drag]').length > 0) {
-          return;
-        }
-        if (hasTouch) {
-          cancelPress();
-          pressTimer = setTimeout(function() {
-            cancelPress();
-            onLongPress(evt);
-          }, 100);
-
-          $document.on(moveEvents, cancelPress);
-          $document.on(endEvents, cancelPress);
-        } else {
-          onLongPress(evt);
-          return false;
-        }
-      }
-
-      /*
-       * Returns the inline property of an element
-       */
-      function getInlineProperty (prop, element) {
-        var styles = $(element).attr('style'),
-          value;
-        if (styles) {
-          styles.split(';').forEach(function (e) {
-            var style = e.split(':');
-            if ($.trim(style[0]) === prop) {
-              value = style[1];
-            }
+        var elem = scope.useClonedElement ? draggedClone : element;
+        scope.$apply(function () {
+          scope.onDragStartCallback(scope, {
+            $data: scope.data,
+            $dragElement: { el: elem },
+            $event: evt
           });
-        }
-        return value;
-      }
-
-      /*
-       * Preserve the width of the element during drag
-       */
-      function persistElementWidth() {
-        var elem = scope.useClonedElement ? draggedClone : element;
-        if (getInlineProperty('width', elem)) {
-          elem.data('ad-draggable-temp-width', getInlineProperty('width', elem));
-        }
-        elem.width(elem.width());
-        elem.children().each(function () {
-          if (getInlineProperty('width', this)) {
-            $(this).data('ad-draggable-temp-width', getInlineProperty('width', this));
-          }
-          $(this).width($(this).width());
         });
       }
 
-      function cancelPress() {
-        clearTimeout(pressTimer);
-        $document.off(moveEvents, cancelPress);
-        $document.off(endEvents, cancelPress);
-      }
-
-      function onLongPress(evt) {
-        if (!dragEnabled) {
+      function onDragComplete(evt) {
+        if (!scope.onDragEndCallback) {
           return;
         }
-        evt.preventDefault();
-        if (scope.useClonedElement) {
-          draggedClone = element.clone().appendTo(element.parent());
-          draggedClone.css({position: 'fixed'});
-        }
-
         var elem = scope.useClonedElement ? draggedClone : element;
-        offset = element.offset();
-
-        if (scope.hasHandle) {
-          offset = element.find('.ad-drag-handle').offset();
-        } else {
-          offset = element.offset();
-        }
-
-        element.addClass('ad-dragging');
-
-        mx = (evt.pageX || evt.originalEvent.touches[0].pageX);
-        my = (evt.pageY || evt.originalEvent.touches[0].pageY);
-
-        tx = offset.left - $window.scrollLeft();
-        ty = offset.top - $window.scrollTop();
-
-        persistElementWidth();
-        moveElement(tx, ty);
-
-        $document.on(moveEvents, onMove);
-        $document.on(endEvents, onRelease);
-
-        $rootScope.$broadcast('draggable:start', {
-          x: mx,
-          y: my,
-          tx: tx,
-          ty: ty,
-          el: elem,
-          data: scope.data,
-          callback: onDragBegin
-        });
+        // To fix a bug issue where onDragEnd happens before
+        // onDropEnd. Currently the only way around this
+        // Ideally onDropEnd should fire before onDragEnd
+        $timeout(function() {
+          scope.$apply(function () {
+            scope.onDragEndCallback(scope, {
+              $data: scope.data,
+              $dragElement: { el: elem },
+              $event: evt
+            });
+          });
+        }, 100);
       }
 
       function onMove(evt) {
@@ -240,70 +157,141 @@ angular.module('adaptv.adaptStrap.draggable', [])
         $document.off(endEvents, onRelease);
       }
 
-      // Callbacks
-      function onDragBegin(evt) {
-        if (!scope.onDragStartCallback) {
-          return;
-        }
-        var elem = scope.useClonedElement ? draggedClone : element;
-        scope.$apply(function () {
-          scope.onDragStartCallback(scope, {
-            $data: scope.data,
-            $dragElement: { el: elem },
-            $event: evt
-          });
-        });
+      function onEnableChange(newVal) {
+        dragEnabled = scope.$eval(newVal);
       }
 
-      function onDragComplete(evt) {
-        if (!scope.onDragEndCallback) {
-          return;
-        }
-        var elem = scope.useClonedElement ? draggedClone : element;
-        // To fix a bug issue where onDragEnd happens before
-        // onDropEnd. Currently the only way around this
-        // Ideally onDropEnd should fire before onDragEnd
-        $timeout(function() {
-          scope.$apply(function () {
-            scope.onDragEndCallback(scope, {
-              $data: scope.data,
-              $dragElement: { el: elem },
-              $event: evt
-            });
-          });
-        }, 100);
+      function onDragDataChange(newVal) {
+        scope.data = newVal;
       }
 
-      // utils functions
-      function reset() {
-        var elem = scope.useClonedElement ? draggedClone : element;
-        elem.css({ left: '', top: '', position:'', 'z-index': '' });
-        var width = elem.data('ad-draggable-temp-width');
-
-        if (width) {
-          elem.css({ width: width });
-        } else {
-          elem.css({ width: '' });
-        }
-        elem.children()
-          .each(function() {
-            var width = $(this).data('ad-draggable-temp-width');
-            if (width) {
-              $(this).css({width: width});
-            } else {
-              $(this).css({width: ''});
+      function getInlineProperty (prop, element) {
+        var styles = $(element).attr('style'),
+          value;
+        if (styles) {
+          styles.split(';').forEach(function (e) {
+            var style = e.split(':');
+            if ($.trim(style[0]) === prop) {
+              value = style[1];
             }
           });
+        }
+        return value;
       }
 
-      function moveElement(x, y) {
+      function persistElementWidth() {
         var elem = scope.useClonedElement ? draggedClone : element;
-        elem.css({
-          left: x,
-          top: y,
-          position: 'fixed',
-          'z-index': 99999
+        if (getInlineProperty('width', elem)) {
+          elem.data('ad-draggable-temp-width', getInlineProperty('width', elem));
+        }
+        elem.width(elem.width());
+        elem.children().each(function () {
+          if (getInlineProperty('width', this)) {
+            $(this).data('ad-draggable-temp-width', getInlineProperty('width', this));
+          }
+          $(this).width($(this).width());
         });
+      }
+
+      function onLongPress(evt) {
+        if (!dragEnabled) {
+          return;
+        }
+        evt.preventDefault();
+        if (scope.useClonedElement) {
+          draggedClone = element.clone().appendTo(element.parent());
+          draggedClone.css({position: 'fixed'});
+        }
+
+        var elem = scope.useClonedElement ? draggedClone : element;
+        offset = element.offset();
+
+        if (scope.hasHandle) {
+          offset = element.find('.ad-drag-handle').offset();
+        } else {
+          offset = element.offset();
+        }
+
+        element.addClass('ad-dragging');
+
+        mx = (evt.pageX || evt.originalEvent.touches[0].pageX);
+        my = (evt.pageY || evt.originalEvent.touches[0].pageY);
+
+        tx = offset.left - $window.scrollLeft();
+        ty = offset.top - $window.scrollTop();
+
+        persistElementWidth();
+        moveElement(tx, ty);
+
+        $document.on(moveEvents, onMove);
+        $document.on(endEvents, onRelease);
+
+        $rootScope.$broadcast('draggable:start', {
+          x: mx,
+          y: my,
+          tx: tx,
+          ty: ty,
+          el: elem,
+          data: scope.data,
+          callback: onDragBegin
+        });
+      }
+
+      function cancelPress() {
+        clearTimeout(pressTimer);
+        $document.off(moveEvents, cancelPress);
+        $document.off(endEvents, cancelPress);
+      }
+
+      /*
+       * When the element is clicked start the drag behaviour
+       * On touch devices as a small delay so as not to prevent native window scrolling
+       */
+      function onPress(evt) {
+        if (!dragEnabled) {
+          return;
+        }
+        if ($(evt.target).is('[ad-prevent-drag]') || $(evt.target).parents('[ad-prevent-drag]').length > 0) {
+          return;
+        }
+        if (hasTouch) {
+          cancelPress();
+          pressTimer = setTimeout(function() {
+            cancelPress();
+            onLongPress(evt);
+          }, 100);
+
+          $document.on(moveEvents, cancelPress);
+          $document.on(endEvents, cancelPress);
+        } else {
+          onLongPress(evt);
+          return false;
+        }
+      }
+
+      function toggleListeners(enable) {
+        if (!enable) {
+          return;
+        }
+        // add listeners.
+        scope.$on('$destroy', function () { toggleListeners(false); });
+        attrs.$observe('adDrag', onEnableChange);
+        scope.$watch(attrs.adDragData, onDragDataChange);
+
+        scope.$on('draggable:start', onDragStart);
+        scope.$on('draggable:end', onDragEnd);
+
+        if (scope.hasHandle) {
+          element.on(startEvents, '.ad-drag-handle', onPress);
+        } else {
+          element.on(startEvents, onPress);
+          element.addClass('ad-draggable');
+        }
+      }
+
+      function init() {
+        element.attr('draggable', 'false'); // prevent native drag
+        toggleListeners(true);
       }
 
       init();
@@ -325,25 +313,17 @@ angular.module('adaptv.adaptStrap.draggable', [])
       var lastDropElement = null;
       var $window = $(window);
 
-      function init() {
-        toggleListeners(true);
-      }
+      function getCurrentDropElement(x, y) {
+        var bounds = element.offset();
+        // set drag sensitivity
+        var vthold = Math.floor(element.outerHeight() / 6);
 
-      function toggleListeners(enable) {
-        if (!enable) {
-          return;
-        }
-        // add listeners.
-        attrs.$observe('adDrop', onEnableChange);
-        scope.$on('$destroy', onDestroy);
+        x = x + $window.scrollLeft();
+        y = y + $window.scrollTop();
 
-        scope.$on('draggable:move', onDragMove);
-        scope.$on('draggable:end', onDragEnd);
-        scope.$on('draggable:change', onDropChange);
-      }
-
-      function onDestroy() {
-        toggleListeners(false);
+        return ((y >= (bounds.top + vthold) && y <= (bounds.top + element.outerHeight() - vthold)) &&
+        (x >= (bounds.left) && x <= (bounds.left + element.outerWidth()))) && (x >= bounds.left &&
+        x <= (bounds.left + element.outerWidth())) ? element : null;
       }
 
       function onEnableChange(newVal) {
@@ -422,18 +402,23 @@ angular.module('adaptv.adaptStrap.draggable', [])
         lastDropElement = null;
       }
 
-      function getCurrentDropElement(x, y) {
-        var bounds = element.offset();
-        // set drag sensitivity
-        var vthold = Math.floor(element.outerHeight() / 6);
+      function toggleListeners(enable) {
+        if (!enable) {
+          return;
+        }
+        // add listeners.
+        attrs.$observe('adDrop', onEnableChange);
+        scope.$on('$destroy', function () { toggleListeners(false); });
 
-        x = x + $window.scrollLeft();
-        y = y + $window.scrollTop();
-
-        return ((y >= (bounds.top + vthold) && y <= (bounds.top + element.outerHeight() - vthold)) &&
-            (x >= (bounds.left) && x <= (bounds.left + element.outerWidth()))) && (x >= bounds.left &&
-                  x <= (bounds.left + element.outerWidth())) ? element : null;
+        scope.$on('draggable:move', onDragMove);
+        scope.$on('draggable:end', onDragEnd);
+        scope.$on('draggable:change', onDropChange);
       }
+
+      function init() {
+        toggleListeners(true);
+      }
+
       init();
     }
     return {

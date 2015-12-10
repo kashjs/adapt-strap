@@ -13,6 +13,7 @@
         <tr class="ad-user-select-none" ng-if="!(localConfig.tableMaxHeight || attrs.tableFixedHeight)" ng-include="'tableajax/headerRowContent.html'"></tr>
       </thead>
       <tbody>
+        <tr class="ad-first-row" ng-include="attrs.firstRowTemplate"></tr>
         <tr ng-repeat-start="item in items.list"
             ng-class="getRowClass(item, $index)"
             ng-include="'tableajax/rowContent.html'"
@@ -21,6 +22,7 @@
           <td colspan="{{ visibleColumnDefinition.length + 1}}"
               ng-include="attrs.rowExpandTemplate"></td>
         </tr>
+        <tr class="ad-last-row" ng-include="attrs.lastRowTemplate"></tr>
       </tbody>
     </table>
     <ad-loading-overlay loading="localConfig.loadingData"></ad-loading-overlay>

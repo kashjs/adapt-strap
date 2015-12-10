@@ -1,3 +1,4 @@
+<tr class="ad-first-row" ng-if="attrs.firstRowTemplate" ng-include="attrs.firstRowTemplate"></tr>
 <tr ad-drag="true"
     ad-drag-handle="true"
     ad-drop="true"
@@ -14,3 +15,4 @@
   <td colspan="{{ visibleColumnDefinition.length + !!attrs.draggable + !!attrs.selectedItems + 1}}"
       ng-include="attrs.rowExpandTemplate"></td>
 </tr>
+<tr class="ad-last-row" ng-if="attrs.lastRowTemplate" ng-include="attrs.lastRowTemplate"></tr>

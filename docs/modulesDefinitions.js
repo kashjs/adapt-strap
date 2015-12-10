@@ -217,6 +217,20 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             'Good for limited real estate scenarios.'
         },
         {
+          name: 'first-row-template',
+          required: false,
+          default: 'NA',
+          type: 'String',
+          description: 'template url with set of td tags that gets rendered in first row.'
+        },
+        {
+          name: 'last-row-template',
+          required: false,
+          default: 'NA',
+          type: 'String',
+          description: 'template url with set of td tags that gets rendered in last row.'
+        },
+        {
           name: 'row-expand-template',
           required: false,
           default: 'NA',
@@ -389,6 +403,20 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
           type: 'Boolean',
           description: 'If true, the sort icons will be right next to header text. ' +
             'Good for limited real estate scenarios.'
+        },
+        {
+          name: 'first-row-template',
+          required: false,
+          default: 'NA',
+          type: 'String',
+          description: 'template url with set of td tags that gets rendered in first row.'
+        },
+        {
+          name: 'last-row-template',
+          required: false,
+          default: 'NA',
+          type: 'String',
+          description: 'template url with set of td tags that gets rendered in last row.'
         },
         {
           name: 'row-expand-template',

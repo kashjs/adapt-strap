@@ -16,6 +16,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
         $scope.onDataLoadedCallback = $parse($attrs.onDataLoaded) || null;
         $scope.items = {
           list: undefined,
+          allItems: undefined,
           paging: {
             currentPage: 1,
             totalPages: undefined,
@@ -33,6 +34,9 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
           sortState: {},
           stateChange: $scope.$eval($attrs.onStateChange)
         };
+
+        $scope.selectedItems = $scope.$eval($attrs.selectedItems);
+
         $scope.onRowClick = function (item, event) {
           var onRowClick = $scope.$parent.$eval($attrs.onRowClick);
           if (onRowClick) {
@@ -69,6 +73,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
             successHandler = function (response) {
               if (response.token === lastRequestToken) {
                 $scope.items.list = response.items;
+                $scope.items.allItems = response.items;
                 $scope.items.paging.totalPages = response.totalPages;
                 $scope.items.paging.totalItems = response.totalItems;
                 $scope.items.paging.currentPage = response.currentPage;
@@ -166,8 +171,10 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
 
         $scope.getRowClass = function (item, index) {
           var rowClass = '';
+          rowClass += ($attrs.selectedItems &&
+            adStrapUtils.itemExistsInList(item, $scope.selectedItems)) ? 'ad-selected' : '';
           if ($attrs.rowClassProvider) {
-            rowClass += $scope.$eval($attrs.rowClassProvider)(item, index);
+            rowClass += ' ' + $scope.$eval($attrs.rowClassProvider)(item, index);
           }
           return rowClass;
         };

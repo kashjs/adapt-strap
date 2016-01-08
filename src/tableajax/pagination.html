@@ -39,8 +39,7 @@
     </ul>
   </div>
   <div class="col-md-4 col-sm-4 text-right">
-    <ul ng-class="attrs.paginationBtnGroupClasses || 'pagination pagination-sm'"
-        ng-show="items.paging.totalPages > 1">
+    <ul ng-class="attrs.paginationBtnGroupClasses || 'pagination pagination-sm'">
       <li ng-repeat="size in items.paging.pageSizes"
           ng-class="{active: items.paging.pageSize == size}">
         <a class="ad-cursor-pointer" ng-click="pageSizeChanged(size)">{{ size }}

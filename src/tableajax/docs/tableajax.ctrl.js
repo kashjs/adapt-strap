@@ -2,6 +2,8 @@ angular.module('adaptv.adaptStrapDocs')
   .controller('tableajaxCtrl', ['$scope',
     function ($scope) {
 
+      $scope.selectedItems = [];
+
       // ========== Simple Table Implementation ========== //
       $scope.artistsColumnDef = [
         {

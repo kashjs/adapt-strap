@@ -4,6 +4,12 @@
   <i ng-class="iconClasses.expand" ng-if="!adStrapUtils.itemExistsInList($index, localConfig.expandedItems)"></i>
   <i ng-class="iconClasses.collapse" ng-if="adStrapUtils.itemExistsInList($index, localConfig.expandedItems)"></i>
 </td>
+<td class="ad-select-cell table-ajax-col-{{definition.columnHeaderDisplayName ? definition.columnHeaderDisplayName : $index}}" ng-if="attrs.selectedItems">
+    <input type="checkbox"
+           class="ad-cursor-pointer"
+           ng-checked="adStrapUtils.itemExistsInList(item, selectedItems)"
+           ng-click="adStrapUtils.addRemoveItemFromList(item, selectedItems)">
+</td>
 <td data-ng-repeat="definition in visibleColumnDefinition"
     ng-style="{'width': definition.width}" class="table-ajax-col-{{definition.columnHeaderDisplayName ? definition.columnHeaderDisplayName : $index}}">
   <div ng-if="definition.templateUrl">

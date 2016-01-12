@@ -32,17 +32,24 @@
       </div>
     </div>
     <div class="panel-body">
+        <p class="text-muted">
+            Items Selected: <span class="badge" ng-bind="selectedItems.length"></span></p>
       <ad-table-ajax table-name="artistsTableSearch"
                      column-definition="artistsColumnDefSearch"
                      table-classes="table table-bordered"
                      page-sizes="[5, 20, 50]"
                      pagination-btn-group-classes="pagination pagination-sm"
                      ajax-config="artistsAjaxConfigSearch"
+                     selected-items="selectedItems"
                      page-loader="methods.pageLoader"
                      row-expand-callback="populateShoppingMessage"
                      row-class-provider="checkRowSelected"
                      row-expand-template="src/tableajax/docs/artistMoreInfo.html">
       </ad-table-ajax>
+        <h3 class="text-muted">Selected Items:</h3>
+        <div class="well">
+            <span>{{ selectedItems }}</span>
+        </div>
     </div>
   </div>
   <!-- ad_example_end -->

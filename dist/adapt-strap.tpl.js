@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v2.4.9 - 2016-01-12
+ * @version v2.4.10 - 2016-01-12
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -16,19 +16,19 @@ angular.module('adaptv.adaptStrap.alerts').run([
   }
 ]);
 
-// Source: loadingindicator.tpl.js
-angular.module('adaptv.adaptStrap.loadingindicator').run([
-  '$templateCache',
-  function ($templateCache) {
-    $templateCache.put('loadingindicator/loadingindicator.tpl.html', '<div class="ad-loading-overlay-container" ng-class="containerClasses" ng-style="{\'z-index\': zIndex || \'1000\',\'position\': position || \'absolute\'}" ng-show="loading"><div class="wrapper"><div class="loading-indicator"><ad-loading-icon loading-icon-size="{{ loadingIconSize }}" loading-icon-class="{{ loadingIconClass }}"></ad-loading-icon></div></div></div>');
-  }
-]);
-
 // Source: infinitedropdown.tpl.js
 angular.module('adaptv.adaptStrap.infinitedropdown').run([
   '$templateCache',
   function ($templateCache) {
     $templateCache.put('infinitedropdown/infinitedropdown.tpl.html', '<div class="ad-infinite-list-container"><div class="dropdown"><button type="button" class="dropdown-toggle" ng-class="attrs.btnClasses || \'btn btn-default\'" data-toggle="dropdown"><span ng-if="!attrs.labelDisplayProperty || !selectedItems.length">{{ attrs.initialLabel || \'Select\' }}</span> <span ng-if="attrs.labelDisplayProperty && selectedItems.length">{{ adStrapUtils.getObjectProperty(selectedItems[selectedItems.length - 1], attrs.labelDisplayProperty) }}</span> <span class="caret"></span></button><div class="dropdown-header" ng-show="dropdownStatus.open" ng-click="dropdownHeaderAreaClicked($event)" ng-if="attrs.dropdownHeaderTemplateUrl"><ng-include src="attrs.dropdownHeaderTemplateUrl"></ng-include></div><ul class="dropdown-menu" role="menu" ng-class="{\'with-dropdown-header\': attrs.dropdownHeaderTemplateUrl}" ng-style="localConfig.dimensions"><li class="text-overflow" data-ng-repeat="item in items.list" ng-class="{\'active\': adStrapUtils.itemExistsInList(item, selectedItems)}" ng-click="addRemoveItem($event, item, selectedItems)"><a role="menuitem" tabindex="-1" href=""><span ng-if="attrs.displayProperty">{{ adStrapUtils.getObjectProperty(item, attrs.displayProperty) }}</span> <span ng-if="attrs.template" ad-compile-template="{{ attrs.template }}"></span> <span ng-if="attrs.templateUrl" ng-include="attrs.templateUrl"></span></a></li><li class="text-overflow text-center" ng-show="localConfig.loadingData"><a role="menuitem" tabindex="-1" href=""><ad-loading-icon></ad-loading-icon></a></li></ul></div></div>');
+  }
+]);
+
+// Source: loadingindicator.tpl.js
+angular.module('adaptv.adaptStrap.loadingindicator').run([
+  '$templateCache',
+  function ($templateCache) {
+    $templateCache.put('loadingindicator/loadingindicator.tpl.html', '<div class="ad-loading-overlay-container" ng-class="containerClasses" ng-style="{\'z-index\': zIndex || \'1000\',\'position\': position || \'absolute\'}" ng-show="loading"><div class="wrapper"><div class="loading-indicator"><ad-loading-icon loading-icon-size="{{ loadingIconSize }}" loading-icon-class="{{ loadingIconClass }}"></ad-loading-icon></div></div></div>');
   }
 ]);
 

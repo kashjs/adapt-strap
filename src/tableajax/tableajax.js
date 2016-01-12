@@ -111,7 +111,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
                 });
               }
 
-              if(angular.isFunction($scope.onDataLoadedCallback)) {
+              if (angular.isFunction($scope.onDataLoadedCallback)) {
                 $scope.onDataLoadedCallback($scope,  {
                   $success: false,
                   $response: null

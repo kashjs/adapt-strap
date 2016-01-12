@@ -13,6 +13,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
         $scope.iconClasses = $adConfig.iconClasses;
         $scope.adStrapUtils = adStrapUtils;
         $scope.tableClasses = $adConfig.componentClasses.tableAjaxClass;
+        $scope.onDataLoadedCallback = $parse($attrs.onDataLoaded) || null;
         $scope.items = {
           list: undefined,
           paging: {
@@ -81,8 +82,15 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
                 $scope.localConfig.showNoDataFoundMessage = true;
               }
 
-              if ($scope.localConfig.onDataLoaded) {
+              if (angular.isFunction($scope.localConfig.onDataLoaded)) {
                 $scope.localConfig.onDataLoaded($scope, {
+                  $success: true,
+                  $response: response
+                });
+              }
+
+              if (angular.isFunction($scope.onDataLoadedCallback)) {
+                $scope.onDataLoadedCallback($scope, {
                   $success: true,
                   $response: response
                 });
@@ -91,8 +99,15 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
             errorHandler = function () {
               $scope.localConfig.loadingData = false;
               $scope.localConfig.showNoDataFoundMessage = true;
-              if ($scope.localConfig.onDataLoaded) {
+              if (angular.isFunction($scope.localConfig.onDataLoaded)) {
                 $scope.localConfig.onDataLoaded($scope, {
+                  $success: false,
+                  $response: null
+                });
+              }
+
+              if(angular.isFunction($scope.onDataLoadedCallback)) {
+                $scope.onDataLoadedCallback($scope,  {
                   $success: false,
                   $response: null
                 });

@@ -13,6 +13,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
         $scope.iconClasses = $adConfig.iconClasses;
         $scope.adStrapUtils = adStrapUtils;
         $scope.tableClasses = $adConfig.componentClasses.tableAjaxClass;
+        $scope.onDataLoadedCallback = $parse($attrs.onDataLoaded) || null;
         $scope.items = {
           list: undefined,
           paging: {
@@ -30,8 +31,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
           tableMaxHeight: $attrs.tableMaxHeight,
           expandedItems: [],
           sortState: {},
-          stateChange: $scope.$eval($attrs.onStateChange),
-          onDataLoaded: $scope.$eval($attrs.onDataLoaded) || null
+          stateChange: $scope.$eval($attrs.onStateChange)
         };
         $scope.onRowClick = function (item, event) {
           var onRowClick = $scope.$parent.$eval($attrs.onRowClick);
@@ -57,7 +57,6 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
           lastRequestToken = Math.random();
           $scope.localConfig.loadingData = true;
           $scope.localConfig.showNoDataFoundMessage = false;
-
           var pageLoader = $scope.$eval($attrs.pageLoader) || adLoadPage,
             params = {
               pageNumber: page,
@@ -81,8 +80,8 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
                 $scope.localConfig.showNoDataFoundMessage = true;
               }
 
-              if ($scope.localConfig.onDataLoaded) {
-                $scope.localConfig.onDataLoaded($scope, {
+              if ($scope.onDataLoadedCallback) {
+                $scope.onDataLoadedCallback($scope, {
                   $success: true,
                   $response: response
                 });
@@ -91,8 +90,8 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
             errorHandler = function () {
               $scope.localConfig.loadingData = false;
               $scope.localConfig.showNoDataFoundMessage = true;
-              if ($scope.localConfig.onDataLoaded) {
-                $scope.localConfig.onDataLoaded($scope, {
+              if ($scope.onDataLoadedCallback) {
+                $scope.onDataLoadedCallback($scope, {
                   $success: false,
                   $response: null
                 });

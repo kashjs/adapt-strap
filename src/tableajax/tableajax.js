@@ -32,8 +32,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
           tableMaxHeight: $attrs.tableMaxHeight,
           expandedItems: [],
           sortState: {},
-          stateChange: $scope.$eval($attrs.onStateChange),
-          onDataLoaded: $scope.$eval($attrs.onDataLoaded) || null
+          stateChange: $scope.$eval($attrs.onStateChange)
         };
 
         $scope.selectedItems = $scope.$eval($attrs.selectedItems);
@@ -62,7 +61,6 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
           lastRequestToken = Math.random();
           $scope.localConfig.loadingData = true;
           $scope.localConfig.showNoDataFoundMessage = false;
-
           var pageLoader = $scope.$eval($attrs.pageLoader) || adLoadPage,
             params = {
               pageNumber: page,
@@ -87,14 +85,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
                 $scope.localConfig.showNoDataFoundMessage = true;
               }
 
-              if (angular.isFunction($scope.localConfig.onDataLoaded)) {
-                $scope.localConfig.onDataLoaded($scope, {
-                  $success: true,
-                  $response: response
-                });
-              }
-
-              if (angular.isFunction($scope.onDataLoadedCallback)) {
+              if ($scope.onDataLoadedCallback) {
                 $scope.onDataLoadedCallback($scope, {
                   $success: true,
                   $response: response
@@ -104,15 +95,8 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
             errorHandler = function () {
               $scope.localConfig.loadingData = false;
               $scope.localConfig.showNoDataFoundMessage = true;
-              if (angular.isFunction($scope.localConfig.onDataLoaded)) {
-                $scope.localConfig.onDataLoaded($scope, {
-                  $success: false,
-                  $response: null
-                });
-              }
-
-              if (angular.isFunction($scope.onDataLoadedCallback)) {
-                $scope.onDataLoadedCallback($scope,  {
+              if ($scope.onDataLoadedCallback) {
+                $scope.onDataLoadedCallback($scope, {
                   $success: false,
                   $response: null
                 });

@@ -1,28 +1,38 @@
 <div ng-controller="tableliteCtrl">
+
+  <!-- ad_example_start -->
   <p class="text-muted">
     Cars Selected: <span class="badge" ng-bind="models.selectedCars.length"></span>
-  </p>
+    &nbsp;&nbsp;&nbsp;&nbsp;Search: <input type="text" placeholder=" enter search text " ng-model="models.searchText"/></p>
 
   <!-- ========== Usage ========== -->
   <ad-table-lite table-name="carsForSale"
+                 enable-column-search="true"
                  column-definition="carsTableColumnDefinition"
                  local-data-source="models.carsForSale"
                  page-sizes="[7, 20]"
-                 pagination-btn-group-classes="btn-group btn-group-sm"
+                 pagination-btn-group-classes="pagination pagination-sm"
                  table-classes="table table-bordered"
-                 draggable="true"
-                 on-drag-change="onChange"
                  items-not-found-message="Cars Not Found"
-                 selected-items="models.selectedCars">
-    </ad-table-lite>
+                 selected-items="models.selectedCars"
+                 snug-sort-icons="true"
+                 search-text="models.searchText"
+                 state="models.state"
+                 on-state-change="onStateChange"
+                 row-class-provider="checkRowSelected"
+                 row-expand-template="src/tablelite/docs/carMoreInfo.html"
+                 row-expand-callback="rowExpanded">
+  </ad-table-lite>
 
   <h3 class="text-muted">Selected Items:</h3>
-
   <div class="well">
     <span>{{ models.selectedCars }}</span>
   </div>
+
   <h3 class="text-muted">Drag Data Change Log:</h3>
   <div class="well">
     <span>{{ models.changeInfo }}</span>
   </div>
+  <!-- ad_example_end -->
+
 </div>

@@ -1,0 +1,22 @@
+<h3>Click buttons to show the alert message.</h3>
+<div ng-controller="alertCtrl">
+  <!-- ad_example_start -->
+  <!-- Usage: put this in your main app container -->
+  <ad-alerts timeout="timeoutValue" custom-classes="thick-border"></ad-alerts>
+  <!-- ad_example_end -->
+  <br/>
+  <!-- ad_example_start -->
+  <button id="infoBut" class="btn btn-info" ng-click="showInfo();">
+    Show Info Message
+  </button>
+  <button class="btn btn-warning" ng-click="showWarning();">
+    Show Warning Message
+  </button>
+  <button class="btn btn-success" ng-click="showSuccess();">
+    Show Success Message
+  </button>
+  <button class="btn btn-danger" ng-click="showError();">
+    Show Error Message
+  </button>
+  <!-- ad_example_end -->
+</div>

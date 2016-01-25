@@ -3,30 +3,49 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
  * Use this directive if you need to render a table that loads data from ajax.
  */
   .directive('adTableAjax',
-  ['$parse', '$adConfig', 'adLoadPage', 'adDebounce', 'adStrapUtils',
-    function ($parse, $adConfig, adLoadPage, adDebounce, adStrapUtils) {
+  ['$parse', '$filter', '$adConfig', 'adLoadPage', 'adDebounce', 'adStrapUtils',
+    function ($parse, $filter, $adConfig, adLoadPage, adDebounce, adStrapUtils) {
       'use strict';
       function controllerFunction($scope, $attrs) {
         // ---------- $scope initialization ---------- //
         $scope.attrs = $attrs;
+        $scope.attrs.state = $scope.attrs.state || {};
         $scope.iconClasses = $adConfig.iconClasses;
         $scope.adStrapUtils = adStrapUtils;
+        $scope.tableClasses = $adConfig.componentClasses.tableAjaxClass;
+        $scope.onDataLoadedCallback = $parse($attrs.onDataLoaded) || null;
         $scope.items = {
           list: undefined,
+          allItems: undefined,
           paging: {
             currentPage: 1,
             totalPages: undefined,
-            pageSize: Number($attrs.pageSize) || 10,
-            pageSizes: $parse($attrs.pageSizes)() || [10, 25, 50]
+            totalItems: undefined,
+            pageSize: Number($attrs.pageSize) || $adConfig.paging.pageSize,
+            pageSizes: $parse($attrs.pageSizes)() || $adConfig.paging.pageSizes
           }
         };
         $scope.localConfig = {
           pagingArray: [],
           loadingData: false,
-          tableMaxHeight: $attrs.tableMaxHeight
+          showNoDataFoundMessage: false,
+          tableMaxHeight: $attrs.tableMaxHeight,
+          expandedItems: [],
+          sortState: {},
+          stateChange: $scope.$eval($attrs.onStateChange)
+        };
+
+        $scope.selectedItems = $scope.$eval($attrs.selectedItems);
+
+        $scope.onRowClick = function (item, event) {
+          var onRowClick = $scope.$parent.$eval($attrs.onRowClick);
+          if (onRowClick) {
+            onRowClick(item, event);
+          }
         };
         $scope.ajaxConfig = $scope.$eval($attrs.ajaxConfig);
         $scope.columnDefinition = $scope.$eval($attrs.columnDefinition);
+        $scope.visibleColumnDefinition = $filter('filter')($scope.columnDefinition, $scope.columnVisible);
 
         // ---------- Local data ---------- //
         var lastRequestToken,
@@ -38,28 +57,50 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
 
         // ---------- ui handlers ---------- //
         $scope.loadPage = adDebounce(function (page) {
+          $scope.collapseAll();
           lastRequestToken = Math.random();
           $scope.localConfig.loadingData = true;
+          $scope.localConfig.showNoDataFoundMessage = false;
           var pageLoader = $scope.$eval($attrs.pageLoader) || adLoadPage,
             params = {
               pageNumber: page,
               pageSize: $scope.items.paging.pageSize,
-              sortKey: $scope.localConfig.predicate,
-              sortDirection: $scope.localConfig.reverse,
+              sortKey: $scope.localConfig.sortState.sortKey,
+              sortDirection: $scope.localConfig.sortState.sortDirection === 'DEC',
               ajaxConfig: $scope.ajaxConfig,
               token: lastRequestToken
             },
             successHandler = function (response) {
               if (response.token === lastRequestToken) {
                 $scope.items.list = response.items;
+                $scope.items.allItems = response.items;
                 $scope.items.paging.totalPages = response.totalPages;
+                $scope.items.paging.totalItems = response.totalItems;
                 $scope.items.paging.currentPage = response.currentPage;
                 $scope.localConfig.pagingArray = response.pagingArray;
                 $scope.localConfig.loadingData = false;
               }
+
+              if (!response.totalPages) {
+                $scope.localConfig.showNoDataFoundMessage = true;
+              }
+
+              if ($scope.onDataLoadedCallback) {
+                $scope.onDataLoadedCallback($scope, {
+                  $success: true,
+                  $response: response
+                });
+              }
             },
             errorHandler = function () {
               $scope.localConfig.loadingData = false;
+              $scope.localConfig.showNoDataFoundMessage = true;
+              if ($scope.onDataLoadedCallback) {
+                $scope.onDataLoadedCallback($scope, {
+                  $success: false,
+                  $response: null
+                });
+              }
             };
 
           pageLoader(params).then(successHandler, errorHandler);
@@ -96,24 +137,68 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
           }
         };
 
-        $scope.sortByColumn = function (column) {
+        $scope.columnVisible = function(column) {
+          return column.visible !== false;
+        };
+
+        $scope.sortByColumn = function (column, preventNotification) {
+          var sortDirection = $scope.localConfig.sortState.sortDirection || 'ASC';
           if (column.sortKey) {
-            if (column.sortKey !== $scope.localConfig.predicate) {
-              $scope.localConfig.predicate = column.sortKey;
-              $scope.localConfig.reverse = true;
+            if (column.sortKey !== $scope.localConfig.sortState.sortKey) {
+              $scope.localConfig.sortState = {
+                sortKey: column.sortKey,
+                sortDirection: column.sortDirection ? column.sortDirection : sortDirection
+              };
             } else {
-              if ($scope.localConfig.reverse === true) {
-                $scope.localConfig.reverse = false;
+              if ($scope.localConfig.sortState.sortDirection === sortDirection) {
+                $scope.localConfig.sortState.sortDirection = sortDirection === 'ASC' ? 'DEC' : 'ASC';
               } else {
-                $scope.localConfig.reverse = undefined;
-                $scope.localConfig.predicate = undefined;
+                $scope.localConfig.sortState = {};
               }
             }
             $scope.loadPage($scope.items.paging.currentPage);
+
+            if (!preventNotification && $scope.localConfig.stateChange) {
+              $scope.localConfig.stateChange($scope.localConfig.sortState);
+            }
+
+          }
+        };
+
+        $scope.collapseAll = function () {
+          $scope.localConfig.expandedItems.length = 0;
+        };
+
+        $scope.getRowClass = function (item, index) {
+          var rowClass = '';
+          rowClass += ($attrs.selectedItems &&
+            adStrapUtils.itemExistsInList(item, $scope.selectedItems)) ? 'ad-selected' : '';
+          if ($attrs.rowClassProvider) {
+            rowClass += ' ' + $scope.$eval($attrs.rowClassProvider)(item, index);
+          }
+          return rowClass;
+        };
+
+        $scope.toggle = function(event, index, item) {
+          event.stopPropagation();
+          adStrapUtils.addRemoveItemFromList(index, $scope.localConfig.expandedItems);
+          if (adStrapUtils.itemExistsInList(index, $scope.localConfig.expandedItems)) {
+            var rowExpandCallback = $scope.$eval($attrs.rowExpandCallback);
+            if (rowExpandCallback) {
+              rowExpandCallback(item);
+            }
           }
         };
 
         // ---------- initialization and event listeners ---------- //
+
+        var state = $scope.$eval($attrs.state) || {};
+        var column = {
+          sortKey: state.sortKey,
+          sortDirection: state.sortDirection
+        };
+        $scope.sortByColumn(column, true);
+
         $scope.loadPage(1);
 
         // reset on parameter change
@@ -125,6 +210,7 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
         watchers.push(
           $scope.$watchCollection($attrs.columnDefinition, function () {
             $scope.columnDefinition = $scope.$eval($attrs.columnDefinition);
+            $scope.visibleColumnDefinition = $filter('filter')($scope.columnDefinition, $scope.columnVisible);
           })
         );
 

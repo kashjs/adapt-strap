@@ -77,4 +77,8 @@ angular.module('adaptv.adaptStrapDocs')
     $scope.carSelected = function (car) {
       alert(car.name);
     };
+    $scope.rowClicked = function (item, level, event) {
+      event.stopPropagation();
+      alert('row clicked' + item.name + '/' + level);
+    };
   }]);

@@ -4,12 +4,13 @@
     <div class="col-md-3">
       <ul id="car-list" class="list-group">
         <li class="list-group-item active">List of Cars</li>
+        <!-- ad_example_start -->
         <!-- ========== Usage Drag ========== -->
         <li class="list-group-item"
             ad-drag="true"
             ad-drag-data="car"
             ad-drag-begin="onDragStart($data, $dragElement, $event);"
-            ad-drag-end="onDataEnd($data, $dragElement, $event);"
+            ad-drag-end="onDragEnd($data, $dragElement, $lastDropElement, $event);"
             ng-repeat="car in models.cars">
           <span>
             <span class="glyphicon glyphicon-th"></span>
@@ -17,13 +18,16 @@
           </span>
         </li>
       </ul>
+      <!-- ad_example_end -->
     </div>
     <div class="col-md-4">
+      <!-- ad_example_start -->
       <!-- ========== Usage Drop ========== -->
       <ul id="my-basket"
           class="list-group"
           ad-drop="true"
           ad-drop-over="onDragOver($data, $dragElement, $dropElement, $event);"
+          ad-drop-leave="onDragLeave($data, $dragElement, $dropElement, $event)"
           ad-drop-end="onDrop($data, $dragElement, $dropElement, $event);">
         <li class="list-group-item disabled">My Basket</li>
         <li class="list-group-item"
@@ -37,23 +41,34 @@
         <li class="list-group-item" ng-hide="models.basket.length">
             <span> Drop here</span>
         </li>
-      </ul> 
+      </ul>
+      <!-- ad_example_end -->
     </div>
     <div class="col-md-3">
+      <!-- ad_example_start -->
       <ul class="list-group">
         <!-- =========== Drag with handles ============= -->
         <li class="list-group-item"
             ad-drag="true"
-            ad-drag-handle="true">
+            ad-drag-handle="true"
+            id="drag-handle-demo">
           <span class="ad-drag-handle glyphicon glyphicon-align-justify"></span>
           Drag me using my handle
         </li>
         <!-- =========== Drag on the whole element ============= -->
         <li class="list-group-item"
-            ad-drag="true">
+            ad-drag="true"
+            id="drag-element-demo">
           Drag me without handle
         </li>
+        <!-- =========== Prevent drag on parts of the element ============= -->
+        <li class="list-group-item"
+            ad-drag="true"
+            id="drag-prevent-demo">
+          Drag me, except <strong ad-prevent-drag>this bold text</strong></li>
+        </li>
       </ul>
+      <!-- ad_example_end -->
     </div>
   </div>
 </div>

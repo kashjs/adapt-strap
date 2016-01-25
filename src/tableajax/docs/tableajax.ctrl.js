@@ -2,11 +2,13 @@ angular.module('adaptv.adaptStrapDocs')
   .controller('tableajaxCtrl', ['$scope',
     function ($scope) {
 
+      $scope.selectedItems = [];
+
       // ========== Simple Table Implementation ========== //
       $scope.artistsColumnDef = [
         {
           columnHeaderDisplayName: 'Image',
-          template: '<img class="thumbnail ad-margin-bottom-none" ng-src="{{item.image[1][\'#text\']}}">',
+          template: '<img class="thumbnail ad-margin-bottom-none" height="40" ng-src="{{item.image[1][\'#text\']}}">',
           width: '7em'
         },
         {
@@ -34,7 +36,7 @@ angular.module('adaptv.adaptStrapDocs')
       // ========== Advanced Implementation with search ========== //
       $scope.artistsColumnDefSearch = [
         {
-          columnHeaderTemplate: '<em>Picture</em>',
+          columnHeaderTemplateUrl: 'src/tableajax/docs/pictureHeader.html',
           templateUrl: 'src/tableajax/docs/artistPicture.html',
           width: '7em'
         },
@@ -64,11 +66,27 @@ angular.module('adaptv.adaptStrapDocs')
         }
       };
 
+      $scope.checkRowSelected = function (item, index) {
+        var rowClass = '';
+        if (index % 2) {
+          rowClass = 'success';
+        }
+        return rowClass;
+      };
+
       // live search implementation
       $scope.artistSearchKey = $scope.artistsAjaxConfigSearch.params.artist;
       $scope.searchArtist = function () {
         if ($scope.artistSearchKey) {
           $scope.artistsAjaxConfigSearch.params.artist = $scope.artistSearchKey;
+        }
+      };
+
+      $scope.populateShoppingMessage = function(item) {
+
+        //Populate a custom message
+        if (!item.customMsg) {
+          item.customMsg = 'Like ' + item.name + '? Click here to shop';
         }
       };
     }]);

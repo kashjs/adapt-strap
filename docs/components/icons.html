@@ -12,7 +12,17 @@ $adConfigProvider.iconClasses = {
     sortAscending: 'glyphicon glyphicon-chevron-up',
     sortDescending: 'glyphicon glyphicon-chevron-down',
     sortable: 'glyphicon glyphicon-resize-vertical',
-    draggable: 'glyphicon glyphicon-align-justify'
+    draggable: 'glyphicon glyphicon-align-justify',
+    selectedItem: 'glyphicon glyphicon-ok',
+    alertInfoSign: 'glyphicon glyphicon-info-sign',
+    alertSuccessSign: 'glyphicon glyphicon-ok',
+    alertWarningSign: 'glyphicon glyphicon-warning-sign',
+    alertDangerSign: 'glyphicon glyphicon-exclamation-sign'
+}
+
+$adConfigProvider.componentClasses = {
+    tableLiteClass: 'table',
+    tableAjaxClass: 'table'
 }
 
 ### You can globally configure the pagination configuration like this during the app initialization:
@@ -28,6 +38,14 @@ angular.module('myApp').config(['$adConfigProvider', function ($adConfigProvider
     $adConfigProvider.iconClasses.sortDescending = 'glyphicon glyphicon-chevron-down';
     $adConfigProvider.iconClasses.sortable = 'glyphicon glyphicon-resize-vertical';
     $adConfigProvider.iconClasses.draggable = 'glyphicon glyphicon-align-justify';
+    $adConfigProvider.iconClasses.selectedItem = 'glyphicon glyphicon-ok';
+    $adConfigProvider.iconClasses.alertInfoSign = 'glyphicon glyphicon-info-sign';
+    $adConfigProvider.iconClasses.alertSuccessSign = 'glyphicon glyphicon-ok';
+    $adConfigProvider.iconClasses.alertWarningSign = 'glyphicon glyphicon-warning-sign';
+    $adConfigProvider.iconClasses.alertDangerSign = 'glyphicon glyphicon-exclamation-sign';
+
+    // component classes
+    $adConfigProvider.componentClasses.tableLiteClass = 'table my-custom-class';
 }])
 
 ### You can override global configuration at the directive usage level too.

@@ -2,6 +2,7 @@ angular.module('adaptv.adaptStrapDocs')
   .controller('tableliteCtrl', ['$scope', function ($scope) {
     $scope.models = {
       changeInfo: [],
+      searchText: '',
       selectedCars: [
         {
           id: 1,
@@ -83,27 +84,35 @@ angular.module('adaptv.adaptStrapDocs')
           modelYear: 2014,
           price: 100000
         }
-      ]
+      ],
+      state: {
+        sortKey: 'name',
+        sortDirection: 'DEC'
+      }
     };
 
     $scope.carsTableColumnDefinition = [
       {
         columnHeaderDisplayName: 'Model',
         displayProperty: 'name',
-        sortKey: 'name'
+        sortKey: 'name',
+        columnSearchProperty: 'name',
+        visible: true
       },
       {
         columnHeaderTemplate: '<span><i class="glyphicon glyphicon-calendar"></i> Model Year</span>',
         template: '<strong>{{ item.modelYear }}</strong>',
         sortKey: 'modelYear',
-        width: '12em'
+        width: '12em',
+        columnSearchProperty: 'modelYear'
       },
       {
-        columnHeaderTemplate: '<span><i class="glyphicon glyphicon-usd"></i> Price</span>',
+        columnHeaderTemplateUrl: 'src/tablelite/docs/priceHeader.html',
         displayProperty: 'price',
         cellFilter: 'currency',
         sortKey: 'price',
-        width: '9em'
+        width: '9em',
+        columnSearchProperty: 'price'
       },
       {
         columnHeaderDisplayName: 'Buy',
@@ -112,7 +121,7 @@ angular.module('adaptv.adaptStrapDocs')
       }
     ];
 
-    $scope.onChange = function(o, n, data) {
+    $scope.onDragChange = function(o, n, data) {
       $scope.models.changeInfo.push({
         startPosition: o,
         endPosition: n,
@@ -120,8 +129,27 @@ angular.module('adaptv.adaptStrapDocs')
       });
     };
 
+    $scope.onStateChange = function(state) {
+      alert(JSON.stringify(state));
+    };
+
     // ========== ui handlers ========== //
     $scope.buyCar = function (car) {
       alert(car.name);
     };
+
+    $scope.rowExpanded = function (car) {
+      alert(car.name + ' row expanded');
+    };
+
+    $scope.checkRowSelected = function (item, index) {
+      var found = false;
+      $scope.models.selectedCars.forEach(function (selectedItem) {
+        if (item.id === selectedItem.id) {
+          found = true;
+        }
+      });
+      return found ? 'info row-' + index : 'row-' + index;
+    };
+
   }]);

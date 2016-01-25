@@ -1,6 +1,33 @@
 // ========== modules documentation configuration ========== //
 angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
   {
+    moduleName: 'alerts',
+    displayName: 'Global Alerts',
+    controllerName: 'alertCtrl',
+    description: 'shows notification messages to the user.',
+    docFiles: [
+      'alerts.view.html',
+      'alerts.ctrl.js',
+      'style.css'
+    ],
+    directives: [{
+      name: 'ad-alerts',
+      options: [{
+        name: 'timeout',
+        required: false,
+        default: 'NA',
+        type: 'String/Number',
+        description: 'The number of milliseconds the alert is visible, before it auto closes'
+      }, {
+        name: 'custom-classes',
+        required: false,
+        default: 'NA',
+        type: 'String',
+        description: 'Allows the definition of custom styling for the alert'
+      }]
+    }]
+  },
+  {
     moduleName: 'tablelite',
     displayName: 'Table Lite',
     controllerName: 'tableliteCtrl',
@@ -9,7 +36,9 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
     docFiles: [
       'tablelite.view.html',
       'tablelite.ctrl.js',
-      'buyCell.html'
+      'buyCell.html',
+      'carMoreInfo.html',
+      'priceHeader.html'
     ],
     directives: [{
       name: 'ad-table-lite',
@@ -60,6 +89,14 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
           description: 'shows all the items in local-data-source'
         },
         {
+          name: 'enable-column-search',
+          required: false,
+          default: 'false',
+          type: 'Boolean',
+          description: 'shows column search inputs. Works in combination with ' +
+              '<code>columnSearchProperty</code> on columnDefinition'
+        },
+        {
           name: 'table-classes',
           required: false,
           default: '"table"',
@@ -70,10 +107,10 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
         {
           name: 'pagination-btn-group-classes',
           required: false,
-          default: '"btn-group btn-group-sm"',
+          default: '"pagination pagination-sm"',
           type: 'String',
-          description: 'these classes will be applied to the pagination btn-group tag. ' +
-            'Ex (<code>pagination-btn-group-classes="btn-group btn-group-xs"</code>)'
+          description: 'these classes will be applied to the pagination pagination ul tag. ' +
+            'Ex (<code>pagination-btn-group-classes="pagination pagination-xs"</code>)'
         },
         {
           name: 'draggable',
@@ -103,6 +140,28 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
 
         },
         {
+          name: 'row-class-provider',
+          required: false,
+          default: 'NA',
+          type: 'Function',
+          description: 'Path to the function that returns row class' +
+            '<code>row-class-provider="checkRowSelected"</code>. The function ' +
+            'will get called with row item and the index. You can do any logic on row' +
+            'and return a class string. That class will be applied to the row. Good usecase' +
+            'is if you want to apply primary class to the selected rows. We recommend you return' +
+            'Default bootstrap classes (<code>"active", "success", "warning", "danger", "info"</code>)'
+
+        },
+        {
+          name: 'search-text',
+          required: false,
+          default: 'NA',
+          type: 'String',
+          description: 'The text to search by' +
+            '<code>ex: search-text="models.searchText"</code>. If speecified, the rows' +
+            ' will be searched and filtered by the content and the search enabled columns '
+        },
+        {
           name: 'btn-classes',
           required: false,
           default: 'btn btn-default',
@@ -120,11 +179,79 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             'Pass in any css max-height property. EX: <code>table-max-height="157px"</code>'
         },
         {
+          name: 'table-fixed-height',
+          required: false,
+          default: 'auto',
+          type: 'String',
+          description: 'This property makes the table fixed height. The header becomes fixed at top. ' +
+            'Pass in any css max-height property. EX: <code>table-fixed-height="157px"</code>'
+        },
+        {
           name: 'items-not-found-message',
           required: false,
           default: 'NA',
           type: 'String',
           description: 'Message that will be shown in case of empty table'
+        },
+        {
+          name: 'state',
+          required: false,
+          default: {sortKey: undefined, sortDirection: 'ASC'},
+          type: 'Object',
+          description: 'Object containing properties that can be used ' +
+              'for initializing the state of the table.  Supported properties ' +
+              'include \'sortKey\' and \'sortDirection\''
+        },
+        {
+          name: 'on-state-change',
+          required: false,
+          default: 'NA',
+          type: 'Function',
+          description: 'Callback for state changes.  Useful for persisting the state of the table.'
+        },
+        {
+          name: 'snug-sort-icons',
+          required: false,
+          default: 'false',
+          type: 'Boolean',
+          description: 'If true, the sort icons will be right next to header text. ' +
+            'Good for limited real estate scenarios.'
+        },
+        {
+          name: 'first-row-template',
+          required: false,
+          default: 'NA',
+          type: 'String',
+          description: 'template url with set of td tags that gets rendered in first row.'
+        },
+        {
+          name: 'last-row-template',
+          required: false,
+          default: 'NA',
+          type: 'String',
+          description: 'template url with set of td tags that gets rendered in last row.'
+        },
+        {
+          name: 'row-expand-template',
+          required: false,
+          default: 'NA',
+          type: 'String',
+          description: 'Template for row expand. Generally used for more info or in-place edit.'
+        },
+        {
+          name: 'row-expand-callback',
+          required: false,
+          default: 'NA',
+          type: 'Function',
+          description: 'callback for row expand. Useful for lazy loading extra information on expand.'
+        },
+        {
+          name: 'on-row-click',
+          required: false,
+          default: 'NA',
+          type: 'Function',
+          description: 'This function gets called with item and event properties when row is clicked.' +
+            'ex: <code>on-row-click="rowClicked"</code>'
         }
       ]
     }]
@@ -138,7 +265,9 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
     docFiles: [
       'tableajax.view.html',
       'tableajax.ctrl.js',
-      'artistPicture.html'
+      'artistPicture.html',
+      'artistMoreInfo.html',
+      'pictureHeader.html'
     ],
     directives: [{
       name: 'ad-table-ajax',
@@ -193,10 +322,10 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
         {
           name: 'pagination-btn-group-classes',
           required: false,
-          default: '"btn-group btn-group-sm"',
+          default: '"pagination pagination-sm"',
           type: 'String',
-          description: 'these classes will be applied to the pagination btn-group tag. ' +
-            'Ex (<code>pagination-btn-group-classes="btn-group btn-group-xs"</code>)'
+          description: 'these classes will be applied to the pagination pagination ul tag. ' +
+            'Ex (<code>pagination-btn-group-classes="pagination pagination-xs"</code>)'
         },
         {
           name: 'page-loader',
@@ -218,11 +347,100 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             'Pass in any css max-height property. EX: <code>table-max-height="157px"</code>'
         },
         {
+          name: 'table-fixed-height',
+          required: false,
+          default: 'auto',
+          type: 'String',
+          description: 'This property makes the table fixed height. The header becomes fixed at top. ' +
+              'Pass in any css max-height property. EX: <code>table-fixed-height="157px"</code>'
+        },
+        {
           name: 'items-not-found-message',
           required: false,
           default: 'NA',
           type: 'String',
           description: 'Message that will be shown in case of empty table'
+        },
+        {
+          name: 'row-class-provider',
+          required: false,
+          default: 'NA',
+          type: 'Function',
+          description: 'Path to the function that returns row class' +
+            '<code>row-class-provider="checkRowSelected"</code>. The function ' +
+            'will get called with row item and the index. You can do any logic on row' +
+            'and return a class string. That class will be applied to the row. Good usecase' +
+            'is if you want to apply primary class to the selected rows. We recommend you return' +
+            'Default bootstrap classes (<code>"active", "success", "warning", "danger", "info"</code>)'
+
+        },
+        {
+          name: 'on-data-loaded',
+          required: false,
+          default: 'NA',
+          type: 'Function',
+          description: 'Callback for the data load event. It fires when the request finishes' +
+          'It should take 2 parameters <code>$success, $response</code>.'
+        },
+        {
+          name: 'state',
+          required: false,
+          default: {sortKey: undefined, sortDirection: 'ASC'},
+          type: 'Object',
+          description: 'Object containing properties that can be used ' +
+              'for initializing the state of the table.  Supported properties ' +
+              'include \'sortKey\' and \'sortDirection\''
+        },
+        {
+          name: 'on-state-change',
+          required: false,
+          default: 'NA',
+          type: 'Function',
+          description: 'Callback for state changes.  Useful for persisting the state of the table.'
+        },
+        {
+          name: 'snug-sort-icons',
+          required: false,
+          default: 'false',
+          type: 'Boolean',
+          description: 'If true, the sort icons will be right next to header text. ' +
+            'Good for limited real estate scenarios.'
+        },
+        {
+          name: 'first-row-template',
+          required: false,
+          default: 'NA',
+          type: 'String',
+          description: 'template url with set of td tags that gets rendered in first row.'
+        },
+        {
+          name: 'last-row-template',
+          required: false,
+          default: 'NA',
+          type: 'String',
+          description: 'template url with set of td tags that gets rendered in last row.'
+        },
+        {
+          name: 'row-expand-template',
+          required: false,
+          default: 'NA',
+          type: 'String',
+          description: 'Template for row expand. Generally used for more info or in-place edit.'
+        },
+        {
+          name: 'row-expand-callback',
+          required: false,
+          default: 'NA',
+          type: 'Function',
+          description: 'callback for row expand. Useful for lazy loading extra information on expand.'
+        },
+        {
+          name: 'on-row-click',
+          required: false,
+          default: 'NA',
+          type: 'Function',
+          description: 'This function gets called with item and event properties when row is clicked.' +
+            'ex: <code>on-row-click="rowClicked"</code>'
         }
       ]
     }]
@@ -238,7 +456,8 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
       'treebrowser.ctrl.js',
       'treeNode.html',
       'treeHeader.html',
-      'style.css'
+      'style.css',
+      'treeNodeWithCustomToggle.html'
     ],
     directives: [{
       name: 'ad-tree-browser',
@@ -312,7 +531,7 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
           name: 'toggle-callback',
           required: false,
           default: 'NA',
-          type: 'String',
+          type: 'Function',
           description: 'This function is to lazy load the tree levels.' +
             'Provide the path to toggle function ' +
             '(ex: <code>toggle-callback="methods.loadChildren"</code>). If you do provide this, ' +
@@ -322,11 +541,31 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             'If you set _ad_loading to true, the ui will show the _ad_loading icon on that tree level.'
         },
         {
+          name: 'on-row-click',
+          required: false,
+          default: 'NA',
+          type: 'Function',
+          description: 'This function gets called with item, level and event properties when row is clicked.' +
+            'ex: <code>on-row-click="rowClicked"</code>'
+        },
+        {
           name: 'bordered',
           required: false,
           default: 'false',
           type: 'boolean',
           description: 'If true, adds border to the tree levels'
+        },
+        {
+          name: 'custom-toggle',
+          required: false,
+          default: 'false',
+          type: 'boolean',
+          description: 'If true, the default toggling functionality is disabled. A toggling directive, ' +
+            '<code>ad-tree-browser-node-toggle</code>, is used to provide toggling behavior, ' +
+            'typically done in the node template. ' +
+            'One can also implement hierarchical structure using custom indentation. ' +
+            'See treeNodeWithCustomToggle.html' +
+            'treeNode sample'
         }
       ]
     }]
@@ -353,6 +592,14 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             description: 'If <code>true</code>, enables drag capabilities for the node'
           },
           {
+            name: 'ad-drag-clone-element',
+            required: 'false',
+            default: 'false',
+            type: 'Boolean',
+            description: 'If <code>true</code>, original element will stay in place while dragging' +
+              'and a clone will appear on drag. Once dropped, the clone will be destroyed.'
+          },
+          {
             name: 'ad-drag-handle',
             required: 'false',
             default: 'NA',
@@ -372,8 +619,9 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             required: 'false',
             default: 'NA',
             type: 'Function',
-            description: 'Callback for drag begin event. It fires when a drag starts. it should take 3' +
-              'parameters <code>$data, $dragElement, $event</code>.'
+            description: 'Callback for drag begin event. It fires when a drag starts. it should take 3 ' +
+              'parameters <code>$data, $dragElement, $event</code>. <strong>Note:</strong> Use <code>' +
+              '$dragElement.el</code>to get the element.'
           },
           {
             name: 'ad-drag-end',
@@ -381,7 +629,17 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             default: 'NA',
             type: 'Function',
             description: 'Callback for drag end event. It fires when a drag has ended, always after the' +
-              'drop end. It should take 3 parameters <code>$data, $dragElement, $event</code>.'
+              'drop end. It should take 3 parameters <code>$data, $dragElement, $event</code>. ' +
+              '<strong>Note:</strong> Use <code>$dragElement.el</code> to get the actual element.'
+          },
+          {
+            name: 'ad-prevent-drag',
+            required: 'false',
+            default: 'NA',
+            type: 'NA',
+            description: '<span class="text-primary">This is an advanced attribute that can ' +
+              'be added to any child element of a draggable element. This prevents dragging on ' +
+              'some child elements of a draggable elements.</span>'
           }
         ]
       },
@@ -401,15 +659,26 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             default: 'NA',
             type: 'Function',
             description: 'Callback for the drop over event. It fires on drag over a valid drop element. ' +
-              'It takes 4 parameters <code>$data, $dragElement, $dropElement, $event</code>.'
+              'It takes 4 parameters <code>$data, $dragElement, $dropElement, $event</code>. ' +
+              '<strong>Note:</strong> Use <code>$dragElement/$dropElement.el</code> to get the element.'
           },
           {
             name: 'ad-drop-end',
             required: 'false',
             default: 'NA',
             type: 'Function',
-            description: 'Callback for the drop end event. It fires on a valid drop. It takes 4 parameters' +
+            description: 'Callback for the drop end event. It fires only on a valid drop. It takes 4 parameters' +
               '<code>$data, $dragElement, $dropElement, $event</code>.'
+          },
+          {
+            name: 'ad-drop-leave',
+            required: 'false',
+            default: 'NA',
+            type: 'Function',
+            description: 'Callback for the drop leave event. It fires drag element leaves drop element. ' +
+              'It takes 4 parameters <code>$data, $dragElement, $dropElement, $event</code>.' +
+              'For simple styling for drop hover, instead of using this callback, ' +
+              'simply target <code>ad-drop-over</code> class.'
           }
         ]
       }
@@ -424,7 +693,8 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
     docFiles: [
       'infinitedropdown.view.html',
       'infinitedropdown.ctrl.js',
-      'artist.html'
+      'artist.html',
+      'customSearch.html'
     ],
     directives: [
       {
@@ -463,6 +733,14 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
             description: 'Url to load the template. This template will be used to render the items'
           },
           {
+            name: 'dropdown-header-template-url',
+            required: false,
+            type: 'String',
+            default: 'NA',
+            description: 'Url to load the template for dropdown header area. This template will be rendered' +
+              'on the top section of dropdown and dropdown items will be right below this section.'
+          },
+          {
             name: 'initial-label',
             required: false,
             type: 'String',
@@ -487,12 +765,29 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
               'Look at more info for details on how to build ajaxConfig object'
           },
           {
+            name: 'dropdown-status',
+            required: true,
+            default: 'NA',
+            type: 'String',
+            description: 'Path to the object that contains dropdown status' +
+              'this comes in handy when you need to close dropdown from within javascript. ' +
+              'default status object looks like this <code>{open: false}</code>'
+          },
+          {
             name: 'local-data-source',
             required: true,
             default: 'NA',
             type: 'String',
             description:  'Not required if ajax-config is defined. ' +
               'Name of the object/array that contains local data items.'
+          },
+          {
+            name: 'on-data-loaded',
+            required: false,
+            default: 'NA',
+            type: 'Function',
+            description: 'Callback for the data load event. It fires when the request finishes' +
+              'It should take 2 parameters <code>$success, $response</code>.'
           },
           {
             name: 'max-height',

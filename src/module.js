@@ -6,7 +6,7 @@ angular.module('adaptv.adaptStrap', [
   'adaptv.adaptStrap.loadingindicator',
   'adaptv.adaptStrap.draggable',
   'adaptv.adaptStrap.infinitedropdown',
-  'adaptv.adaptStrap.uipermissions'
+  'adaptv.adaptStrap.alerts'
 ])
   .provider('$adConfig', function () {
     var iconClasses = this.iconClasses = {
@@ -21,7 +21,11 @@ angular.module('adaptv.adaptStrap', [
         sortDescending: 'glyphicon glyphicon-chevron-down',
         sortable: 'glyphicon glyphicon-resize-vertical',
         draggable: 'glyphicon glyphicon-align-justify',
-        selectedItem: 'glyphicon glyphicon-ok'
+        selectedItem: 'glyphicon glyphicon-ok',
+        alertInfoSign: 'glyphicon glyphicon-info-sign',
+        alertSuccessSign: 'glyphicon glyphicon-ok',
+        alertWarningSign: 'glyphicon glyphicon-warning-sign',
+        alertDangerSign: 'glyphicon glyphicon-exclamation-sign'
       },
       paging = this.paging = {
         request: {
@@ -36,12 +40,18 @@ angular.module('adaptv.adaptStrap', [
         response: {
           itemsLocation: 'data',
           totalItems: 'pagination.totalCount'
-        }
+        },
+        pageSize: 10,
+        pageSizes: [10, 25, 50]
+      }, componentClasses = this.componentClasses = {
+        tableLiteClass: 'table',
+        tableAjaxClass: 'table'
       };
     this.$get = function () {
       return {
         iconClasses: iconClasses,
-        paging: paging
+        paging: paging,
+        componentClasses: componentClasses
       };
     };
   });

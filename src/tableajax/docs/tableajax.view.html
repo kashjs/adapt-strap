@@ -1,19 +1,22 @@
 <div ng-controller="tableajaxCtrl">
 
-  <!-- ========== Simple Table Implementation ========== -->
   <div class="panel panel-default">
     <div class="panel-body">
+      <!-- ad_example_start -->
+      <!-- ========== Simple Table Implementation ========== -->
       <ad-table-ajax table-name="artistsTable"
                      column-definition="artistsColumnDef"
                      table-classes="table table-bordered"
                      page-sizes="[5, 20, 50]"
-                     pagination-btn-group-classes="btn-group btn-group-xs"
+                     pagination-btn-group-classes="pagination pagination-xs"
                      items-not-found-message="Artists Not Found"
                      ajax-config="artistsAjaxConfig">
       </ad-table-ajax>
+      <!-- ad_example_end -->
     </div>
   </div>
 
+  <!-- ad_example_start -->
   <!--========== Advanced Implementation with search ========== -->
   <div class="panel panel-default">
     <div class="panel-heading">
@@ -29,14 +32,25 @@
       </div>
     </div>
     <div class="panel-body">
+        <p class="text-muted">
+            Items Selected: <span class="badge" ng-bind="selectedItems.length"></span></p>
       <ad-table-ajax table-name="artistsTableSearch"
                      column-definition="artistsColumnDefSearch"
                      table-classes="table table-bordered"
                      page-sizes="[5, 20, 50]"
-                     pagination-btn-group-classes="btn-group btn-group-sm"
+                     pagination-btn-group-classes="pagination pagination-sm"
                      ajax-config="artistsAjaxConfigSearch"
-                     page-loader="methods.pageLoader">
+                     selected-items="selectedItems"
+                     page-loader="methods.pageLoader"
+                     row-expand-callback="populateShoppingMessage"
+                     row-class-provider="checkRowSelected"
+                     row-expand-template="src/tableajax/docs/artistMoreInfo.html">
       </ad-table-ajax>
+        <h3 class="text-muted">Selected Items:</h3>
+        <div class="well">
+            <span>{{ selectedItems }}</span>
+        </div>
     </div>
   </div>
+  <!-- ad_example_end -->
 </div>

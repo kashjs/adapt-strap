@@ -1,3 +1,11 @@
+// ========== display ========== //
+.ad-display-inline-block {
+  display: inline-block;
+}
+// ========== layout ========== //
+.ad-fixed-layout {
+  table-layout: fixed;
+}
 // ========== margins ========== //
 .ad-margin-none {
   margin: 0;
@@ -68,15 +76,21 @@
 }
 
 // ========= dragdrop ========== //
-[ad-drag=true].ad-draggable {
-  cursor: move;
-}
-[ad-drag=true] > .ad-drag-handle {
-  cursor: move;
-}
+[ad-drag=true] {
+  &.ad-draggable {
+    cursor: move;
+    [ad-prevent-drag] {
+      cursor: default;
+    }
+  }
 
-[ad-drag=true].ad-dragging {
-  opacity: 0.5;
+  &> .ad-drag-handle {
+    cursor: move;
+  }
+
+  &.ad-dragging {
+    opacity: 0.5;
+  }
 }
 
 @-moz-keyframes spin {

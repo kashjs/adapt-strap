@@ -19,8 +19,17 @@ angular.module('adaptv.adaptStrapDocs')
           }
         }
       };
+
       $scope.artistClicked = function (artist) {
         alert(artist.name);
+      };
+
+      $scope.dropdownStatus = {
+        open: false
+      };
+      $scope.deselectAllArtists = function () {
+        $scope.selectedArtists.length = 0;
+        $scope.dropdownStatus.open = false;
       };
 
       $scope.selectedArtists = [];

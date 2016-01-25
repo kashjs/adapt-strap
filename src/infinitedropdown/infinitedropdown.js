@@ -3,13 +3,16 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
  * Use this directive if you need to render a table that loads data from ajax.
  */
   .directive('adInfiniteDropdown',
-  ['$parse', '$compile', '$templateCache', '$adConfig', 'adLoadPage', 'adDebounce', 'adStrapUtils', 'adLoadLocalPage',
-    function ($parse, $compile, $templateCache, $adConfig, adLoadPage, adDebounce, adStrapUtils, adLoadLocalPage) {
+  ['$parse', '$compile', '$timeout', '$templateCache', '$adConfig',
+    'adLoadPage', 'adDebounce', 'adStrapUtils', 'adLoadLocalPage',
+    function ($parse, $compile, $timeout, $templateCache, $adConfig,
+              adLoadPage, adDebounce, adStrapUtils, adLoadLocalPage) {
       'use strict';
       function linkFunction(scope, element, attrs) {
         // scope initialization
         scope.attrs = attrs;
         scope.adStrapUtils = adStrapUtils;
+        scope.onDataLoadedCallback = $parse(attrs.onDataLoaded) || null;
         scope.items = {
           list: [],
           paging: {
@@ -45,6 +48,10 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
           if (callback) {
             callback(item);
           }
+
+          if (scope.localConfig.singleSelectionMode) {
+            element.find('.dropdown').removeClass('open');
+          }
         };
 
         scope.loadPage = adDebounce(function (page) {
@@ -70,10 +77,22 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
                 scope.items.paging.totalPages = response.totalPages;
                 scope.items.paging.currentPage = response.currentPage;
                 scope.localConfig.loadingData = false;
+                if (attrs.onDataLoaded) {
+                  scope.onDataLoadedCallback(scope, {
+                    $success: true,
+                    $response: response
+                  });
+                }
               }
             },
             errorHandler = function () {
               scope.localConfig.loadingData = false;
+              if (attrs.onDataLoaded) {
+                scope.onDataLoadedCallback(scope, {
+                  $success: false,
+                  $response: null
+                });
+              }
             };
           if (attrs.localDataSource) {
             params.localData = scope.$eval(attrs.localDataSource);
@@ -89,6 +108,10 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
               scope.loadPage(scope.items.paging.currentPage + 1);
             }
           }
+        };
+
+        scope.dropdownHeaderAreaClicked = function (event) {
+          event.stopPropagation();
         };
 
         // ---------- initialization and event listeners ---------- //
@@ -119,6 +142,38 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
             })
           );
         }
+
+        // for dropdown-header area
+        scope.dropdownStatus = scope.$eval(attrs.dropdownStatus) || { open: false };
+        watchers.push(scope.$watch('dropdownStatus.open', function (value) {
+          if (value === true) {
+            $timeout(function () {
+              element.find('.dropdown').addClass('open');
+            }, 0);
+          } else {
+            $timeout(function () {
+              element.find('.dropdown').removeClass('open');
+            }, 0);
+          }
+        }));
+        element.find('.dropdown-toggle').click(function() {
+          scope.$apply(function () {
+            if (scope.dropdownStatus.open) {
+              scope.dropdownStatus.open = false;
+            } else {
+              scope.dropdownStatus.open = true;
+              element.find('.dropdown-header').outerWidth(element.find('.dropdown-menu').outerWidth());
+            }
+          });
+        });
+        $(document).click(function() {
+          scope.$apply(function () {
+            if (scope.dropdownStatus.open) {
+              scope.dropdownStatus.open = false;
+            }
+          });
+        });
+
         // ---------- disable watchers ---------- //
         scope.$on('$destroy', function () {
           watchers.forEach(function (watcher) {
@@ -135,7 +190,8 @@ angular.module('adaptv.adaptStrap.infinitedropdown', ['adaptv.adaptStrap.utils',
             scope.loadNextPage();
           }
         }, 50);
-        angular.element(listContainer).bind('mousewheel', function (event) {
+        angular.element(listContainer).bind('mousewheel DOMMouseScroll scroll', function (event) {
+          console.log('scrolling');
           if (event.originalEvent && event.originalEvent.deltaY) {
             listContainer.scrollTop += event.originalEvent.deltaY;
             event.preventDefault();

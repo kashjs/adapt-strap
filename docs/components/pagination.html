@@ -13,7 +13,9 @@ $adConfigProvider.paging = {
     response: {
         itemsLocation: 'data',
         totalItems: 'pagination.totalCount'
-    }
+    },
+    pageSize: 10,
+    pageSizes: [10, 25, 50]
 };
 
 ### You can globally configure the pagination configuration like this during the app initialization:

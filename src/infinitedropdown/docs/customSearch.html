@@ -1,0 +1,6 @@
+<div ng-click="searchHeaderClicked($event)">
+    <input type="text" placeholder="search" ng-model="artistsAjaxConfig.params.artist"><br>
+    <a href=""
+       ng-click="deselectAllArtists()"
+       ng-show="selectedArtists.length">Deselect All ({{selectedArtists.length}})</a>
+</div>

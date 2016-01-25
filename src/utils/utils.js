@@ -13,20 +13,39 @@ angular.module('adaptv.adaptStrap.utils', [])
         }
         return obj;
       },
+      createdChainObjectAndInitValue = function (property, value) {
+        var arr = property.split('.');
+        var obj = {obj: {}};
+        var ob2 = obj.obj;
+        while (arr.length) {
+          var key = arr.shift();
+          if (ob2) {
+            if (arr.length === 0) {
+              ob2[key] = value;
+            } else {
+              ob2[key] = {};
+              ob2 = ob2[key];
+            }
+          }
+        }
+        return obj.obj;
+      },
       applyFilter = function (value, filter, item) {
-        var parts,
-          filterOptions;
+        var filterName,
+          filterOptions,
+          optionsIndex;
 
         if (value && ('function' === typeof value)) {
           return value(item);
         }
         if (filter) {
-          parts = filter.split(':');
-          filterOptions = parts[1];
-          if (filterOptions) {
-            value = $filter(parts[0])(value, filterOptions);
+          optionsIndex = filter.indexOf(':');
+          if (optionsIndex > -1) {
+            filterName = filter.substring(0, optionsIndex);
+            filterOptions = filter.substring(optionsIndex + 1);
+            value = $filter(filterName)(value, filterOptions);
           } else {
-            value = $filter(parts[0])(value);
+            value = $filter(filter)(value);
           }
         }
         return value;
@@ -114,10 +133,27 @@ angular.module('adaptv.adaptStrap.utils', [])
           item = item[arr.shift()];
         }
         return item;
+      }, hasAtLeastOnePropertyWithValue = function (obj) {
+        var has = false, name, value;
+        for (name in obj) {
+          value = obj[name];
+          if (value instanceof Array) {
+            if (value.length > 0) {
+              has = true;
+            }
+          } else if (!!value) {
+            has = true;
+          }
+          if (has) {
+            break;
+          }
+        }
+        return has;
       };
 
     return {
       evalObjectProperty: evalObjectProperty,
+      createdChainObjectAndInitValue: createdChainObjectAndInitValue,
       applyFilter: applyFilter,
       itemExistsInList: itemExistsInList,
       itemsExistInList: itemsExistInList,
@@ -128,7 +164,8 @@ angular.module('adaptv.adaptStrap.utils', [])
       addRemoveItemsFromList: addRemoveItemsFromList,
       moveItemInList: moveItemInList,
       parse: parse,
-      getObjectProperty: getObjectProperty
+      getObjectProperty: getObjectProperty,
+      hasAtLeastOnePropertyWithValue: hasAtLeastOnePropertyWithValue
     };
 
   }])
@@ -189,17 +226,23 @@ angular.module('adaptv.adaptStrap.utils', [])
       }
 
       ajaxConfig.params = ajaxConfig.params ? ajaxConfig.params : {};
-      ajaxConfig.params[pagingConfig.request.start] = start;
-      ajaxConfig.params[pagingConfig.request.pageSize] = options.pageSize;
-      ajaxConfig.params[pagingConfig.request.page] = options.pageNumber;
+      if (pagingConfig.request.start) {
+        ajaxConfig.params[pagingConfig.request.start] = start;
+      }
+      if (pagingConfig.request.pageSize) {
+        ajaxConfig.params[pagingConfig.request.pageSize] = options.pageSize;
+      }
+      if (pagingConfig.request.page) {
+        ajaxConfig.params[pagingConfig.request.page] = options.pageNumber;
+      }
 
-      if (options.sortKey) {
+      if (options.sortKey && pagingConfig.request.sortField) {
         ajaxConfig.params[pagingConfig.request.sortField] = options.sortKey;
       }
 
-      if (options.sortDirection === false) {
+      if (options.sortDirection === false && pagingConfig.request.sortDirection) {
         ajaxConfig.params[pagingConfig.request.sortDirection] = pagingConfig.request.sortAscValue;
-      } else if (options.sortDirection === true) {
+      } else if (options.sortDirection === true && pagingConfig.request.sortDirection) {
         ajaxConfig.params[pagingConfig.request.sortDirection] = pagingConfig.request.sortDescValue;
       }
 
@@ -218,6 +261,7 @@ angular.module('adaptv.adaptStrap.utils', [])
               adStrapUtils.evalObjectProperty(result.data, pagingConfig.response.totalItems) /
               options.pageSize
           ),
+          totalItems: Math.ceil(adStrapUtils.evalObjectProperty(result.data, pagingConfig.response.totalItems)),
           pagingArray: [],
           token: options.token
         };
@@ -254,13 +298,16 @@ angular.module('adaptv.adaptStrap.utils', [])
         end = start + options.pageSize,
         i,
         itemsObject = options.localData,
-        localItems;
+        localItems = itemsObject;
 
-      localItems = $filter('orderBy')(
-        itemsObject,
-        options.sortKey,
-        options.sortDirection
-      );
+      if (options.sortKey && !options.draggable) {
+        localItems = $filter('orderBy')(
+          itemsObject,
+          options.sortKey,
+          options.sortDirection
+        );
+      }
+
       response.items = localItems.slice(start, end);
       response.allItems = itemsObject;
       response.currentPage = options.pageNumber;

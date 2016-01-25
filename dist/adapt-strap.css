@@ -1,11 +1,17 @@
 /**
  * adapt-strap
- * @version v2.0.5 - 2014-10-09
+ * @version v2.4.11 - 2016-01-14
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
  */
 /* Style: modules.css*/
+.ad-display-inline-block {
+  display: inline-block;
+}
+.ad-fixed-layout {
+  table-layout: fixed;
+}
 .ad-margin-none {
   margin: 0;
 }
@@ -58,6 +64,9 @@
 }
 [ad-drag=true].ad-draggable {
   cursor: move;
+}
+[ad-drag=true].ad-draggable [ad-prevent-drag] {
+  cursor: default;
 }
 [ad-drag=true] > .ad-drag-handle {
   cursor: move;
@@ -123,9 +132,7 @@
   min-width: 100%;
 }
 .ad-tree-browser-container .tree-view .tree .tree-header-level:first-child {
-  text-align: center;
   font-weight: bold;
-  background-color: #f9f9f9;
 }
 .ad-tree-browser-container .tree-view .tree .content {
   padding-top: 5px;
@@ -141,6 +148,9 @@
   width: 20px;
   display: table-cell;
   vertical-align: middle;
+}
+.ad-tree-browser-container .tree-view .tree .content .custom-toggle {
+  display: inline-block;
 }
 .ad-tree-browser-container .tree-view .tree .content .node-content {
   display: table-cell;
@@ -177,18 +187,20 @@
 }
 .ad-table-lite-container .ad-table-container {
   overflow-x: auto;
-  margin-bottom: 20px;
 }
 .ad-table-lite-container .ad-table-container > table {
   margin-bottom: 0;
+}
+.ad-table-lite-container .ad-dragging + tr td {
+  border-top: 0;
 }
 .ad-table-ajax-container .ad-sticky-table {
   margin-bottom: 0;
 }
 .ad-table-ajax-container .ad-table-container {
+  min-height: 100px;
   position: relative;
   overflow-x: auto;
-  margin-bottom: 20px;
 }
 .ad-table-ajax-container .ad-table-container > table {
   margin-bottom: 0;
@@ -218,4 +230,24 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.ad-infinite-list-container .dropdown-menu.with-dropdown-header {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  margin-top: 0;
+}
+.ad-infinite-list-container .dropdown-header {
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-bottom: none;
+  border-radius: 4px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  min-width: 160px;
+  padding: 5px;
+  box-sizing: border-box;
+  margin: 2px 0 0;
 }

@@ -36,6 +36,8 @@ angular.module('adaptv.adaptStrapDocs')
       ]
     };
 
+    $scope.currentDropElement = null;
+
     $scope.remove = function(l, o) {
       var index = l.indexOf(o);
       if (index > -1) {
@@ -51,12 +53,16 @@ angular.module('adaptv.adaptStrapDocs')
 
     };
 
-    $scope.onDragOver = function() {
+    $scope.onDragOver = function(data, dragElement, dropElement) {
+      $scope.currentDropElement = dropElement;
+    };
 
+    $scope.onDragLeave = function() {
+      $scope.currentDropElement = null;
     };
 
     $scope.onDrop = function(data) {
-      if (data) {
+      if (data && $scope.currentDropElement) {
         $scope.models.basket.push(data);
         $scope.remove($scope.models.cars, data);
       }

@@ -19,11 +19,12 @@ module.exports = function(config) {
       'bower_components/angular-sanitize/angular-sanitize.js',
       'bower_components/showdown/src/showdown.js',
       'bower_components/bootstrap/dist/js/bootstrap.min.js',
+      'docs/app.js',
+      'src/module.js',
       'src/**/*.js',
       'src/**/*.tpl.html',
-      'docs/app.js',
-      'docs/*.js',
-      'docs/**/*.js'
+      'docs/**/*.js',
+      'docs/**/*.html'
     ],
     exclude: [
       '**/gulpfile.js',

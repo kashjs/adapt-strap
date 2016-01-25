@@ -37,7 +37,8 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
       'tablelite.view.html',
       'tablelite.ctrl.js',
       'buyCell.html',
-      'carMoreInfo.html'
+      'carMoreInfo.html',
+      'priceHeader.html'
     ],
     directives: [{
       name: 'ad-table-lite',
@@ -265,7 +266,8 @@ angular.module('adaptv.adaptStrapDocs').constant('adaptStrapModules', [
       'tableajax.view.html',
       'tableajax.ctrl.js',
       'artistPicture.html',
-      'artistMoreInfo.html'
+      'artistMoreInfo.html',
+      'pictureHeader.html'
     ],
     directives: [{
       name: 'ad-table-ajax',

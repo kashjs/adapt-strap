@@ -107,7 +107,7 @@ angular.module('adaptv.adaptStrapDocs')
         columnSearchProperty: 'modelYear'
       },
       {
-        columnHeaderTemplate: '<span><i class="glyphicon glyphicon-usd"></i> Price</span>',
+        columnHeaderTemplateUrl: 'src/tablelite/docs/priceHeader.html',
         displayProperty: 'price',
         cellFilter: 'currency',
         sortKey: 'price',

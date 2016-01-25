@@ -21,6 +21,10 @@
        ng-if="definition.columnHeaderTemplate"
        ad-compile-template="definition.columnHeaderTemplate"></div>
   <div class="ad-display-inline-block"
+       ng-if="definition.columnHeaderTemplateUrl">
+    <ng-include src="definition.columnHeaderTemplateUrl"></ng-include>
+  </div>
+  <div class="ad-display-inline-block"
        ng-bind="definition.columnHeaderDisplayName"></div>
   <ng-include src="'tablelite/sortIcons.html'" ng-if="attrs.snugSortIcons"></ng-include>
 </th>

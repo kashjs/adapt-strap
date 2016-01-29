@@ -23,10 +23,8 @@ config.sauceUser = process.env.SAUCE_USERNAME || creds.sauceUser;
 config.sauceKey = process.env.SAUCE_ACCESS_KEY || creds.sauceKey;
 
 config.multiCapabilities = [
-  browsers.firefox,
-  browsers.chrome
-  //browsers.safari,
-  //browsers.ie11,
+  browsers.chrome,
+  browsers.safari
 ];
 
 exports.config = config;

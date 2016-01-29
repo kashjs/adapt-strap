@@ -18,7 +18,7 @@ var config = {
 };
 
 config.multiCapabilities = [
-  browsers.firefox
+  browsers.chrome
 ];
 
 exports.config = config;

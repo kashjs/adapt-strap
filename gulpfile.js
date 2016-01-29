@@ -12,6 +12,7 @@ var gulp = require('gulp'),
   protractor = require('gulp-protractor').protractor,
   webdriver = require('gulp-protractor').webdriver_standalone,
   webdriver_update = require('gulp-protractor').webdriver_update,
+  sauceCreds = require('./config/protractor/creds.js'),
   baseUrl = require('yargs').argv.baseUrl || 'http://localhost:9003',
   src = {
     cwd: 'src',
@@ -263,8 +264,8 @@ var sauceConnectLauncher = require('sauce-connect-launcher');
 
 gulp.task('e2e_sauce', function() {
   sauceConnectLauncher({
-    username: 'kashyap02004',
-    accessKey: 'bd275167-7597-486c-b117-42707e46fc49'
+    username: sauceCreds.sauceUser,
+    accessKey: sauceCreds.sauceKey
   }, function (err, sauceConnectProcess) {
     if (err) {
       console.error(err.message);

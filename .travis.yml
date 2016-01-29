@@ -1,6 +1,7 @@
 language: node_js
 node_js:
-  - "0.12.9"
+  - "4.2"
+  - "stable"
 
 before_script:
   - npm install -gq bower codeclimate-test-reporter

@@ -9,8 +9,8 @@ var config = {
 
   baseUrl: 'http://localhost:9003',
   seleniumAddress: 'http://kashyap02004:bd275167-7597-486c-b117-42707e46fc49@ondemand.saucelabs.com:80/wd/hub',
-  allScriptsTimeout: 30000,
-  getPageTimeout: 30000,
+  allScriptsTimeout: 60000,
+  getPageTimeout: 60000,
   jasmineNodeOpts: {
     showColors: true,
     isVerbose: true,

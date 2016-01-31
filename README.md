@@ -63,7 +63,7 @@ git merge upstream/master
 
 * install local packages
 ```
-npm install
+sudo npm install
 bower install
 ```
 
@@ -81,6 +81,7 @@ gulp
 gulp dist
 gulp validate
 gulp unit
+gulp e2e_sauce
 ```
 
 * push your changes 

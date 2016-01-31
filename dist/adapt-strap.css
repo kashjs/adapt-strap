@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v2.4.11 - 2016-01-14
+ * @version v2.4.12 - 2016-01-31
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -160,20 +160,20 @@
   background: #f5f5f5;
 }
 .ad-tree-browser-container.tree-bordered {
-  border: 1px solid #dddddd;
+  border: 1px solid #ddd;
 }
 .ad-tree-browser-container.tree-bordered .tree-level {
-  border-top: 1px solid #dddddd;
+  border-top: 1px solid #ddd;
 }
 .ad-tree-browser-container.tree-bordered .tree-top-level {
   border-top: none;
 }
 .ad-tree-browser-container.tree-bordered .tree-top-level ~ .tree-top-level {
-  border-top: 1px solid #dddddd;
+  border-top: 1px solid #ddd;
 }
 .ad-tree-browser-container.tree-bordered .tree-header-level:first-child {
   border-top: none;
-  border-bottom: 1px solid #dddddd;
+  border-bottom: 1px solid #ddd;
 }
 .ad-tree-browser-container.tree-bordered .tree-sub-level:last-child {
   border-bottom: none;
@@ -211,7 +211,7 @@
   left: 0;
   height: 100%;
   width: 100%;
-  background: #ffffff;
+  background: #fff;
 }
 .ad-loading-overlay-container .wrapper {
   display: table;
@@ -237,8 +237,8 @@
   margin-top: 0;
 }
 .ad-infinite-list-container .dropdown-header {
-  background-color: #ffffff;
-  border: 1px solid #cccccc;
+  background-color: #fff;
+  border: 1px solid #ccc;
   border: 1px solid rgba(0, 0, 0, 0.15);
   border-bottom: none;
   border-radius: 4px;

@@ -12,6 +12,7 @@ var gulp = require('gulp'),
   protractor = require('gulp-protractor').protractor,
   webdriver = require('gulp-protractor').webdriver_standalone,
   webdriver_update = require('gulp-protractor').webdriver_update,
+  sauceCreds = require('./config/protractor/creds.js'),
   baseUrl = require('yargs').argv.baseUrl || 'http://localhost:9003',
   src = {
     cwd: 'src',
@@ -242,10 +243,10 @@ gulp.task('webdriver_update', webdriver_update);
 gulp.task('webdriver', webdriver);
 
 gulp.task('e2e', function() {
-  runSequence('webdriver_update', ['server', 'webdriver']);
+  runSequence('server');
   return gulp.src(['./nothing'])
     .pipe(protractor({
-      configFile: 'protractor.conf.js',
+      configFile: 'config/protractor/local.conf.js',
       keepAlive: true,
       args: ['--baseUrl', baseUrl]
     }))
@@ -257,6 +258,43 @@ gulp.task('e2e', function() {
       console.log('E2E Tests failed');
       process.exit(1);
     });
+});
+
+var sauceConnectLauncher = require('sauce-connect-launcher');
+
+gulp.task('e2e_sauce', function() {
+  sauceConnectLauncher({
+    username: sauceCreds.sauceUser,
+    accessKey: sauceCreds.sauceKey
+  }, function (err, sauceConnectProcess) {
+    if (err) {
+      console.error(err.message);
+      return;
+    }
+    console.log("connection ready");
+    runSequence('server');
+
+    gulp.src(['./nothing'])
+      .pipe(protractor({
+        configFile: 'config/protractor/qa.conf.js',
+        keepAlive: true,
+        args: ['--baseUrl', baseUrl]
+      }))
+      .on('end', function() {
+        console.log('E2E Testing complete');
+        sauceConnectProcess.close(function () {
+          console.log("Closed Sauce Connect process");
+        });
+        process.exit();
+      })
+      .on('error', function(error) {
+        console.log('E2E Tests failed');
+        sauceConnectProcess.close(function () {
+          console.log("Closed Sauce Connect process");
+        });
+        process.exit(1);
+      });
+  });
 });
 
 gulp.task('validate', ['jshint', 'jscs', 'htmlhint']);

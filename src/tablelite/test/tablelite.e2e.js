@@ -1,18 +1,17 @@
+var tableLitePage = require('./tablelite.po');
+tableLitePage = new tableLitePage();
 describe('E2E Table Lite', function() {
-  var page = {};
-  beforeEach(function() {
-    browser.get('/');
-  });
-
-  beforeEach(function() {
-    browser.sleep(1000);
-  });
-
   it('rows should be selectable', function() {
-    var selectedItems = element(by.binding('models.selectedCars.length')),
-        selectAllCheckbox = $('.ad-table-lite-container th input[type="checkbox"]');
-    expect(selectedItems.getText()).toContain('1');
-    selectAllCheckbox.click();
-    expect(selectedItems.getText()).toContain('12');
+    tableLitePage.load();
+    expect(tableLitePage.selectedItems.getText()).toContain('1');
+    tableLitePage.selectAllCheckbox.click();
+    expect(tableLitePage.selectedItems.getText()).toContain('12');
+  });
+
+  it('should search correctly', function () {
+    tableLitePage.nameInput.sendKeys('BMW');
+    tableLitePage.getSearchResultRows().then(function (resultRows) {
+      expect(resultRows.length).toBe(2);
+    });
   });
 });

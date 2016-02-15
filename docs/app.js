@@ -32,7 +32,7 @@ angular.module('adaptv.adaptStrapDocs', [
     var converter = new Showdown.converter();
     return {
       restrict: 'E',
-      replace: true,
+      scope: true,
       link: function (scope, element, attrs) {
         function extractExamples(content) {
           var matchStartKey = '<!-- ad_example_start -->';
@@ -87,6 +87,8 @@ angular.module('adaptv.adaptStrapDocs', [
         attrs.$observe('src', function () {
           load();
         });
+
+        load();
       }
     };
   })

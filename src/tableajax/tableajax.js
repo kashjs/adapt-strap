@@ -169,6 +169,10 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
           $scope.localConfig.expandedItems.length = 0;
         };
 
+        $scope.expandCollapseRow = function (index) {
+          adStrapUtils.addRemoveItemFromList(index, $scope.localConfig.expandedItems);
+        };
+
         $scope.getRowClass = function (item, index) {
           var rowClass = '';
           rowClass += ($attrs.selectedItems &&
@@ -200,6 +204,17 @@ angular.module('adaptv.adaptStrap.tableajax', ['adaptv.adaptStrap.utils', 'adapt
         $scope.sortByColumn(column, true);
 
         $scope.loadPage(1);
+
+        // ---------- external events ------- //
+        $scope.$on('adTableAjaxAction', function (event, data) {
+          // Exposed methods for external actions
+          var actions = {
+            expandCollapseRow: $scope.expandCollapseRow
+          };
+          if (data.tableName === $scope.attrs.tableName) {
+            data.action(actions);
+          }
+        });
 
         // reset on parameter change
         watchers.push(

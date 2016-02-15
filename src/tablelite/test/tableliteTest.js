@@ -1,41 +1,59 @@
 describe('tablelite component', function () {
-  var controller,
-    $timeout;
+  var rootScope, compile, controller;
 
   beforeEach(function () {
     module('adaptv.adaptStrapDocs');
   });
-
-  beforeEach(inject(function (_$timeout_, $httpBackend) {
-    // `$timeout` before tests run
-    $timeout = _$timeout_;
-    $httpBackend.when('GET', 'src/tablelite/docs/buyCell.html').respond('');
+  beforeEach(function () {
+    module('dir-templates');
+  });
+  beforeEach(inject(function ($rootScope, $controller, $compile) {
+    rootScope = $rootScope;
+    controller = $controller;
+    compile = $compile;
   }));
 
-  it('should initialize with correct configuration', inject(function ($rootScope, $controller, $compile) {
-    controller = $controller('tableliteCtrl', {
-      $scope: $rootScope
+  function compileTable(controllerScope) {
+    controller('tableliteCtrl', {
+      $scope: controllerScope
     });
+    var element = compile(
+      '<ad-table-lite ' +
+      'table-name="carsForSale"' +
+      'column-definition="carsTableColumnDefinition"' +
+      'local-data-source="models.carsForSale"' +
+      'page-sizes="[7, 20]"' +
+      'pagination-btn-group-classes="btn-group btn-group-sm"' +
+      'table-classes="table table-bordered">' +
+      '</ad-table-lite>'
+    )(controllerScope.$new());
+    controllerScope.$digest();
+    return element;
+  }
 
-    $compile(
-        '<ad-table-lite ' +
-        'table-name="carsForSale"' +
-        'column-definition="carsTableColumnDefinition"' +
-        'local-data-source="models.carsForSale"' +
-        'page-sizes="[7, 20]"' +
-        'pagination-btn-group-classes="btn-group btn-group-sm"' +
-        'table-classes="table table-bordered">' +
-        '</ad-table-lite>'
-    )($rootScope);
+  it('should initialize with correct configuration', inject(function () {
+    var controllerScope = rootScope.$new();
+    compileTable(controllerScope);
+    expect(controllerScope.models).toBeDefined();
+    expect(controllerScope.models.selectedCars).toBeDefined();
+    expect(controllerScope.models.changeInfo).toBeDefined();
+    expect(controllerScope.carsTableColumnDefinition).toBeDefined();
+    expect(controllerScope.onDragChange).toBeDefined();
+    expect(controllerScope.onStateChange).toBeDefined();
+    expect(controllerScope.buyCar).toBeDefined();
+    expect(controllerScope.models.carsForSale.length).toEqual(12);
+    expect(controllerScope.models.selectedCars.length).toEqual(1);
+  }));
 
-    expect($rootScope.models).toBeDefined();
-    expect($rootScope.models.selectedCars).toBeDefined();
-    expect($rootScope.models.changeInfo).toBeDefined();
-    expect($rootScope.carsTableColumnDefinition).toBeDefined();
-    expect($rootScope.onDragChange).toBeDefined();
-    expect($rootScope.onStateChange).toBeDefined();
-    expect($rootScope.buyCar).toBeDefined();
-    expect($rootScope.models.carsForSale.length).toEqual(12);
-    expect($rootScope.models.selectedCars.length).toEqual(1);
+  it('external actions should function correctly', inject(function () {
+    var controllerScope = rootScope.$new();
+    var directiveScope = compileTable(controllerScope).scope();
+
+    //expand first row
+    directiveScope.localConfig.expandedItems[0] = 0;
+
+    // externally collapse first row
+    controllerScope.expandCollapseRow(0);
+    expect(directiveScope.localConfig.expandedItems.length).toEqual(0);
   }));
 });

@@ -152,4 +152,13 @@ angular.module('adaptv.adaptStrapDocs')
       return found ? 'info row-' + index : 'row-' + index;
     };
 
+    $scope.expandCollapseRow = function (row) {
+      $scope.$broadcast('adTableLiteAction', {
+        tableName: 'carsForSale',
+        action: function (actions) {
+          actions.expandCollapseRow(row);
+        }
+      });
+    };
+
   }]);

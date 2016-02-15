@@ -34,6 +34,8 @@
     <div class="panel-body">
         <p class="text-muted">
             Items Selected: <span class="badge" ng-bind="selectedItems.length"></span></p>
+      <p>External Events: <button class="btn btn-default btn-xs" ng-click="expandCollapseRow(0)">Toggle first row</button></p>
+
       <ad-table-ajax table-name="artistsTableSearch"
                      column-definition="artistsColumnDefSearch"
                      table-classes="table table-bordered"

@@ -22,7 +22,7 @@ module.exports = function(config) {
       'docs/app.js',
       'src/module.js',
       'src/**/*.js',
-      'src/**/*.tpl.html',
+      'src/**/*.html',
       'docs/**/*.js',
       'docs/**/*.html'
     ],
@@ -37,6 +37,16 @@ module.exports = function(config) {
       '!src/**/test/*.js': 'coverage',
       '!src/**/(*.e2e).js': 'coverage',
       'src/**/*.html': 'ng-html2js'
+    },
+    ngHtml2JsPreprocessor: {
+      moduleName: 'dir-templates',
+      cacheIdFromPath: function(filepath) {
+        // Excluding docs directory while stripping /src
+        if (filepath.indexOf('/docs/') === -1) {
+          filepath = filepath.split('src/').pop();
+        }
+        return filepath;
+      }
     },
     junitReporter: {
       outputFile: 'coverage/test-results.xml',

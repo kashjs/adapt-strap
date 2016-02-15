@@ -89,4 +89,13 @@ angular.module('adaptv.adaptStrapDocs')
           item.customMsg = 'Like ' + item.name + '? Click here to shop';
         }
       };
+
+      $scope.expandCollapseRow = function (row) {
+        $scope.$broadcast('adTableAjaxAction', {
+          tableName: 'artistsTableSearch',
+          action: function (actions) {
+            actions.expandCollapseRow(row);
+          }
+        });
+      };
     }]);

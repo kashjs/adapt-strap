@@ -15,4 +15,20 @@
             visible: 'Boolean' // - Optional - hide column by setting this to false
         }
     </markdown>
+
+    <markdown>
+        ### You perform actions on table externally. This is how you perform external event:
+        $scope.$broadcast('adTableAjaxAction', {
+            tableName: 'artistsTableSearch', //Name of the table that you are targeting
+            action: function (actions) {
+                actions.expandCollapseRow(row); //List of exposed action methods and expected params is listed below
+            }
+        });
+
+        ### Available action methods
+
+        - expandCollapseRow(row):
+            params:
+                - row: an integer order of row to be expanded or collapsed
+    </markdown>
 </div>

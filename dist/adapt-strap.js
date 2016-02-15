@@ -1,6 +1,6 @@
 /**
  * adapt-strap
- * @version v2.4.12 - 2016-01-31
+ * @version v2.4.12 - 2016-02-15
  * @link https://github.com/Adaptv/adapt-strap
  * @author Kashyap Patel (kashyap@adap.tv)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -933,6 +933,9 @@ function controllerFunction($scope, $attrs) {
       $scope.collapseAll = function () {
         $scope.localConfig.expandedItems.length = 0;
       };
+      $scope.expandCollapseRow = function (index) {
+        adStrapUtils.addRemoveItemFromList(index, $scope.localConfig.expandedItems);
+      };
       $scope.getRowClass = function (item, index) {
         var rowClass = '';
         rowClass += $attrs.selectedItems && adStrapUtils.itemExistsInList(item, $scope.selectedItems) ? 'ad-selected' : '';
@@ -959,6 +962,14 @@ function controllerFunction($scope, $attrs) {
         };
       $scope.sortByColumn(column, true);
       $scope.loadPage(1);
+      // ---------- external events ------- //
+      $scope.$on('adTableAjaxAction', function (event, data) {
+        // Exposed methods for external actions
+        var actions = { expandCollapseRow: $scope.expandCollapseRow };
+        if (data.tableName === $scope.attrs.tableName) {
+          data.action(actions);
+        }
+      });
       // reset on parameter change
       watchers.push($scope.$watch($attrs.ajaxConfig, function () {
         $scope.loadPage(1);
@@ -1133,6 +1144,9 @@ function controllerFunction($scope, $attrs) {
       $scope.collapseAll = function () {
         $scope.localConfig.expandedItems.length = 0;
       };
+      $scope.expandCollapseRow = function (index) {
+        adStrapUtils.addRemoveItemFromList(index, $scope.localConfig.expandedItems);
+      };
       $scope.onDragStart = function (data, dragElement) {
         $scope.localConfig.expandedItems.length = 0;
         dragElement = dragElement.el;
@@ -1248,6 +1262,14 @@ function controllerFunction($scope, $attrs) {
         };
       $scope.sortByColumn(column, true);
       $scope.loadPage(1);
+      // ---------- external events ------- //
+      $scope.$on('adTableLiteAction', function (event, data) {
+        // Exposed methods for external actions
+        var actions = { expandCollapseRow: $scope.expandCollapseRow };
+        if (data.tableName === $scope.attrs.tableName) {
+          data.action(actions);
+        }
+      });
       // ---------- set watchers ---------- //
       watchers.push($scope.$watch($attrs.localDataSource, function () {
         $scope.loadPage($scope.items.paging.currentPage);

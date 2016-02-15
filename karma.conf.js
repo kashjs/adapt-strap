@@ -36,8 +36,7 @@ module.exports = function(config) {
       'src/**/!(*.test).js': 'coverage',
       '!src/**/test/*.js': 'coverage',
       '!src/**/(*.e2e).js': 'coverage',
-      'src/**/*.html': 'ng-html2js',
-      '!src/**/docs/*.html': 'ng-html2js'
+      'src/**/*.html': 'ng-html2js'
     },
     ngHtml2JsPreprocessor: {
       moduleName: 'dir-templates',

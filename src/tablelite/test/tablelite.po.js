@@ -5,6 +5,9 @@ var tablelitePage = function() {
   this.load = function () {
     browser.get('/##tablelite');
     browser.sleep(1000);
+    browser.executeScript(function () {
+      arguments[0].scrollIntoView();
+    }, browser.findElement(by.id('tablelite')));
   };
   this.getSearchResultRows = function () {
     return element.all(by.css('#tablelite .ad-table-container tbody tr'));

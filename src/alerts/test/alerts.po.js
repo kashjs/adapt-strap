@@ -4,6 +4,9 @@ var alertsPage = function() {
   this.load = function () {
     browser.get('/##alerts');
     browser.sleep(1000);
+    browser.executeScript(function () {
+      arguments[0].scrollIntoView();
+    }, browser.findElement(by.id('alerts')));
   };
 };
 

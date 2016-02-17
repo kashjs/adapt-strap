@@ -24,7 +24,8 @@ config.sauceKey = process.env.SAUCE_ACCESS_KEY || creds.sauceKey;
 
 config.multiCapabilities = [
   browsers.chrome,
-  browsers.safari
+  browsers.safari,
+  browsers.firefox
 ];
 
 exports.config = config;
